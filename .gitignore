@@ -15,11 +15,7 @@ scripts/__init__.py
 
 # ignored files
 version.py
-test_ecbsr.py
-test_pisr.py
-test_swinir.py
-test_**.py
-test.py
+debug.py
 
 # ignored files with suffix
 *.html
