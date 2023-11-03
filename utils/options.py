@@ -98,7 +98,8 @@ def _postprocess_yml_value(value):
 
 def parse_options(root_path, is_train=True):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-opt', type=str, required=True, help='Path to option YAML file.')
+    # parser.add_argument('-opt', type=str, required=True, help='Path to option YAML file.')
+    parser.add_argument('-folder', type=str, required=True, help='Path to experiment folder.')
     parser.add_argument('--launcher', choices=['none', 'pytorch', 'slurm'], default='none', help='job launcher')
     parser.add_argument('--auto_resume', action='store_true')
     parser.add_argument('--debug', action='store_true')
@@ -107,8 +108,20 @@ def parse_options(root_path, is_train=True):
         '--force_yml', nargs='+', default=None, help='Force to update yml files. Examples: train:ema_decay=0.999')
     args = parser.parse_args()
 
+    files = os.listdir(args.folder)
+    yaml_files = [f for f in files if f.endswith('.yaml') or f.endswith('.yml')]
+    
+    # Load yaml config
+    if len(yaml_files) > 1:
+        raise FileNotFoundError('Multiple yaml files found in the specified folder. Please specify only one yaml file.')
+    elif len(yaml_files) == 0:
+        raise FileNotFoundError('No yaml file found in the specified folder.')
+    else:
+        with open(os.path.join(args.folder, yaml_files[0]), 'r') as file:
+            config = yaml.safe_load(file)
+    
     # parse yml to dict
-    opt = yaml_load(args.opt)
+    opt = config
 
     # distributed settings
     if args.launcher == 'none':

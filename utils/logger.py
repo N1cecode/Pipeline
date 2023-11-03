@@ -193,13 +193,7 @@ def get_env_info():
     import torch
     import torchvision
 
-    from basicsr.version import __version__
     msg = r"""
-                ____                _       _____  ____
-               / __ ) ____ _ _____ (_)_____/ ___/ / __ \
-              / __  |/ __ `// ___// // ___/\__ \ / /_/ /
-             / /_/ // /_/ /(__  )/ // /__ ___/ // _, _/
-            /_____/ \__,_//____//_/ \___//____//_/ |_|
      ______                   __   __                 __      __
     / ____/____   ____   ____/ /  / /   __  __ _____ / /__   / /
    / / __ / __ \ / __ \ / __  /  / /   / / / // ___// //_/  / /
@@ -207,7 +201,6 @@ def get_env_info():
   \____/ \____/ \____/ \____/  /_____/\____/ \___//_/|_|  (_)
     """
     msg += ('\nVersion Information: '
-            f'\n\tBasicSR: {__version__}'
             f'\n\tPyTorch: {torch.__version__}'
             f'\n\tTorchVision: {torchvision.__version__}')
     return msg

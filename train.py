@@ -14,6 +14,8 @@ from utils import (AvgTimer, MessageLogger, check_resume, get_env_info, get_root
                            init_tb_logger, init_wandb_logger, make_exp_dirs, mkdir_and_rename, scandir)
 from utils.options import copy_opt_file, dict2str, parse_options
 
+from scan import build_arch
+
 
 def init_tb_loggers(opt):
     # initialize wandb logger before tensorboard logger to allow proper sync
@@ -105,8 +107,8 @@ def train_pipeline(root_path):
         if opt['logger'].get('use_tb_logger') and 'debug' not in opt['name'] and opt['rank'] == 0:
             mkdir_and_rename(osp.join(opt['root_path'], 'tb_logger', opt['name']))
 
-    # copy the yml file to the experiment root
-    copy_opt_file(args.opt, opt['path']['experiments_root'])
+    # # copy the yml file to the experiment root
+    # copy_opt_file(args.opt, opt['path']['experiments_root'])
 
     # WARNING: should not use get_root_logger in the above codes, including the called functions
     # Otherwise the logger will not be properly initialized
@@ -120,9 +122,12 @@ def train_pipeline(root_path):
     # create train and validation dataloaders
     result = create_train_val_dataloader(opt, logger)
     train_loader, train_sampler, val_loaders, total_epochs, total_iters = result
-
+    
+    # create arch
+    arch = build_arch(args.folder, opt)
+    
     # create model
-    model = build_model(opt)
+    model = build_model(opt, arch)
     if resume_state:  # resume training
         model.resume_training(resume_state)  # handle optimizers and schedulers
         logger.info(f"Resuming training from epoch: {resume_state['epoch']}, iter: {resume_state['iter']}.")
