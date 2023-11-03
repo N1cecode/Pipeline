@@ -14,8 +14,9 @@ def build_arch(folder_path, opt):
         spec.loader.exec_module(arch_module)
         
         # Get the class name from the yaml config and instantiate the class
-        class_name = opt['network_g'].pop('type')
-        hyperparameters = opt['network_g']
+        network_opt = opt['network_g'].copy()
+        class_name = network_opt.pop('type')
+        hyperparameters = network_opt
         if class_name:
             arch_class = getattr(arch_module, class_name)
             arch = arch_class(**hyperparameters)  # instantiate the network class with hyperparameters

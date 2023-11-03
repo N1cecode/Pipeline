@@ -1,6 +1,9 @@
 # ignored folders
 datasets/*
-experiments/*
+**/weights/
+**/visualization/
+**/training_states/
+experiments/pretrained_models
 results/*
 tb_logger/*
 wandb/*

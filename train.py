@@ -3,6 +3,7 @@ import logging
 import math
 import time
 import torch
+import os
 from os import path as osp
 import torchvision
 
@@ -12,7 +13,7 @@ from data.prefetch_dataloader import CPUPrefetcher, CUDAPrefetcher
 from models import build_model
 from utils import (AvgTimer, MessageLogger, check_resume, get_env_info, get_root_logger, get_time_str,
                            init_tb_logger, init_wandb_logger, make_exp_dirs, mkdir_and_rename, scandir)
-from utils.options import copy_opt_file, dict2str, parse_options
+from utils.options import dict2str, parse_options
 
 from scan import build_arch
 
@@ -25,7 +26,7 @@ def init_tb_loggers(opt):
         init_wandb_logger(opt)
     tb_logger = None
     if opt['logger'].get('use_tb_logger') and 'debug' not in opt['name']:
-        tb_logger = init_tb_logger(log_dir=osp.join(opt['root_path'], 'tb_logger', opt['name']))
+        tb_logger = init_tb_logger(log_dir=osp.join(opt['path']['experiments_root'], 'tb_logger', opt['name']))
     return tb_logger
 
 
@@ -101,14 +102,22 @@ def train_pipeline(root_path):
 
     # load resume states if necessary
     resume_state = load_resume_state(opt)
-    # mkdir for experiments and logger
-    if resume_state is None:
-        make_exp_dirs(opt)
-        if opt['logger'].get('use_tb_logger') and 'debug' not in opt['name'] and opt['rank'] == 0:
-            mkdir_and_rename(osp.join(opt['root_path'], 'tb_logger', opt['name']))
 
-    # # copy the yml file to the experiment root
-    # copy_opt_file(args.opt, opt['path']['experiments_root'])
+    if not osp.exists(opt['path']['log']):
+        os.makedirs(opt['path']['log'], exist_ok=True)
+    if not osp.exists(opt['path']['models']):
+        os.makedirs(opt['path']['models'], exist_ok=True)
+    if not osp.exists(opt['path']['training_states']):
+        os.makedirs(opt['path']['training_states'], exist_ok=True)
+    if not osp.exists(opt['path']['visualization']):
+        os.makedirs(opt['path']['visualization'], exist_ok=True)
+    
+    # if tensorboard logger is used
+    if opt['logger'].get('use_tb_logger') and 'debug' not in opt['name'] and opt['rank'] == 0:
+        opt['path']['tb_logger'] = osp.join(opt['path']['experiments_root'], 'tb_logger')
+        if not osp.exists(opt['path']['tb_logger']):
+            os.makedirs(opt['path']['tb_logger'], exist_ok=True)
+
 
     # WARNING: should not use get_root_logger in the above codes, including the called functions
     # Otherwise the logger will not be properly initialized

@@ -184,13 +184,13 @@ def parse_options(root_path, is_train=True):
             opt['path'][key] = osp.expanduser(val)
 
     if is_train:
-        experiments_root = opt['path'].get('experiments_root')
-        if experiments_root is None:
-            experiments_root = osp.join(root_path, 'experiments')
-        experiments_root = osp.join(experiments_root, opt['name'])
+        experiments_root = os.path.abspath(args.folder)
+        # if experiments_root is None:
+        #     experiments_root = osp.join(root_path, 'experiments')
+        # experiments_root = osp.join(experiments_root, opt['name'])
 
         opt['path']['experiments_root'] = experiments_root
-        opt['path']['models'] = osp.join(experiments_root, 'models')
+        opt['path']['models'] = osp.join(experiments_root, 'weights')
         opt['path']['training_states'] = osp.join(experiments_root, 'training_states')
         opt['path']['log'] = experiments_root
         opt['path']['visualization'] = osp.join(experiments_root, 'visualization')
