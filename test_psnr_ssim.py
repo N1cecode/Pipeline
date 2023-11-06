@@ -8,7 +8,7 @@ import torch
 import requests
 
 from archs.network_swinir import SwinIR as net
-from utils import util_calculate_psnr_ssim as util
+from utils import calculate_psnr_ssim as util
 
 
 def main():
