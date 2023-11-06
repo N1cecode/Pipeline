@@ -12,10 +12,9 @@ from data.data_sampler import EnlargedSampler
 from data.prefetch_dataloader import CPUPrefetcher, CUDAPrefetcher
 from models import build_model
 from utils import (AvgTimer, MessageLogger, check_resume, get_env_info, get_root_logger, get_time_str,
-                           init_tb_logger, init_wandb_logger, make_exp_dirs, mkdir_and_rename, scandir)
+                           init_tb_logger, init_wandb_logger, scandir)
 from utils.options import dict2str, parse_options
-
-from scan import build_arch
+from utils.scan import build_arch
 
 
 def init_tb_loggers(opt):
