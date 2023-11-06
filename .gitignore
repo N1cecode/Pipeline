@@ -3,6 +3,7 @@ datasets/*
 **/weights/
 **/visualization/
 **/training_states/
+**/Doing/**/tb_logger
 experiments/pretrained_models
 results/*
 tb_logger/*
