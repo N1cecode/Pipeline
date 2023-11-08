@@ -4,6 +4,7 @@ datasets/*
 **/visualization/
 **/training_states/
 **/Doing/**/tb_logger
+**/Doing/**/*.log
 experiments/pretrained_models
 results/*
 tb_logger/*
