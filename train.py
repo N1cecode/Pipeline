@@ -132,7 +132,7 @@ def train_pipeline(root_path):
     train_loader, train_sampler, val_loaders, total_epochs, total_iters = result
     
     # create arch
-    arch = build_arch(args.folder, opt)
+    arch = build_arch(args.dir, opt)
     
     # create model
     model = build_model(opt, arch)

@@ -99,7 +99,7 @@ def _postprocess_yml_value(value):
 def parse_options(root_path, is_train=True):
     parser = argparse.ArgumentParser()
     # parser.add_argument('-opt', type=str, required=True, help='Path to option YAML file.')
-    parser.add_argument('-folder', type=str, required=True, help='Path to experiment folder.')
+    parser.add_argument('-dir', type=str, required=True, help='Path to experiment dir.')
     parser.add_argument('--launcher', choices=['none', 'pytorch', 'slurm'], default='none', help='job launcher')
     parser.add_argument('--auto_resume', action='store_true')
     parser.add_argument('--debug', action='store_true')
@@ -108,16 +108,16 @@ def parse_options(root_path, is_train=True):
         '--force_yml', nargs='+', default=None, help='Force to update yml files. Examples: train:ema_decay=0.999')
     args = parser.parse_args()
 
-    files = os.listdir(args.folder)
+    files = os.listdir(args.dir)
     yaml_files = [f for f in files if f.endswith('.yaml') or f.endswith('.yml')]
     
     # Load yaml config
     if len(yaml_files) > 1:
-        raise FileNotFoundError('Multiple yaml files found in the specified folder. Please specify only one yaml file.')
+        raise FileNotFoundError('Multiple yaml files found in the specified dir. Please specify only one yaml file.')
     elif len(yaml_files) == 0:
-        raise FileNotFoundError('No yaml file found in the specified folder.')
+        raise FileNotFoundError('No yaml file found in the specified dir.')
     else:
-        with open(os.path.join(args.folder, yaml_files[0]), 'r') as file:
+        with open(os.path.join(args.dir, yaml_files[0]), 'r') as file:
             config = yaml.safe_load(file)
     
     # parse yml to dict
@@ -184,7 +184,7 @@ def parse_options(root_path, is_train=True):
             opt['path'][key] = osp.expanduser(val)
 
     if is_train:
-        experiments_root = os.path.abspath(args.folder)
+        experiments_root = os.path.abspath(args.dir)
         # if experiments_root is None:
         #     experiments_root = osp.join(root_path, 'experiments')
         # experiments_root = osp.join(experiments_root, opt['name'])
