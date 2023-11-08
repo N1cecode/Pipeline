@@ -4898,3 +4898,24 @@ Version Information:
 2023-11-08 10:19:42,097 INFO: [Class..][epoch: 36, iter: 199,500, lr:(3.097e-09,)] [eta: 7 days, 19:42:27, time (data): 0.576 (0.002)] l_pix: 9.1859e-03 
 2023-11-08 10:20:39,074 INFO: [Class..][epoch: 36, iter: 199,600, lr:(1.984e-09,)] [eta: 7 days, 19:39:13, time (data): 0.558 (0.002)] l_pix: 1.0631e-02 
 2023-11-08 10:21:35,164 INFO: [Class..][epoch: 36, iter: 199,700, lr:(1.118e-09,)] [eta: 7 days, 19:35:55, time (data): 0.561 (0.002)] l_pix: 1.5370e-02 
+2023-11-08 10:22:32,016 INFO: [Class..][epoch: 36, iter: 199,800, lr:(4.984e-10,)] [eta: 7 days, 19:32:40, time (data): 0.571 (0.002)] l_pix: 1.5621e-02 
+2023-11-08 10:23:29,341 INFO: [Class..][epoch: 36, iter: 199,900, lr:(1.258e-10,)] [eta: 7 days, 19:29:27, time (data): 0.573 (0.002)] l_pix: 8.2010e-03 
+2023-11-08 10:24:27,149 INFO: [Class..][epoch: 36, iter: 200,000, lr:(1.234e-14,)] [eta: 7 days, 19:26:17, time (data): 0.577 (0.002)] l_pix: 8.7374e-03 
+2023-11-08 10:24:27,150 INFO: Saving models and training states.
+2023-11-08 10:24:28,906 WARNING: Multiple validation datasets are *only* supported by SRModel.
+2023-11-08 10:24:32,315 INFO: Validation Set5
+	 # psnr: 38.2116	Best: 38.2862 @ 190000 iter
+	 # ssim: 0.9620	Best: 0.9623 @ 180000 iter
+
+2023-11-08 10:24:52,128 INFO: Validation Set14
+	 # psnr: 33.9899	Best: 34.0242 @ 150000 iter
+	 # ssim: 0.9220	Best: 0.9228 @ 150000 iter
+
+2023-11-08 10:27:38,274 INFO: Validation BSD100
+	 # psnr: 32.4167	Best: 32.4373 @ 195000 iter
+	 # ssim: 0.9030	Best: 0.9036 @ 150000 iter
+
+2023-11-08 10:36:18,118 INFO: Validation Urban100
+	 # psnr: 33.2231	Best: 33.2824 @ 180000 iter
+	 # ssim: 0.9380	Best: 0.9385 @ 180000 iter
+
