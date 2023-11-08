@@ -64,13 +64,13 @@ datasets:
     io_backend:
       type: disk
 
-  # val_5:
-  #   name: Manga109
-  #   type: PairedImageDataset
-  #   dataroot_gt:  ./datasets/manga109/GTmod12
-  #   dataroot_lq:  ./datasets/manga109/LRbicx2
-  #   io_backend:
-  #     type: disk
+  val_5:
+    name: Manga109
+    type: PairedImageDataset
+    dataroot_gt:  ./datasets/manga109/GTmod12
+    dataroot_lq:  ./datasets/manga109/LRbicx2
+    io_backend:
+      type: disk
 
 
 # network structures
