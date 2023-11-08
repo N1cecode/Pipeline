@@ -4919,3 +4919,25 @@ Version Information:
 	 # psnr: 33.2231	Best: 33.2824 @ 180000 iter
 	 # ssim: 0.9380	Best: 0.9385 @ 180000 iter
 
+2023-11-08 10:48:05,193 INFO: Validation Manga109
+	 # psnr: 39.3404	Best: 39.5196 @ 185000 iter
+	 # ssim: 0.9789	Best: 0.9791 @ 185000 iter
+
+2023-11-08 10:49:03,105 INFO: [Class..][epoch: 36, iter: 200,100, lr:(2.000e-04,)] [eta: 7 days, 20:57:35, time (data): 0.579 (0.002)] l_pix: 8.3840e-03 
+2023-11-08 10:50:00,946 INFO: [Class..][epoch: 36, iter: 200,200, lr:(2.000e-04,)] [eta: 7 days, 20:54:22, time (data): 0.602 (0.002)] l_pix: 7.5080e-03 
+2023-11-08 10:51:01,116 INFO: [Class..][epoch: 36, iter: 200,300, lr:(2.000e-04,)] [eta: 7 days, 20:51:17, time (data): 0.602 (0.003)] l_pix: 8.6419e-03 
+2023-11-08 10:51:58,806 INFO: [Class..][epoch: 36, iter: 200,400, lr:(2.000e-04,)] [eta: 7 days, 20:48:03, time (data): 0.556 (0.002)] l_pix: 1.5870e-02 
+2023-11-08 10:52:55,572 INFO: [Class..][epoch: 36, iter: 200,500, lr:(2.000e-04,)] [eta: 7 days, 20:44:46, time (data): 0.567 (0.002)] l_pix: 1.6943e-02 
+2023-11-08 10:53:52,392 INFO: [Class..][epoch: 36, iter: 200,600, lr:(2.000e-04,)] [eta: 7 days, 20:41:29, time (data): 0.571 (0.002)] l_pix: 1.4592e-02 
+2023-11-08 10:54:49,166 INFO: [Class..][epoch: 36, iter: 200,700, lr:(2.000e-04,)] [eta: 7 days, 20:38:11, time (data): 0.568 (0.002)] l_pix: 1.3274e-02 
+2023-11-08 10:55:45,645 INFO: [Class..][epoch: 36, iter: 200,800, lr:(2.000e-04,)] [eta: 7 days, 20:34:53, time (data): 0.559 (0.002)] l_pix: 1.8959e-02 
+2023-11-08 10:56:42,032 INFO: [Class..][epoch: 36, iter: 200,900, lr:(2.000e-04,)] [eta: 7 days, 20:31:34, time (data): 0.564 (0.002)] l_pix: 6.5996e-03 
+2023-11-08 10:57:42,042 INFO: [Class..][epoch: 37, iter: 201,000, lr:(2.000e-04,)] [eta: 7 days, 20:28:30, time (data): 0.582 (0.019)] l_pix: 1.1081e-02 
+2023-11-08 10:58:40,291 INFO: [Class..][epoch: 37, iter: 201,100, lr:(2.000e-04,)] [eta: 7 days, 20:25:20, time (data): 0.582 (0.002)] l_pix: 1.7861e-02 
+2023-11-08 10:59:38,135 INFO: [Class..][epoch: 37, iter: 201,200, lr:(2.000e-04,)] [eta: 7 days, 20:22:07, time (data): 0.580 (0.002)] l_pix: 1.1340e-02 
+2023-11-08 11:00:35,993 INFO: [Class..][epoch: 37, iter: 201,300, lr:(2.000e-04,)] [eta: 7 days, 20:18:55, time (data): 0.579 (0.002)] l_pix: 1.2669e-02 
+2023-11-08 11:01:33,839 INFO: [Class..][epoch: 37, iter: 201,400, lr:(2.000e-04,)] [eta: 7 days, 20:15:43, time (data): 0.579 (0.002)] l_pix: 5.8683e-03 
+2023-11-08 11:02:31,228 INFO: [Class..][epoch: 37, iter: 201,500, lr:(2.000e-04,)] [eta: 7 days, 20:12:29, time (data): 0.574 (0.002)] l_pix: 2.0855e-02 
+2023-11-08 11:03:28,581 INFO: [Class..][epoch: 37, iter: 201,600, lr:(2.000e-04,)] [eta: 7 days, 20:09:15, time (data): 0.574 (0.002)] l_pix: 1.8905e-02 
+2023-11-08 11:04:24,400 INFO: [Class..][epoch: 37, iter: 201,700, lr:(2.000e-04,)] [eta: 7 days, 20:05:56, time (data): 0.558 (0.002)] l_pix: 1.3449e-02 
+2023-11-08 11:05:21,580 INFO: [Class..][epoch: 37, iter: 201,800, lr:(2.000e-04,)] [eta: 7 days, 20:02:42, time (data): 0.565 (0.002)] l_pix: 9.0716e-03 
