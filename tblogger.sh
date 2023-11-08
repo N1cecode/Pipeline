@@ -7,6 +7,13 @@ DESTINATION_DIR="./tb_logger"
 
 mkdir -p "$DESTINATION_DIR"
 
+# 清除'Doing'分类下的旧符号链接
+if [ -d "$DESTINATION_DIR/Doing" ]; then
+    find "$DESTINATION_DIR/Doing" -type l -exec rm {} +
+    echo "Old symbolic links in $DESTINATION_DIR/Doing have been removed."
+    echo
+fi
+
 # 在当前脚本目录下的experiments文件夹中查找所有名为tb_logger的文件夹
 find experiments -type d -name tb_logger | while read -r tb_logger_dir; do
   # 获取tb_logger的完整路径

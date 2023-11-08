@@ -5244,3 +5244,38 @@ Version Information:
 2023-11-08 16:27:58,460 INFO: [Class..][epoch: 41, iter: 223,100, lr:(1.935e-04,)] [eta: 7 days, 16:16:36, time (data): 0.607 (0.003)] l_pix: 1.7604e-02 
 2023-11-08 16:28:58,993 INFO: [Class..][epoch: 41, iter: 223,200, lr:(1.934e-04,)] [eta: 7 days, 16:13:44, time (data): 0.603 (0.003)] l_pix: 1.2762e-02 
 2023-11-08 16:30:00,029 INFO: [Class..][epoch: 41, iter: 223,300, lr:(1.934e-04,)] [eta: 7 days, 16:10:54, time (data): 0.607 (0.003)] l_pix: 1.0886e-02 
+2023-11-08 16:31:01,626 INFO: [Class..][epoch: 41, iter: 223,400, lr:(1.933e-04,)] [eta: 7 days, 16:08:06, time (data): 0.614 (0.003)] l_pix: 1.4076e-02 
+2023-11-08 16:32:03,883 INFO: [Class..][epoch: 41, iter: 223,500, lr:(1.933e-04,)] [eta: 7 days, 16:05:21, time (data): 0.618 (0.003)] l_pix: 2.1770e-02 
+2023-11-08 16:33:04,953 INFO: [Class..][epoch: 41, iter: 223,600, lr:(1.932e-04,)] [eta: 7 days, 16:02:31, time (data): 0.610 (0.003)] l_pix: 1.4824e-02 
+2023-11-08 16:34:06,837 INFO: [Class..][epoch: 41, iter: 223,700, lr:(1.932e-04,)] [eta: 7 days, 15:59:44, time (data): 0.615 (0.003)] l_pix: 1.7605e-02 
+2023-11-08 16:35:08,079 INFO: [Class..][epoch: 41, iter: 223,800, lr:(1.931e-04,)] [eta: 7 days, 15:56:55, time (data): 0.614 (0.003)] l_pix: 1.9019e-02 
+2023-11-08 16:36:10,652 INFO: [Class..][epoch: 41, iter: 223,900, lr:(1.930e-04,)] [eta: 7 days, 15:54:11, time (data): 0.620 (0.003)] l_pix: 7.8118e-03 
+2023-11-08 16:37:14,374 INFO: [Class..][epoch: 41, iter: 224,000, lr:(1.930e-04,)] [eta: 7 days, 15:51:31, time (data): 0.637 (0.003)] l_pix: 5.7136e-03 
+2023-11-08 16:38:19,069 INFO: [Class..][epoch: 41, iter: 224,100, lr:(1.929e-04,)] [eta: 7 days, 15:48:55, time (data): 0.643 (0.003)] l_pix: 1.0006e-02 
+2023-11-08 16:39:21,326 INFO: [Class..][epoch: 41, iter: 224,200, lr:(1.929e-04,)] [eta: 7 days, 15:46:10, time (data): 0.622 (0.003)] l_pix: 8.9748e-03 
+2023-11-08 16:40:25,409 INFO: [Class..][epoch: 41, iter: 224,300, lr:(1.928e-04,)] [eta: 7 days, 15:43:31, time (data): 0.632 (0.003)] l_pix: 8.9217e-03 
+2023-11-08 16:41:27,945 INFO: [Class..][epoch: 41, iter: 224,400, lr:(1.927e-04,)] [eta: 7 days, 15:40:47, time (data): 0.623 (0.004)] l_pix: 8.1597e-03 
+2023-11-08 16:42:29,171 INFO: [Class..][epoch: 41, iter: 224,500, lr:(1.927e-04,)] [eta: 7 days, 15:37:59, time (data): 0.617 (0.003)] l_pix: 1.7362e-02 
+2023-11-08 16:43:33,256 INFO: [Class..][epoch: 41, iter: 224,600, lr:(1.926e-04,)] [eta: 7 days, 15:35:21, time (data): 0.644 (0.004)] l_pix: 1.5995e-02 
+2023-11-08 16:44:36,284 INFO: [Class..][epoch: 41, iter: 224,700, lr:(1.926e-04,)] [eta: 7 days, 15:32:39, time (data): 0.637 (0.004)] l_pix: 1.3381e-02 
+2023-11-08 16:45:39,277 INFO: [Class..][epoch: 41, iter: 224,800, lr:(1.925e-04,)] [eta: 7 days, 15:29:57, time (data): 0.626 (0.003)] l_pix: 1.1385e-02 
+2023-11-08 16:46:45,399 INFO: [Class..][epoch: 41, iter: 224,900, lr:(1.924e-04,)] [eta: 7 days, 15:27:26, time (data): 0.645 (0.004)] l_pix: 7.3874e-03 
+2023-11-08 16:47:48,466 INFO: [Class..][epoch: 41, iter: 225,000, lr:(1.924e-04,)] [eta: 7 days, 15:24:44, time (data): 0.635 (0.003)] l_pix: 9.7276e-03 
+2023-11-08 16:47:48,467 INFO: Saving models and training states.
+2023-11-08 16:47:51,953 WARNING: Multiple validation datasets are *only* supported by SRModel.
+2023-11-08 16:48:14,747 INFO: Validation Set5
+	 # psnr: 38.0483	Best: 38.2862 @ 190000 iter
+	 # ssim: 0.9617	Best: 0.9623 @ 180000 iter
+
+2023-11-08 16:49:28,804 INFO: Validation Set14
+	 # psnr: 33.8010	Best: 34.0242 @ 150000 iter
+	 # ssim: 0.9203	Best: 0.9228 @ 150000 iter
+
+2023-11-08 16:57:38,827 INFO: Validation BSD100
+	 # psnr: 32.3206	Best: 32.4373 @ 195000 iter
+	 # ssim: 0.9021	Best: 0.9036 @ 150000 iter
+
+2023-11-08 17:09:33,793 INFO: Validation Urban100
+	 # psnr: 32.8380	Best: 33.2824 @ 180000 iter
+	 # ssim: 0.9349	Best: 0.9385 @ 180000 iter
+
