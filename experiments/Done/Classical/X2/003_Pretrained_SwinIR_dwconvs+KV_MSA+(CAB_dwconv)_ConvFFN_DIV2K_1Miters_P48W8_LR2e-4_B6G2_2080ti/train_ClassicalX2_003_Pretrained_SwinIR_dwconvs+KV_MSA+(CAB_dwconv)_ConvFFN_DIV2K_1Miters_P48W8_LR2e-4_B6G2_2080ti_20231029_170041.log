@@ -1,0 +1,2408 @@
+2023-10-29 17:00:41,229 INFO: 
+                ____                _       _____  ____
+               / __ ) ____ _ _____ (_)_____/ ___/ / __ \
+              / __  |/ __ `// ___// // ___/\__ \ / /_/ /
+             / /_/ // /_/ /(__  )/ // /__ ___/ // _, _/
+            /_____/ \__,_//____//_/ \___//____//_/ |_|
+     ______                   __   __                 __      __
+    / ____/____   ____   ____/ /  / /   __  __ _____ / /__   / /
+   / / __ / __ \ / __ \ / __  /  / /   / / / // ___// //_/  / /
+  / /_/ // /_/ // /_/ // /_/ /  / /___/ /_/ // /__ / /<    /_/
+  \____/ \____/ \____/ \____/  /_____/\____/ \___//_/|_|  (_)
+    
+Version Information: 
+	BasicSR: 1.4.2
+	PyTorch: 2.0.1
+	TorchVision: 0.15.2
+2023-10-29 17:00:41,229 INFO: 
+  name: ClassicalX2_003_Pretrained_SwinIR_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_1Miters_P48W8_LR2e-4_B6G2_2080ti
+  model_type: SwinIRModel
+  scale: 2
+  num_gpu: 2
+  manual_seed: 3407
+  datasets:[
+    train:[
+      name: DIV2K
+      type: PairedImageDataset
+      dataroot_gt: datasets/DIV2K/DIV2K_train_HR_sub
+      dataroot_lq: datasets/DIV2K/DIV2K_train_LR_bicubic/X2_sub
+      meta_info_file: basicsr/data/meta_info/meta_info_DIV2K800sub_GT.txt
+      filename_tmpl: {}
+      io_backend:[
+        type: disk
+      ]
+      gt_size: 96
+      use_hflip: True
+      use_rot: True
+      num_worker_per_gpu: 8
+      batch_size_per_gpu: 6
+      dataset_enlarge_ratio: 1
+      prefetch_mode: None
+      phase: train
+      scale: 2
+    ]
+    val_1:[
+      name: Set5
+      type: PairedImageDataset
+      dataroot_gt: datasets/Set5/GTmod12
+      dataroot_lq: datasets/Set5/LRbicx2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_2:[
+      name: Set14
+      type: PairedImageDataset
+      dataroot_gt: datasets/Set14/GTmod12
+      dataroot_lq: datasets/Set14/LRbicx2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_3:[
+      name: BSD100
+      type: PairedImageDataset
+      dataroot_gt: ./datasets/BSDS100/GTmod12
+      dataroot_lq: ./datasets/BSDS100/LRbicx2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_4:[
+      name: Urban100
+      type: PairedImageDataset
+      dataroot_gt: ./datasets/urban100/GTmod12
+      dataroot_lq: ./datasets/urban100/LRbicx2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_5:[
+      name: Manga109
+      type: PairedImageDataset
+      dataroot_gt: ./datasets/manga109/GTmod12
+      dataroot_lq: ./datasets/manga109/LRbicx2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+  ]
+  network_g:[
+    type: SwinIR_Modified
+    upscale: 2
+    in_chans: 3
+    img_size: 48
+    window_size: 8
+    img_range: 1.0
+    depths: [6, 6, 6, 6, 6, 6]
+    embed_dim: 180
+    num_heads: [6, 6, 6, 6, 6, 6]
+    mlp_ratio: 2
+    upsampler: pixelshuffle
+    resi_connection: 1conv
+  ]
+  path:[
+    pretrain_network_g: experiments/pretrained_models/SwinIR/X2/001_classicalSR_DIV2K_s48w8_SwinIR-M_x2.pth
+    strict_load_g: False
+    resume_state: None
+    experiments_root: /share3/home/renzihao/BasicSR/experiments/ClassicalX2_003_Pretrained_SwinIR_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_1Miters_P48W8_LR2e-4_B6G2_2080ti
+    models: /share3/home/renzihao/BasicSR/experiments/ClassicalX2_003_Pretrained_SwinIR_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_1Miters_P48W8_LR2e-4_B6G2_2080ti/models
+    training_states: /share3/home/renzihao/BasicSR/experiments/ClassicalX2_003_Pretrained_SwinIR_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_1Miters_P48W8_LR2e-4_B6G2_2080ti/training_states
+    log: /share3/home/renzihao/BasicSR/experiments/ClassicalX2_003_Pretrained_SwinIR_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_1Miters_P48W8_LR2e-4_B6G2_2080ti
+    visualization: /share3/home/renzihao/BasicSR/experiments/ClassicalX2_003_Pretrained_SwinIR_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_1Miters_P48W8_LR2e-4_B6G2_2080ti/visualization
+  ]
+  train:[
+    ema_decay: 0.999
+    optim_g:[
+      type: Adam
+      lr: 0.0002
+      weight_decay: 0
+      betas: [0.9, 0.99]
+    ]
+    scheduler:[
+      type: MultiStepLR
+      milestones: [50000, 200000, 250000, 275000]
+      gamma: 0.5
+    ]
+    total_iter: 300000
+    warmup_iter: -1
+    pixel_opt:[
+      type: L1Loss
+      loss_weight: 1.0
+      reduction: mean
+    ]
+  ]
+  val:[
+    val_freq: 5000.0
+    save_img: False
+    metrics:[
+      psnr:[
+        type: calculate_psnr
+        crop_border: 2
+        test_y_channel: True
+      ]
+      ssim:[
+        type: calculate_ssim
+        crop_border: 2
+        test_y_channel: True
+      ]
+    ]
+  ]
+  logger:[
+    print_freq: 100
+    save_checkpoint_freq: 5000.0
+    use_tb_logger: True
+    wandb:[
+      project: None
+      resume_id: None
+    ]
+  ]
+  dist_params:[
+    backend: nccl
+    port: 29500
+  ]
+  dist: True
+  rank: 0
+  world_size: 2
+  auto_resume: False
+  is_train: True
+  root_path: /share3/home/renzihao/BasicSR
+
+2023-10-29 17:01:10,465 INFO: Dataset [PairedImageDataset] - DIV2K is built.
+2023-10-29 17:01:10,466 INFO: Training statistics:
+	Number of train images: 32592
+	Dataset enlarge ratio: 1
+	Batch size per gpu: 6
+	World size (gpu number): 2
+	Require iter number per epoch: 2716
+	Total epochs: 111; iters: 300000.
+2023-10-29 17:01:10,467 INFO: Dataset [PairedImageDataset] - Set5 is built.
+2023-10-29 17:01:10,467 INFO: Number of val images/folders in Set5: 5
+2023-10-29 17:01:10,469 INFO: Dataset [PairedImageDataset] - Set14 is built.
+2023-10-29 17:01:10,469 INFO: Number of val images/folders in Set14: 14
+2023-10-29 17:01:10,473 INFO: Dataset [PairedImageDataset] - BSD100 is built.
+2023-10-29 17:01:10,473 INFO: Number of val images/folders in BSD100: 100
+2023-10-29 17:01:10,477 INFO: Dataset [PairedImageDataset] - Urban100 is built.
+2023-10-29 17:01:10,477 INFO: Number of val images/folders in Urban100: 100
+2023-10-29 17:01:10,482 INFO: Dataset [PairedImageDataset] - Manga109 is built.
+2023-10-29 17:01:10,482 INFO: Number of val images/folders in Manga109: 109
+2023-10-29 17:01:10,827 INFO: Network [SwinIR_Modified] is created.
+2023-10-29 17:01:13,428 INFO: Network: DistributedDataParallel - SwinIR_Modified, with parameters: 12,267,593
+2023-10-29 17:01:13,428 INFO: SwinIR_Modified(
+  (conv_first): Conv2d(3, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (edge_ex): EdgeExtraction(
+    (hpf): Sobel(
+      (conv_sobel_x): Conv2d(3, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=3, bias=False)
+      (conv_sobel_y): Conv2d(3, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=3, bias=False)
+    )
+    (conv): Conv2d(3, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  )
+  (patch_embed): PatchEmbed(
+    (norm): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+  )
+  (patch_unembed): PatchUnEmbed()
+  (pos_drop): Dropout(p=0.0, inplace=False)
+  (layers): ModuleList(
+    (0): RSTB(
+      (residual_group): BasicLayer(
+        dim=180, input_resolution=(48, 48), depth=6
+        (blocks): ModuleList(
+          (0): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): Identity()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (2): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (3): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (4): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (5): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+        )
+      )
+      (conv): Conv2d(180, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (patch_embed): PatchEmbed()
+      (patch_unembed): PatchUnEmbed()
+    )
+    (1-5): 5 x RSTB(
+      (residual_group): BasicLayer(
+        dim=180, input_resolution=(48, 48), depth=6
+        (blocks): ModuleList(
+          (0): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (2): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (3): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (4): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (5): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+        )
+      )
+      (conv): Conv2d(180, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (patch_embed): PatchEmbed()
+      (patch_unembed): PatchUnEmbed()
+    )
+  )
+  (edge_convs): ModuleList(
+    (0-5): 6 x EdgeConv(
+      (dwconv): Conv2d(180, 180, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=180)
+      (gelu): GELU(approximate='none')
+    )
+  )
+  (norm): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+  (conv_after_body): Conv2d(180, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (conv_before_upsample): Sequential(
+    (0): Conv2d(180, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01, inplace=True)
+  )
+  (upsample): Upsample(
+    (0): Conv2d(64, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): PixelShuffle(upscale_factor=2)
+  )
+  (conv_last): Conv2d(64, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+)
+2023-10-29 17:01:13,608 INFO: Loading SwinIR_Modified model from experiments/pretrained_models/SwinIR/X2/001_classicalSR_DIV2K_s48w8_SwinIR-M_x2.pth, with param key: [params].
+2023-10-29 17:01:13,687 WARNING: Current net - loaded net:
+2023-10-29 17:01:13,688 WARNING:   edge_convs.0.dwconv.bias
+2023-10-29 17:01:13,688 WARNING:   edge_convs.0.dwconv.weight
+2023-10-29 17:01:13,688 WARNING:   edge_convs.1.dwconv.bias
+2023-10-29 17:01:13,688 WARNING:   edge_convs.1.dwconv.weight
+2023-10-29 17:01:13,688 WARNING:   edge_convs.2.dwconv.bias
+2023-10-29 17:01:13,688 WARNING:   edge_convs.2.dwconv.weight
+2023-10-29 17:01:13,688 WARNING:   edge_convs.3.dwconv.bias
+2023-10-29 17:01:13,688 WARNING:   edge_convs.3.dwconv.weight
+2023-10-29 17:01:13,688 WARNING:   edge_convs.4.dwconv.bias
+2023-10-29 17:01:13,688 WARNING:   edge_convs.4.dwconv.weight
+2023-10-29 17:01:13,688 WARNING:   edge_convs.5.dwconv.bias
+2023-10-29 17:01:13,688 WARNING:   edge_convs.5.dwconv.weight
+2023-10-29 17:01:13,688 WARNING:   edge_ex.conv.bias
+2023-10-29 17:01:13,688 WARNING:   edge_ex.conv.weight
+2023-10-29 17:01:13,688 WARNING:   edge_ex.hpf.conv_sobel_x.weight
+2023-10-29 17:01:13,688 WARNING:   edge_ex.hpf.conv_sobel_y.weight
+2023-10-29 17:01:13,688 WARNING:   layers.0.residual_group.blocks.0.attn.kv.bias
+2023-10-29 17:01:13,688 WARNING:   layers.0.residual_group.blocks.0.attn.kv.weight
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.0.attn.q.bias
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.0.attn.q.weight
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.0.bias
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.0.weight
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.2.bias
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.2.weight
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.0.conv_scale.scale
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.1.attn.kv.bias
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.1.attn.kv.weight
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.1.attn.q.bias
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.1.attn.q.weight
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.0.bias
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.0.weight
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.2.bias
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.2.weight
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,689 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.1.conv_scale.scale
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.attn.kv.bias
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.attn.kv.weight
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.attn.q.bias
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.attn.q.weight
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.0.bias
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.0.weight
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.2.bias
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.2.weight
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.conv_scale.scale
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.3.attn.kv.bias
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.3.attn.kv.weight
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.3.attn.q.bias
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.3.attn.q.weight
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.0.bias
+2023-10-29 17:01:13,690 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.0.weight
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.2.bias
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.2.weight
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.3.conv_scale.scale
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.attn.kv.bias
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.attn.kv.weight
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.attn.q.bias
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.attn.q.weight
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.0.bias
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.0.weight
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.2.bias
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.2.weight
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.conv_scale.scale
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,691 WARNING:   layers.0.residual_group.blocks.5.attn.kv.bias
+2023-10-29 17:01:13,692 WARNING:   layers.0.residual_group.blocks.5.attn.kv.weight
+2023-10-29 17:01:13,692 WARNING:   layers.0.residual_group.blocks.5.attn.q.bias
+2023-10-29 17:01:13,692 WARNING:   layers.0.residual_group.blocks.5.attn.q.weight
+2023-10-29 17:01:13,692 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.0.bias
+2023-10-29 17:01:13,692 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.0.weight
+2023-10-29 17:01:13,692 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.2.bias
+2023-10-29 17:01:13,692 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.2.weight
+2023-10-29 17:01:13,692 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,692 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,692 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,692 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,692 WARNING:   layers.0.residual_group.blocks.5.conv_scale.scale
+2023-10-29 17:01:13,692 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,692 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,692 WARNING:   layers.1.residual_group.blocks.0.attn.kv.bias
+2023-10-29 17:01:13,692 WARNING:   layers.1.residual_group.blocks.0.attn.kv.weight
+2023-10-29 17:01:13,692 WARNING:   layers.1.residual_group.blocks.0.attn.q.bias
+2023-10-29 17:01:13,692 WARNING:   layers.1.residual_group.blocks.0.attn.q.weight
+2023-10-29 17:01:13,692 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.0.bias
+2023-10-29 17:01:13,692 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.0.weight
+2023-10-29 17:01:13,692 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.2.bias
+2023-10-29 17:01:13,692 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.2.weight
+2023-10-29 17:01:13,692 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,692 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,692 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.0.conv_scale.scale
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.attn.kv.bias
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.attn.kv.weight
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.attn.q.bias
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.attn.q.weight
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.0.bias
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.0.weight
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.2.bias
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.2.weight
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.conv_scale.scale
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.2.attn.kv.bias
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.2.attn.kv.weight
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.2.attn.q.bias
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.2.attn.q.weight
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.0.bias
+2023-10-29 17:01:13,693 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.0.weight
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.2.bias
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.2.weight
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.2.conv_scale.scale
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.attn.kv.bias
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.attn.kv.weight
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.attn.q.bias
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.attn.q.weight
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.0.bias
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.0.weight
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.2.bias
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.2.weight
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.conv_scale.scale
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,694 WARNING:   layers.1.residual_group.blocks.4.attn.kv.bias
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.4.attn.kv.weight
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.4.attn.q.bias
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.4.attn.q.weight
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.0.bias
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.0.weight
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.2.bias
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.2.weight
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.4.conv_scale.scale
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.5.attn.kv.bias
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.5.attn.kv.weight
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.5.attn.q.bias
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.5.attn.q.weight
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.0.bias
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.0.weight
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.2.bias
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.2.weight
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,695 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,696 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,696 WARNING:   layers.1.residual_group.blocks.5.conv_scale.scale
+2023-10-29 17:01:13,696 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,696 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.attn.kv.bias
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.attn.kv.weight
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.attn.q.bias
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.attn.q.weight
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.0.bias
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.0.weight
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.2.bias
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.2.weight
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.conv_scale.scale
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.1.attn.kv.bias
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.1.attn.kv.weight
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.1.attn.q.bias
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.1.attn.q.weight
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.0.bias
+2023-10-29 17:01:13,696 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.0.weight
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.2.bias
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.2.weight
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.1.conv_scale.scale
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.attn.kv.bias
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.attn.kv.weight
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.attn.q.bias
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.attn.q.weight
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.0.bias
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.0.weight
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.2.bias
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.2.weight
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.conv_scale.scale
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,697 WARNING:   layers.2.residual_group.blocks.3.attn.kv.bias
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.3.attn.kv.weight
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.3.attn.q.bias
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.3.attn.q.weight
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.0.bias
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.0.weight
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.2.bias
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.2.weight
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.3.conv_scale.scale
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.4.attn.kv.bias
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.4.attn.kv.weight
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.4.attn.q.bias
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.4.attn.q.weight
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.0.bias
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.0.weight
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.2.bias
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.2.weight
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,698 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.4.conv_scale.scale
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.attn.kv.bias
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.attn.kv.weight
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.attn.q.bias
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.attn.q.weight
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.0.bias
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.0.weight
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.2.bias
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.2.weight
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.conv_scale.scale
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,699 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,699 WARNING:   layers.3.residual_group.blocks.0.attn.kv.bias
+2023-10-29 17:01:13,699 WARNING:   layers.3.residual_group.blocks.0.attn.kv.weight
+2023-10-29 17:01:13,699 WARNING:   layers.3.residual_group.blocks.0.attn.q.bias
+2023-10-29 17:01:13,699 WARNING:   layers.3.residual_group.blocks.0.attn.q.weight
+2023-10-29 17:01:13,699 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.0.bias
+2023-10-29 17:01:13,699 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.0.weight
+2023-10-29 17:01:13,699 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.2.bias
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.2.weight
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.0.conv_scale.scale
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.attn.kv.bias
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.attn.kv.weight
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.attn.q.bias
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.attn.q.weight
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.0.bias
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.0.weight
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.2.bias
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.2.weight
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.conv_scale.scale
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,700 WARNING:   layers.3.residual_group.blocks.2.attn.kv.bias
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.2.attn.kv.weight
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.2.attn.q.bias
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.2.attn.q.weight
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.0.bias
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.0.weight
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.2.bias
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.2.weight
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.2.conv_scale.scale
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.3.attn.kv.bias
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.3.attn.kv.weight
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.3.attn.q.bias
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.3.attn.q.weight
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.0.bias
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.0.weight
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.2.bias
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.2.weight
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,701 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.3.conv_scale.scale
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.attn.kv.bias
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.attn.kv.weight
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.attn.q.bias
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.attn.q.weight
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.0.bias
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.0.weight
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.2.bias
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.2.weight
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.conv_scale.scale
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.5.attn.kv.bias
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.5.attn.kv.weight
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.5.attn.q.bias
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.5.attn.q.weight
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.0.bias
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.0.weight
+2023-10-29 17:01:13,702 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.2.bias
+2023-10-29 17:01:13,703 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.2.weight
+2023-10-29 17:01:13,703 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,703 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,703 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,703 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,703 WARNING:   layers.3.residual_group.blocks.5.conv_scale.scale
+2023-10-29 17:01:13,703 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,703 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.attn.kv.bias
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.attn.kv.weight
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.attn.q.bias
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.attn.q.weight
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.0.bias
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.0.weight
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.2.bias
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.2.weight
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.conv_scale.scale
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.1.attn.kv.bias
+2023-10-29 17:01:13,703 WARNING:   layers.4.residual_group.blocks.1.attn.kv.weight
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.1.attn.q.bias
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.1.attn.q.weight
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.0.bias
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.0.weight
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.2.bias
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.2.weight
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.1.conv_scale.scale
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.2.attn.kv.bias
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.2.attn.kv.weight
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.2.attn.q.bias
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.2.attn.q.weight
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.0.bias
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.0.weight
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.2.bias
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.2.weight
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,704 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.2.conv_scale.scale
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.attn.kv.bias
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.attn.kv.weight
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.attn.q.bias
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.attn.q.weight
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.0.bias
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.0.weight
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.2.bias
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.2.weight
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.conv_scale.scale
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.4.attn.kv.bias
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.4.attn.kv.weight
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.4.attn.q.bias
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.4.attn.q.weight
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.0.bias
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.0.weight
+2023-10-29 17:01:13,705 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.2.bias
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.2.weight
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.4.conv_scale.scale
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.attn.kv.bias
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.attn.kv.weight
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.attn.q.bias
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.attn.q.weight
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.0.bias
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.0.weight
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.2.bias
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.2.weight
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.conv_scale.scale
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,706 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,706 WARNING:   layers.5.residual_group.blocks.0.attn.kv.bias
+2023-10-29 17:01:13,706 WARNING:   layers.5.residual_group.blocks.0.attn.kv.weight
+2023-10-29 17:01:13,706 WARNING:   layers.5.residual_group.blocks.0.attn.q.bias
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.0.attn.q.weight
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.0.bias
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.0.weight
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.2.bias
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.2.weight
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.0.conv_scale.scale
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.1.attn.kv.bias
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.1.attn.kv.weight
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.1.attn.q.bias
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.1.attn.q.weight
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.0.bias
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.0.weight
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.2.bias
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.2.weight
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,707 WARNING:   layers.5.residual_group.blocks.1.conv_scale.scale
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.attn.kv.bias
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.attn.kv.weight
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.attn.q.bias
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.attn.q.weight
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.0.bias
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.0.weight
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.2.bias
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.2.weight
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.conv_scale.scale
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.3.attn.kv.bias
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.3.attn.kv.weight
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.3.attn.q.bias
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.3.attn.q.weight
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.0.bias
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.0.weight
+2023-10-29 17:01:13,708 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.2.bias
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.2.weight
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.3.conv_scale.scale
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.attn.kv.bias
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.attn.kv.weight
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.attn.q.bias
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.attn.q.weight
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.0.bias
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.0.weight
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.2.bias
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.2.weight
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.conv_scale.scale
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.5.attn.kv.bias
+2023-10-29 17:01:13,709 WARNING:   layers.5.residual_group.blocks.5.attn.kv.weight
+2023-10-29 17:01:13,710 WARNING:   layers.5.residual_group.blocks.5.attn.q.bias
+2023-10-29 17:01:13,710 WARNING:   layers.5.residual_group.blocks.5.attn.q.weight
+2023-10-29 17:01:13,710 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.0.bias
+2023-10-29 17:01:13,710 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.0.weight
+2023-10-29 17:01:13,710 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.2.bias
+2023-10-29 17:01:13,710 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.2.weight
+2023-10-29 17:01:13,710 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:13,710 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:13,710 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:13,710 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:13,710 WARNING:   layers.5.residual_group.blocks.5.conv_scale.scale
+2023-10-29 17:01:13,710 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:13,710 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:13,710 WARNING: Loaded net - current net:
+2023-10-29 17:01:13,710 WARNING:   layers.0.residual_group.blocks.0.attn.qkv.bias
+2023-10-29 17:01:13,710 WARNING:   layers.0.residual_group.blocks.0.attn.qkv.weight
+2023-10-29 17:01:13,710 WARNING:   layers.0.residual_group.blocks.1.attn.qkv.bias
+2023-10-29 17:01:13,710 WARNING:   layers.0.residual_group.blocks.1.attn.qkv.weight
+2023-10-29 17:01:13,710 WARNING:   layers.0.residual_group.blocks.2.attn.qkv.bias
+2023-10-29 17:01:13,710 WARNING:   layers.0.residual_group.blocks.2.attn.qkv.weight
+2023-10-29 17:01:13,710 WARNING:   layers.0.residual_group.blocks.3.attn.qkv.bias
+2023-10-29 17:01:13,710 WARNING:   layers.0.residual_group.blocks.3.attn.qkv.weight
+2023-10-29 17:01:13,710 WARNING:   layers.0.residual_group.blocks.4.attn.qkv.bias
+2023-10-29 17:01:13,710 WARNING:   layers.0.residual_group.blocks.4.attn.qkv.weight
+2023-10-29 17:01:13,711 WARNING:   layers.0.residual_group.blocks.5.attn.qkv.bias
+2023-10-29 17:01:13,711 WARNING:   layers.0.residual_group.blocks.5.attn.qkv.weight
+2023-10-29 17:01:13,711 WARNING:   layers.1.residual_group.blocks.0.attn.qkv.bias
+2023-10-29 17:01:13,711 WARNING:   layers.1.residual_group.blocks.0.attn.qkv.weight
+2023-10-29 17:01:13,711 WARNING:   layers.1.residual_group.blocks.1.attn.qkv.bias
+2023-10-29 17:01:13,711 WARNING:   layers.1.residual_group.blocks.1.attn.qkv.weight
+2023-10-29 17:01:13,711 WARNING:   layers.1.residual_group.blocks.2.attn.qkv.bias
+2023-10-29 17:01:13,711 WARNING:   layers.1.residual_group.blocks.2.attn.qkv.weight
+2023-10-29 17:01:13,711 WARNING:   layers.1.residual_group.blocks.3.attn.qkv.bias
+2023-10-29 17:01:13,711 WARNING:   layers.1.residual_group.blocks.3.attn.qkv.weight
+2023-10-29 17:01:13,711 WARNING:   layers.1.residual_group.blocks.4.attn.qkv.bias
+2023-10-29 17:01:13,711 WARNING:   layers.1.residual_group.blocks.4.attn.qkv.weight
+2023-10-29 17:01:13,711 WARNING:   layers.1.residual_group.blocks.5.attn.qkv.bias
+2023-10-29 17:01:13,711 WARNING:   layers.1.residual_group.blocks.5.attn.qkv.weight
+2023-10-29 17:01:13,711 WARNING:   layers.2.residual_group.blocks.0.attn.qkv.bias
+2023-10-29 17:01:13,711 WARNING:   layers.2.residual_group.blocks.0.attn.qkv.weight
+2023-10-29 17:01:13,711 WARNING:   layers.2.residual_group.blocks.1.attn.qkv.bias
+2023-10-29 17:01:13,711 WARNING:   layers.2.residual_group.blocks.1.attn.qkv.weight
+2023-10-29 17:01:13,711 WARNING:   layers.2.residual_group.blocks.2.attn.qkv.bias
+2023-10-29 17:01:13,711 WARNING:   layers.2.residual_group.blocks.2.attn.qkv.weight
+2023-10-29 17:01:13,711 WARNING:   layers.2.residual_group.blocks.3.attn.qkv.bias
+2023-10-29 17:01:13,711 WARNING:   layers.2.residual_group.blocks.3.attn.qkv.weight
+2023-10-29 17:01:13,711 WARNING:   layers.2.residual_group.blocks.4.attn.qkv.bias
+2023-10-29 17:01:13,711 WARNING:   layers.2.residual_group.blocks.4.attn.qkv.weight
+2023-10-29 17:01:13,711 WARNING:   layers.2.residual_group.blocks.5.attn.qkv.bias
+2023-10-29 17:01:13,712 WARNING:   layers.2.residual_group.blocks.5.attn.qkv.weight
+2023-10-29 17:01:13,712 WARNING:   layers.3.residual_group.blocks.0.attn.qkv.bias
+2023-10-29 17:01:13,712 WARNING:   layers.3.residual_group.blocks.0.attn.qkv.weight
+2023-10-29 17:01:13,712 WARNING:   layers.3.residual_group.blocks.1.attn.qkv.bias
+2023-10-29 17:01:13,712 WARNING:   layers.3.residual_group.blocks.1.attn.qkv.weight
+2023-10-29 17:01:13,712 WARNING:   layers.3.residual_group.blocks.2.attn.qkv.bias
+2023-10-29 17:01:13,712 WARNING:   layers.3.residual_group.blocks.2.attn.qkv.weight
+2023-10-29 17:01:13,712 WARNING:   layers.3.residual_group.blocks.3.attn.qkv.bias
+2023-10-29 17:01:13,712 WARNING:   layers.3.residual_group.blocks.3.attn.qkv.weight
+2023-10-29 17:01:13,712 WARNING:   layers.3.residual_group.blocks.4.attn.qkv.bias
+2023-10-29 17:01:13,712 WARNING:   layers.3.residual_group.blocks.4.attn.qkv.weight
+2023-10-29 17:01:13,712 WARNING:   layers.3.residual_group.blocks.5.attn.qkv.bias
+2023-10-29 17:01:13,712 WARNING:   layers.3.residual_group.blocks.5.attn.qkv.weight
+2023-10-29 17:01:13,712 WARNING:   layers.4.residual_group.blocks.0.attn.qkv.bias
+2023-10-29 17:01:13,712 WARNING:   layers.4.residual_group.blocks.0.attn.qkv.weight
+2023-10-29 17:01:13,712 WARNING:   layers.4.residual_group.blocks.1.attn.qkv.bias
+2023-10-29 17:01:13,712 WARNING:   layers.4.residual_group.blocks.1.attn.qkv.weight
+2023-10-29 17:01:13,712 WARNING:   layers.4.residual_group.blocks.2.attn.qkv.bias
+2023-10-29 17:01:13,712 WARNING:   layers.4.residual_group.blocks.2.attn.qkv.weight
+2023-10-29 17:01:13,712 WARNING:   layers.4.residual_group.blocks.3.attn.qkv.bias
+2023-10-29 17:01:13,712 WARNING:   layers.4.residual_group.blocks.3.attn.qkv.weight
+2023-10-29 17:01:13,712 WARNING:   layers.4.residual_group.blocks.4.attn.qkv.bias
+2023-10-29 17:01:13,712 WARNING:   layers.4.residual_group.blocks.4.attn.qkv.weight
+2023-10-29 17:01:13,712 WARNING:   layers.4.residual_group.blocks.5.attn.qkv.bias
+2023-10-29 17:01:13,712 WARNING:   layers.4.residual_group.blocks.5.attn.qkv.weight
+2023-10-29 17:01:13,712 WARNING:   layers.5.residual_group.blocks.0.attn.qkv.bias
+2023-10-29 17:01:13,713 WARNING:   layers.5.residual_group.blocks.0.attn.qkv.weight
+2023-10-29 17:01:13,713 WARNING:   layers.5.residual_group.blocks.1.attn.qkv.bias
+2023-10-29 17:01:13,713 WARNING:   layers.5.residual_group.blocks.1.attn.qkv.weight
+2023-10-29 17:01:13,713 WARNING:   layers.5.residual_group.blocks.2.attn.qkv.bias
+2023-10-29 17:01:13,713 WARNING:   layers.5.residual_group.blocks.2.attn.qkv.weight
+2023-10-29 17:01:13,713 WARNING:   layers.5.residual_group.blocks.3.attn.qkv.bias
+2023-10-29 17:01:13,713 WARNING:   layers.5.residual_group.blocks.3.attn.qkv.weight
+2023-10-29 17:01:13,713 WARNING:   layers.5.residual_group.blocks.4.attn.qkv.bias
+2023-10-29 17:01:13,713 WARNING:   layers.5.residual_group.blocks.4.attn.qkv.weight
+2023-10-29 17:01:13,713 WARNING:   layers.5.residual_group.blocks.5.attn.qkv.bias
+2023-10-29 17:01:13,713 WARNING:   layers.5.residual_group.blocks.5.attn.qkv.weight
+2023-10-29 17:01:13,753 INFO: Use Exponential Moving Average with decay: 0.999
+2023-10-29 17:01:14,054 INFO: Network [SwinIR_Modified] is created.
+2023-10-29 17:01:14,268 INFO: Loading: params_ema does not exist, use params.
+2023-10-29 17:01:14,268 INFO: Loading SwinIR_Modified model from experiments/pretrained_models/SwinIR/X2/001_classicalSR_DIV2K_s48w8_SwinIR-M_x2.pth, with param key: [params].
+2023-10-29 17:01:14,339 WARNING: Current net - loaded net:
+2023-10-29 17:01:14,340 WARNING:   edge_convs.0.dwconv.bias
+2023-10-29 17:01:14,340 WARNING:   edge_convs.0.dwconv.weight
+2023-10-29 17:01:14,340 WARNING:   edge_convs.1.dwconv.bias
+2023-10-29 17:01:14,340 WARNING:   edge_convs.1.dwconv.weight
+2023-10-29 17:01:14,340 WARNING:   edge_convs.2.dwconv.bias
+2023-10-29 17:01:14,340 WARNING:   edge_convs.2.dwconv.weight
+2023-10-29 17:01:14,340 WARNING:   edge_convs.3.dwconv.bias
+2023-10-29 17:01:14,340 WARNING:   edge_convs.3.dwconv.weight
+2023-10-29 17:01:14,340 WARNING:   edge_convs.4.dwconv.bias
+2023-10-29 17:01:14,340 WARNING:   edge_convs.4.dwconv.weight
+2023-10-29 17:01:14,340 WARNING:   edge_convs.5.dwconv.bias
+2023-10-29 17:01:14,340 WARNING:   edge_convs.5.dwconv.weight
+2023-10-29 17:01:14,340 WARNING:   edge_ex.conv.bias
+2023-10-29 17:01:14,340 WARNING:   edge_ex.conv.weight
+2023-10-29 17:01:14,340 WARNING:   edge_ex.hpf.conv_sobel_x.weight
+2023-10-29 17:01:14,340 WARNING:   edge_ex.hpf.conv_sobel_y.weight
+2023-10-29 17:01:14,340 WARNING:   layers.0.residual_group.blocks.0.attn.kv.bias
+2023-10-29 17:01:14,340 WARNING:   layers.0.residual_group.blocks.0.attn.kv.weight
+2023-10-29 17:01:14,340 WARNING:   layers.0.residual_group.blocks.0.attn.q.bias
+2023-10-29 17:01:14,340 WARNING:   layers.0.residual_group.blocks.0.attn.q.weight
+2023-10-29 17:01:14,340 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.0.bias
+2023-10-29 17:01:14,340 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.0.weight
+2023-10-29 17:01:14,340 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.2.bias
+2023-10-29 17:01:14,340 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.2.weight
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.0.conv_scale.scale
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.attn.kv.bias
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.attn.kv.weight
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.attn.q.bias
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.attn.q.weight
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.0.bias
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.0.weight
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.2.bias
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.2.weight
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.conv_scale.scale
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.2.attn.kv.bias
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.2.attn.kv.weight
+2023-10-29 17:01:14,341 WARNING:   layers.0.residual_group.blocks.2.attn.q.bias
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.2.attn.q.weight
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.0.bias
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.0.weight
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.2.bias
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.2.weight
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.2.conv_scale.scale
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.3.attn.kv.bias
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.3.attn.kv.weight
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.3.attn.q.bias
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.3.attn.q.weight
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.0.bias
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.0.weight
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.2.bias
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.2.weight
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,342 WARNING:   layers.0.residual_group.blocks.3.conv_scale.scale
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.attn.kv.bias
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.attn.kv.weight
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.attn.q.bias
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.attn.q.weight
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.0.bias
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.0.weight
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.2.bias
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.2.weight
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.conv_scale.scale
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.5.attn.kv.bias
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.5.attn.kv.weight
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.5.attn.q.bias
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.5.attn.q.weight
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.0.bias
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.0.weight
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.2.bias
+2023-10-29 17:01:14,343 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.2.weight
+2023-10-29 17:01:14,344 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,344 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,344 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,344 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,344 WARNING:   layers.0.residual_group.blocks.5.conv_scale.scale
+2023-10-29 17:01:14,344 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,344 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.attn.kv.bias
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.attn.kv.weight
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.attn.q.bias
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.attn.q.weight
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.0.bias
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.0.weight
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.2.bias
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.2.weight
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.conv_scale.scale
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.1.attn.kv.bias
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.1.attn.kv.weight
+2023-10-29 17:01:14,344 WARNING:   layers.1.residual_group.blocks.1.attn.q.bias
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.1.attn.q.weight
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.0.bias
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.0.weight
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.2.bias
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.2.weight
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.1.conv_scale.scale
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.2.attn.kv.bias
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.2.attn.kv.weight
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.2.attn.q.bias
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.2.attn.q.weight
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.0.bias
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.0.weight
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.2.bias
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.2.weight
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.2.conv_scale.scale
+2023-10-29 17:01:14,345 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.attn.kv.bias
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.attn.kv.weight
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.attn.q.bias
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.attn.q.weight
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.0.bias
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.0.weight
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.2.bias
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.2.weight
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.conv_scale.scale
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.4.attn.kv.bias
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.4.attn.kv.weight
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.4.attn.q.bias
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.4.attn.q.weight
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.0.bias
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.0.weight
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.2.bias
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.2.weight
+2023-10-29 17:01:14,346 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.4.conv_scale.scale
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.attn.kv.bias
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.attn.kv.weight
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.attn.q.bias
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.attn.q.weight
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.0.bias
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.0.weight
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.2.bias
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.2.weight
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.conv_scale.scale
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,347 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,347 WARNING:   layers.2.residual_group.blocks.0.attn.kv.bias
+2023-10-29 17:01:14,347 WARNING:   layers.2.residual_group.blocks.0.attn.kv.weight
+2023-10-29 17:01:14,347 WARNING:   layers.2.residual_group.blocks.0.attn.q.bias
+2023-10-29 17:01:14,347 WARNING:   layers.2.residual_group.blocks.0.attn.q.weight
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.0.bias
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.0.weight
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.2.bias
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.2.weight
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.0.conv_scale.scale
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.1.attn.kv.bias
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.1.attn.kv.weight
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.1.attn.q.bias
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.1.attn.q.weight
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.0.bias
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.0.weight
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.2.bias
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.2.weight
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.1.conv_scale.scale
+2023-10-29 17:01:14,348 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.attn.kv.bias
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.attn.kv.weight
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.attn.q.bias
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.attn.q.weight
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.0.bias
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.0.weight
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.2.bias
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.2.weight
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.conv_scale.scale
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.3.attn.kv.bias
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.3.attn.kv.weight
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.3.attn.q.bias
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.3.attn.q.weight
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.0.bias
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.0.weight
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.2.bias
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.2.weight
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,349 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.3.conv_scale.scale
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.attn.kv.bias
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.attn.kv.weight
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.attn.q.bias
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.attn.q.weight
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.0.bias
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.0.weight
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.2.bias
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.2.weight
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.conv_scale.scale
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.5.attn.kv.bias
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.5.attn.kv.weight
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.5.attn.q.bias
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.5.attn.q.weight
+2023-10-29 17:01:14,350 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.0.bias
+2023-10-29 17:01:14,351 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.0.weight
+2023-10-29 17:01:14,351 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.2.bias
+2023-10-29 17:01:14,351 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.2.weight
+2023-10-29 17:01:14,351 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,351 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,351 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,351 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,351 WARNING:   layers.2.residual_group.blocks.5.conv_scale.scale
+2023-10-29 17:01:14,351 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,351 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.attn.kv.bias
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.attn.kv.weight
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.attn.q.bias
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.attn.q.weight
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.0.bias
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.0.weight
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.2.bias
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.2.weight
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.conv_scale.scale
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,351 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.attn.kv.bias
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.attn.kv.weight
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.attn.q.bias
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.attn.q.weight
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.0.bias
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.0.weight
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.2.bias
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.2.weight
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.conv_scale.scale
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.2.attn.kv.bias
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.2.attn.kv.weight
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.2.attn.q.bias
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.2.attn.q.weight
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.0.bias
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.0.weight
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.2.bias
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.2.weight
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,352 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.2.conv_scale.scale
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.attn.kv.bias
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.attn.kv.weight
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.attn.q.bias
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.attn.q.weight
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.0.bias
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.0.weight
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.2.bias
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.2.weight
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.conv_scale.scale
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.4.attn.kv.bias
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.4.attn.kv.weight
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.4.attn.q.bias
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.4.attn.q.weight
+2023-10-29 17:01:14,353 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.0.bias
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.0.weight
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.2.bias
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.2.weight
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.4.conv_scale.scale
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.attn.kv.bias
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.attn.kv.weight
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.attn.q.bias
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.attn.q.weight
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.0.bias
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.0.weight
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.2.bias
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.2.weight
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.conv_scale.scale
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,354 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.attn.kv.bias
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.attn.kv.weight
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.attn.q.bias
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.attn.q.weight
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.0.bias
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.0.weight
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.2.bias
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.2.weight
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.conv_scale.scale
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.1.attn.kv.bias
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.1.attn.kv.weight
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.1.attn.q.bias
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.1.attn.q.weight
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.0.bias
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.0.weight
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.2.bias
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.2.weight
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,355 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.1.conv_scale.scale
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.attn.kv.bias
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.attn.kv.weight
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.attn.q.bias
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.attn.q.weight
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.0.bias
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.0.weight
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.2.bias
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.2.weight
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.conv_scale.scale
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.3.attn.kv.bias
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.3.attn.kv.weight
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.3.attn.q.bias
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.3.attn.q.weight
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.0.bias
+2023-10-29 17:01:14,356 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.0.weight
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.2.bias
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.2.weight
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.3.conv_scale.scale
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.attn.kv.bias
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.attn.kv.weight
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.attn.q.bias
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.attn.q.weight
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.0.bias
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.0.weight
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.2.bias
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.2.weight
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.conv_scale.scale
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.5.attn.kv.bias
+2023-10-29 17:01:14,357 WARNING:   layers.4.residual_group.blocks.5.attn.kv.weight
+2023-10-29 17:01:14,358 WARNING:   layers.4.residual_group.blocks.5.attn.q.bias
+2023-10-29 17:01:14,358 WARNING:   layers.4.residual_group.blocks.5.attn.q.weight
+2023-10-29 17:01:14,358 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.0.bias
+2023-10-29 17:01:14,358 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.0.weight
+2023-10-29 17:01:14,358 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.2.bias
+2023-10-29 17:01:14,358 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.2.weight
+2023-10-29 17:01:14,358 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,358 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,358 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,358 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,358 WARNING:   layers.4.residual_group.blocks.5.conv_scale.scale
+2023-10-29 17:01:14,358 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,358 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,358 WARNING:   layers.5.residual_group.blocks.0.attn.kv.bias
+2023-10-29 17:01:14,358 WARNING:   layers.5.residual_group.blocks.0.attn.kv.weight
+2023-10-29 17:01:14,358 WARNING:   layers.5.residual_group.blocks.0.attn.q.bias
+2023-10-29 17:01:14,358 WARNING:   layers.5.residual_group.blocks.0.attn.q.weight
+2023-10-29 17:01:14,358 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.0.bias
+2023-10-29 17:01:14,358 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.0.weight
+2023-10-29 17:01:14,358 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.2.bias
+2023-10-29 17:01:14,358 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.2.weight
+2023-10-29 17:01:14,358 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,358 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,358 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,358 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.0.conv_scale.scale
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.attn.kv.bias
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.attn.kv.weight
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.attn.q.bias
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.attn.q.weight
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.0.bias
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.0.weight
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.2.bias
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.2.weight
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.conv_scale.scale
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.2.attn.kv.bias
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.2.attn.kv.weight
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.2.attn.q.bias
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.2.attn.q.weight
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.0.bias
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.0.weight
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.2.bias
+2023-10-29 17:01:14,359 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.2.weight
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.2.conv_scale.scale
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.attn.kv.bias
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.attn.kv.weight
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.attn.q.bias
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.attn.q.weight
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.0.bias
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.0.weight
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.2.bias
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.2.weight
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.conv_scale.scale
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.4.attn.kv.bias
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.4.attn.kv.weight
+2023-10-29 17:01:14,360 WARNING:   layers.5.residual_group.blocks.4.attn.q.bias
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.4.attn.q.weight
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.0.bias
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.0.weight
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.2.bias
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.2.weight
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.4.conv_scale.scale
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.5.attn.kv.bias
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.5.attn.kv.weight
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.5.attn.q.bias
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.5.attn.q.weight
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.0.bias
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.0.weight
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.2.bias
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.2.weight
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.5.conv_scale.scale
+2023-10-29 17:01:14,361 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-10-29 17:01:14,362 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-10-29 17:01:14,362 WARNING: Loaded net - current net:
+2023-10-29 17:01:14,362 WARNING:   layers.0.residual_group.blocks.0.attn.qkv.bias
+2023-10-29 17:01:14,362 WARNING:   layers.0.residual_group.blocks.0.attn.qkv.weight
+2023-10-29 17:01:14,362 WARNING:   layers.0.residual_group.blocks.1.attn.qkv.bias
+2023-10-29 17:01:14,362 WARNING:   layers.0.residual_group.blocks.1.attn.qkv.weight
+2023-10-29 17:01:14,362 WARNING:   layers.0.residual_group.blocks.2.attn.qkv.bias
+2023-10-29 17:01:14,362 WARNING:   layers.0.residual_group.blocks.2.attn.qkv.weight
+2023-10-29 17:01:14,362 WARNING:   layers.0.residual_group.blocks.3.attn.qkv.bias
+2023-10-29 17:01:14,362 WARNING:   layers.0.residual_group.blocks.3.attn.qkv.weight
+2023-10-29 17:01:14,362 WARNING:   layers.0.residual_group.blocks.4.attn.qkv.bias
+2023-10-29 17:01:14,362 WARNING:   layers.0.residual_group.blocks.4.attn.qkv.weight
+2023-10-29 17:01:14,362 WARNING:   layers.0.residual_group.blocks.5.attn.qkv.bias
+2023-10-29 17:01:14,362 WARNING:   layers.0.residual_group.blocks.5.attn.qkv.weight
+2023-10-29 17:01:14,362 WARNING:   layers.1.residual_group.blocks.0.attn.qkv.bias
+2023-10-29 17:01:14,362 WARNING:   layers.1.residual_group.blocks.0.attn.qkv.weight
+2023-10-29 17:01:14,362 WARNING:   layers.1.residual_group.blocks.1.attn.qkv.bias
+2023-10-29 17:01:14,362 WARNING:   layers.1.residual_group.blocks.1.attn.qkv.weight
+2023-10-29 17:01:14,362 WARNING:   layers.1.residual_group.blocks.2.attn.qkv.bias
+2023-10-29 17:01:14,362 WARNING:   layers.1.residual_group.blocks.2.attn.qkv.weight
+2023-10-29 17:01:14,362 WARNING:   layers.1.residual_group.blocks.3.attn.qkv.bias
+2023-10-29 17:01:14,362 WARNING:   layers.1.residual_group.blocks.3.attn.qkv.weight
+2023-10-29 17:01:14,362 WARNING:   layers.1.residual_group.blocks.4.attn.qkv.bias
+2023-10-29 17:01:14,363 WARNING:   layers.1.residual_group.blocks.4.attn.qkv.weight
+2023-10-29 17:01:14,363 WARNING:   layers.1.residual_group.blocks.5.attn.qkv.bias
+2023-10-29 17:01:14,363 WARNING:   layers.1.residual_group.blocks.5.attn.qkv.weight
+2023-10-29 17:01:14,363 WARNING:   layers.2.residual_group.blocks.0.attn.qkv.bias
+2023-10-29 17:01:14,363 WARNING:   layers.2.residual_group.blocks.0.attn.qkv.weight
+2023-10-29 17:01:14,363 WARNING:   layers.2.residual_group.blocks.1.attn.qkv.bias
+2023-10-29 17:01:14,363 WARNING:   layers.2.residual_group.blocks.1.attn.qkv.weight
+2023-10-29 17:01:14,363 WARNING:   layers.2.residual_group.blocks.2.attn.qkv.bias
+2023-10-29 17:01:14,363 WARNING:   layers.2.residual_group.blocks.2.attn.qkv.weight
+2023-10-29 17:01:14,363 WARNING:   layers.2.residual_group.blocks.3.attn.qkv.bias
+2023-10-29 17:01:14,363 WARNING:   layers.2.residual_group.blocks.3.attn.qkv.weight
+2023-10-29 17:01:14,363 WARNING:   layers.2.residual_group.blocks.4.attn.qkv.bias
+2023-10-29 17:01:14,363 WARNING:   layers.2.residual_group.blocks.4.attn.qkv.weight
+2023-10-29 17:01:14,363 WARNING:   layers.2.residual_group.blocks.5.attn.qkv.bias
+2023-10-29 17:01:14,363 WARNING:   layers.2.residual_group.blocks.5.attn.qkv.weight
+2023-10-29 17:01:14,363 WARNING:   layers.3.residual_group.blocks.0.attn.qkv.bias
+2023-10-29 17:01:14,363 WARNING:   layers.3.residual_group.blocks.0.attn.qkv.weight
+2023-10-29 17:01:14,363 WARNING:   layers.3.residual_group.blocks.1.attn.qkv.bias
+2023-10-29 17:01:14,363 WARNING:   layers.3.residual_group.blocks.1.attn.qkv.weight
+2023-10-29 17:01:14,363 WARNING:   layers.3.residual_group.blocks.2.attn.qkv.bias
+2023-10-29 17:01:14,363 WARNING:   layers.3.residual_group.blocks.2.attn.qkv.weight
+2023-10-29 17:01:14,363 WARNING:   layers.3.residual_group.blocks.3.attn.qkv.bias
+2023-10-29 17:01:14,363 WARNING:   layers.3.residual_group.blocks.3.attn.qkv.weight
+2023-10-29 17:01:14,363 WARNING:   layers.3.residual_group.blocks.4.attn.qkv.bias
+2023-10-29 17:01:14,363 WARNING:   layers.3.residual_group.blocks.4.attn.qkv.weight
+2023-10-29 17:01:14,363 WARNING:   layers.3.residual_group.blocks.5.attn.qkv.bias
+2023-10-29 17:01:14,364 WARNING:   layers.3.residual_group.blocks.5.attn.qkv.weight
+2023-10-29 17:01:14,364 WARNING:   layers.4.residual_group.blocks.0.attn.qkv.bias
+2023-10-29 17:01:14,364 WARNING:   layers.4.residual_group.blocks.0.attn.qkv.weight
+2023-10-29 17:01:14,364 WARNING:   layers.4.residual_group.blocks.1.attn.qkv.bias
+2023-10-29 17:01:14,364 WARNING:   layers.4.residual_group.blocks.1.attn.qkv.weight
+2023-10-29 17:01:14,364 WARNING:   layers.4.residual_group.blocks.2.attn.qkv.bias
+2023-10-29 17:01:14,364 WARNING:   layers.4.residual_group.blocks.2.attn.qkv.weight
+2023-10-29 17:01:14,364 WARNING:   layers.4.residual_group.blocks.3.attn.qkv.bias
+2023-10-29 17:01:14,364 WARNING:   layers.4.residual_group.blocks.3.attn.qkv.weight
+2023-10-29 17:01:14,364 WARNING:   layers.4.residual_group.blocks.4.attn.qkv.bias
+2023-10-29 17:01:14,364 WARNING:   layers.4.residual_group.blocks.4.attn.qkv.weight
+2023-10-29 17:01:14,364 WARNING:   layers.4.residual_group.blocks.5.attn.qkv.bias
+2023-10-29 17:01:14,364 WARNING:   layers.4.residual_group.blocks.5.attn.qkv.weight
+2023-10-29 17:01:14,364 WARNING:   layers.5.residual_group.blocks.0.attn.qkv.bias
+2023-10-29 17:01:14,364 WARNING:   layers.5.residual_group.blocks.0.attn.qkv.weight
+2023-10-29 17:01:14,364 WARNING:   layers.5.residual_group.blocks.1.attn.qkv.bias
+2023-10-29 17:01:14,364 WARNING:   layers.5.residual_group.blocks.1.attn.qkv.weight
+2023-10-29 17:01:14,364 WARNING:   layers.5.residual_group.blocks.2.attn.qkv.bias
+2023-10-29 17:01:14,364 WARNING:   layers.5.residual_group.blocks.2.attn.qkv.weight
+2023-10-29 17:01:14,364 WARNING:   layers.5.residual_group.blocks.3.attn.qkv.bias
+2023-10-29 17:01:14,364 WARNING:   layers.5.residual_group.blocks.3.attn.qkv.weight
+2023-10-29 17:01:14,364 WARNING:   layers.5.residual_group.blocks.4.attn.qkv.bias
+2023-10-29 17:01:14,364 WARNING:   layers.5.residual_group.blocks.4.attn.qkv.weight
+2023-10-29 17:01:14,364 WARNING:   layers.5.residual_group.blocks.5.attn.qkv.bias
+2023-10-29 17:01:14,364 WARNING:   layers.5.residual_group.blocks.5.attn.qkv.weight
+2023-10-29 17:01:14,404 INFO: Loss [L1Loss] is created.
+2023-10-29 17:01:14,404 WARNING: Params module.edge_ex.hpf.conv_sobel_x.weight will not be optimized.
+2023-10-29 17:01:14,404 WARNING: Params module.edge_ex.hpf.conv_sobel_y.weight will not be optimized.
+2023-10-29 17:01:14,409 INFO: Model [SwinIRModel] is created.
+2023-10-29 17:01:49,393 INFO: Start training from epoch: 0, iter: 0
+2023-10-29 17:03:41,224 INFO: [Class..][epoch:  0, iter:     100, lr:(2.000e-04,)] [eta: 1 day, 19:35:16, time (data): 1.118 (0.550)] l_pix: 8.5185e-03 
+2023-10-29 17:04:34,281 INFO: [Class..][epoch:  0, iter:     200, lr:(2.000e-04,)] [eta: 1 day, 19:52:38, time (data): 0.824 (0.276)] l_pix: 2.3523e-02 
+2023-10-29 17:05:28,027 INFO: [Class..][epoch:  0, iter:     300, lr:(2.000e-04,)] [eta: 1 day, 20:09:19, time (data): 0.537 (0.002)] l_pix: 1.0694e-02 
+2023-10-29 17:06:21,723 INFO: [Class..][epoch:  0, iter:     400, lr:(2.000e-04,)] [eta: 1 day, 20:16:37, time (data): 0.537 (0.002)] l_pix: 1.9691e-02 
+2023-10-29 17:07:15,422 INFO: [Class..][epoch:  0, iter:     500, lr:(2.000e-04,)] [eta: 1 day, 20:20:40, time (data): 0.537 (0.002)] l_pix: 1.3053e-02 
+2023-10-29 17:08:09,527 INFO: [Class..][epoch:  0, iter:     600, lr:(2.000e-04,)] [eta: 1 day, 20:26:26, time (data): 0.539 (0.002)] l_pix: 8.1989e-03 
+2023-10-29 17:09:03,473 INFO: [Class..][epoch:  0, iter:     700, lr:(2.000e-04,)] [eta: 1 day, 20:29:10, time (data): 0.540 (0.002)] l_pix: 1.9993e-02 
+2023-10-29 17:09:57,320 INFO: [Class..][epoch:  0, iter:     800, lr:(2.000e-04,)] [eta: 1 day, 20:30:23, time (data): 0.539 (0.002)] l_pix: 1.8137e-02 
+2023-10-29 17:10:51,096 INFO: [Class..][epoch:  0, iter:     900, lr:(2.000e-04,)] [eta: 1 day, 20:30:44, time (data): 0.538 (0.002)] l_pix: 1.0230e-02 
+2023-10-29 17:11:44,961 INFO: [Class..][epoch:  0, iter:   1,000, lr:(2.000e-04,)] [eta: 1 day, 20:31:17, time (data): 0.538 (0.002)] l_pix: 1.4711e-02 
+2023-10-29 17:12:38,902 INFO: [Class..][epoch:  0, iter:   1,100, lr:(2.000e-04,)] [eta: 1 day, 20:31:55, time (data): 0.539 (0.002)] l_pix: 7.2524e-03 
+2023-10-29 17:13:32,691 INFO: [Class..][epoch:  0, iter:   1,200, lr:(2.000e-04,)] [eta: 1 day, 20:31:39, time (data): 0.538 (0.002)] l_pix: 1.6773e-02 
+2023-10-29 17:14:26,541 INFO: [Class..][epoch:  0, iter:   1,300, lr:(2.000e-04,)] [eta: 1 day, 20:31:32, time (data): 0.539 (0.002)] l_pix: 1.3513e-02 
+2023-10-29 17:15:20,205 INFO: [Class..][epoch:  0, iter:   1,400, lr:(2.000e-04,)] [eta: 1 day, 20:30:39, time (data): 0.538 (0.002)] l_pix: 1.6309e-02 
+2023-10-29 17:16:14,111 INFO: [Class..][epoch:  0, iter:   1,500, lr:(2.000e-04,)] [eta: 1 day, 20:30:33, time (data): 0.539 (0.002)] l_pix: 1.1378e-02 
+2023-10-29 17:17:07,897 INFO: [Class..][epoch:  0, iter:   1,600, lr:(2.000e-04,)] [eta: 1 day, 20:29:59, time (data): 0.539 (0.002)] l_pix: 1.1262e-02 
+2023-10-29 17:18:01,933 INFO: [Class..][epoch:  0, iter:   1,700, lr:(2.000e-04,)] [eta: 1 day, 20:30:07, time (data): 0.537 (0.002)] l_pix: 1.2465e-02 
+2023-10-29 17:18:55,645 INFO: [Class..][epoch:  0, iter:   1,800, lr:(2.000e-04,)] [eta: 1 day, 20:29:14, time (data): 0.537 (0.002)] l_pix: 1.0471e-02 
+2023-10-29 17:19:49,303 INFO: [Class..][epoch:  0, iter:   1,900, lr:(2.000e-04,)] [eta: 1 day, 20:28:13, time (data): 0.537 (0.002)] l_pix: 2.0842e-02 
+2023-10-29 17:20:43,113 INFO: [Class..][epoch:  0, iter:   2,000, lr:(2.000e-04,)] [eta: 1 day, 20:27:34, time (data): 0.538 (0.002)] l_pix: 1.6005e-02 
+2023-10-29 17:21:36,645 INFO: [Class..][epoch:  0, iter:   2,100, lr:(2.000e-04,)] [eta: 1 day, 20:26:16, time (data): 0.536 (0.002)] l_pix: 1.0492e-02 
+2023-10-29 17:22:30,519 INFO: [Class..][epoch:  0, iter:   2,200, lr:(2.000e-04,)] [eta: 1 day, 20:25:45, time (data): 0.537 (0.002)] l_pix: 1.2753e-02 
+2023-10-29 17:23:24,570 INFO: [Class..][epoch:  0, iter:   2,300, lr:(2.000e-04,)] [eta: 1 day, 20:25:36, time (data): 0.541 (0.002)] l_pix: 1.2736e-02 
+2023-10-29 17:24:18,288 INFO: [Class..][epoch:  0, iter:   2,400, lr:(2.000e-04,)] [eta: 1 day, 20:24:41, time (data): 0.539 (0.002)] l_pix: 1.0245e-02 
+2023-10-29 17:25:11,943 INFO: [Class..][epoch:  0, iter:   2,500, lr:(2.000e-04,)] [eta: 1 day, 20:23:39, time (data): 0.536 (0.002)] l_pix: 1.5140e-02 
+2023-10-29 17:26:05,611 INFO: [Class..][epoch:  0, iter:   2,600, lr:(2.000e-04,)] [eta: 1 day, 20:22:39, time (data): 0.537 (0.002)] l_pix: 1.0056e-02 
+2023-10-29 17:26:59,608 INFO: [Class..][epoch:  0, iter:   2,700, lr:(2.000e-04,)] [eta: 1 day, 20:22:16, time (data): 0.541 (0.002)] l_pix: 1.5506e-02 
+2023-10-29 17:28:29,369 INFO: [Class..][epoch:  1, iter:   2,800, lr:(2.000e-04,)] [eta: 1 day, 21:25:06, time (data): 0.732 (0.196)] l_pix: 1.9559e-02 
+2023-10-29 17:29:23,522 INFO: [Class..][epoch:  1, iter:   2,900, lr:(2.000e-04,)] [eta: 1 day, 21:22:42, time (data): 0.543 (0.002)] l_pix: 1.2968e-02 
+2023-10-29 17:30:17,953 INFO: [Class..][epoch:  1, iter:   3,000, lr:(2.000e-04,)] [eta: 1 day, 21:20:52, time (data): 0.544 (0.002)] l_pix: 9.9124e-03 
+2023-10-29 17:31:11,911 INFO: [Class..][epoch:  1, iter:   3,100, lr:(2.000e-04,)] [eta: 1 day, 21:18:21, time (data): 0.540 (0.002)] l_pix: 1.1223e-02 
+2023-10-29 17:32:06,454 INFO: [Class..][epoch:  1, iter:   3,200, lr:(2.000e-04,)] [eta: 1 day, 21:16:50, time (data): 0.543 (0.002)] l_pix: 1.0405e-02 
+2023-10-29 17:33:00,796 INFO: [Class..][epoch:  1, iter:   3,300, lr:(2.000e-04,)] [eta: 1 day, 21:15:02, time (data): 0.543 (0.002)] l_pix: 1.5859e-02 
+2023-10-29 17:33:55,135 INFO: [Class..][epoch:  1, iter:   3,400, lr:(2.000e-04,)] [eta: 1 day, 21:13:18, time (data): 0.543 (0.002)] l_pix: 1.9784e-02 
+2023-10-29 17:34:49,359 INFO: [Class..][epoch:  1, iter:   3,500, lr:(2.000e-04,)] [eta: 1 day, 21:11:27, time (data): 0.542 (0.002)] l_pix: 1.4689e-02 
+2023-10-29 17:35:43,856 INFO: [Class..][epoch:  1, iter:   3,600, lr:(2.000e-04,)] [eta: 1 day, 21:10:02, time (data): 0.544 (0.002)] l_pix: 1.0454e-02 
+2023-10-29 17:36:38,592 INFO: [Class..][epoch:  1, iter:   3,700, lr:(2.000e-04,)] [eta: 1 day, 21:08:57, time (data): 0.548 (0.002)] l_pix: 1.8895e-02 
+2023-10-29 17:37:32,758 INFO: [Class..][epoch:  1, iter:   3,800, lr:(2.000e-04,)] [eta: 1 day, 21:07:08, time (data): 0.544 (0.002)] l_pix: 6.8120e-03 
+2023-10-29 17:38:27,132 INFO: [Class..][epoch:  1, iter:   3,900, lr:(2.000e-04,)] [eta: 1 day, 21:05:38, time (data): 0.543 (0.002)] l_pix: 1.4444e-02 
+2023-10-29 17:39:21,500 INFO: [Class..][epoch:  1, iter:   4,000, lr:(2.000e-04,)] [eta: 1 day, 21:04:09, time (data): 0.543 (0.002)] l_pix: 1.7927e-02 
+2023-10-29 17:40:16,318 INFO: [Class..][epoch:  1, iter:   4,100, lr:(2.000e-04,)] [eta: 1 day, 21:03:15, time (data): 0.549 (0.002)] l_pix: 1.0933e-02 
+2023-10-29 17:41:10,507 INFO: [Class..][epoch:  1, iter:   4,200, lr:(2.000e-04,)] [eta: 1 day, 21:01:36, time (data): 0.545 (0.002)] l_pix: 1.1284e-02 
+2023-10-29 17:42:04,955 INFO: [Class..][epoch:  1, iter:   4,300, lr:(2.000e-04,)] [eta: 1 day, 21:00:17, time (data): 0.544 (0.002)] l_pix: 1.4558e-02 
+2023-10-29 17:42:59,461 INFO: [Class..][epoch:  1, iter:   4,400, lr:(2.000e-04,)] [eta: 1 day, 20:59:03, time (data): 0.545 (0.002)] l_pix: 1.8482e-02 
+2023-10-29 17:43:53,381 INFO: [Class..][epoch:  1, iter:   4,500, lr:(2.000e-04,)] [eta: 1 day, 20:57:12, time (data): 0.540 (0.002)] l_pix: 1.2967e-02 
+2023-10-29 17:44:47,450 INFO: [Class..][epoch:  1, iter:   4,600, lr:(2.000e-04,)] [eta: 1 day, 20:55:32, time (data): 0.540 (0.002)] l_pix: 1.4799e-02 
+2023-10-29 17:45:41,323 INFO: [Class..][epoch:  1, iter:   4,700, lr:(2.000e-04,)] [eta: 1 day, 20:53:42, time (data): 0.539 (0.002)] l_pix: 1.2930e-02 
+2023-10-29 17:46:35,464 INFO: [Class..][epoch:  1, iter:   4,800, lr:(2.000e-04,)] [eta: 1 day, 20:52:11, time (data): 0.540 (0.002)] l_pix: 1.6397e-02 
+2023-10-29 17:47:29,467 INFO: [Class..][epoch:  1, iter:   4,900, lr:(2.000e-04,)] [eta: 1 day, 20:50:33, time (data): 0.540 (0.002)] l_pix: 1.2419e-02 
+2023-10-29 17:48:23,806 INFO: [Class..][epoch:  1, iter:   5,000, lr:(2.000e-04,)] [eta: 1 day, 20:49:17, time (data): 0.542 (0.002)] l_pix: 1.7683e-02 
+2023-10-29 17:48:23,807 INFO: Saving models and training states.
+2023-10-29 17:49:15,773 WARNING: Multiple validation datasets are *only* supported by SRModel.
+2023-10-29 17:49:24,440 INFO: Validation Set5
+	 # psnr: 37.9069	Best: 37.9069 @ 5000 iter
+	 # ssim: 0.9608	Best: 0.9608 @ 5000 iter
+
+2023-10-29 17:49:50,072 INFO: Validation Set14
+	 # psnr: 33.5750	Best: 33.5750 @ 5000 iter
+	 # ssim: 0.9175	Best: 0.9175 @ 5000 iter
+
+2023-10-29 17:51:08,625 INFO: Validation BSD100
+	 # psnr: 32.1807	Best: 32.1807 @ 5000 iter
+	 # ssim: 0.9003	Best: 0.9003 @ 5000 iter
+
+2023-10-29 18:01:35,752 INFO: Validation Urban100
+	 # psnr: 31.8701	Best: 31.8701 @ 5000 iter
+	 # ssim: 0.9257	Best: 0.9257 @ 5000 iter
+
+2023-10-29 18:14:50,891 INFO: Validation Manga109
+	 # psnr: 38.4427	Best: 38.4427 @ 5000 iter
+	 # ssim: 0.9769	Best: 0.9769 @ 5000 iter
+
+2023-10-29 18:15:44,293 INFO: [Class..][epoch:  1, iter:   5,100, lr:(2.000e-04,)] [eta: 2 days, 22:16:20, time (data): 0.535 (0.002)] l_pix: 1.2409e-02 
+2023-10-29 18:16:37,811 INFO: [Class..][epoch:  1, iter:   5,200, lr:(2.000e-04,)] [eta: 2 days, 21:44:25, time (data): 0.535 (0.002)] l_pix: 1.5445e-02 
+2023-10-29 18:17:31,654 INFO: [Class..][epoch:  1, iter:   5,300, lr:(2.000e-04,)] [eta: 2 days, 21:13:59, time (data): 0.536 (0.002)] l_pix: 1.3158e-02 
+2023-10-29 18:18:25,706 INFO: [Class..][epoch:  1, iter:   5,400, lr:(2.000e-04,)] [eta: 2 days, 20:44:49, time (data): 0.539 (0.002)] l_pix: 1.3459e-02 
+2023-10-29 18:19:55,609 INFO: [Class..][epoch:  2, iter:   5,500, lr:(2.000e-04,)] [eta: 2 days, 20:48:41, time (data): 1.031 (0.499)] l_pix: 1.0087e-02 
+2023-10-29 18:20:49,231 INFO: [Class..][epoch:  2, iter:   5,600, lr:(2.000e-04,)] [eta: 2 days, 20:20:34, time (data): 0.745 (0.211)] l_pix: 1.5111e-02 
+2023-10-29 18:21:42,947 INFO: [Class..][epoch:  2, iter:   5,700, lr:(2.000e-04,)] [eta: 2 days, 19:53:29, time (data): 0.537 (0.002)] l_pix: 1.4880e-02 
+2023-10-29 18:22:37,422 INFO: [Class..][epoch:  2, iter:   5,800, lr:(2.000e-04,)] [eta: 2 days, 19:27:57, time (data): 0.541 (0.002)] l_pix: 1.1552e-02 
+2023-10-29 18:23:31,580 INFO: [Class..][epoch:  2, iter:   5,900, lr:(2.000e-04,)] [eta: 2 days, 19:02:59, time (data): 0.543 (0.002)] l_pix: 1.5177e-02 
+2023-10-29 18:24:25,860 INFO: [Class..][epoch:  2, iter:   6,000, lr:(2.000e-04,)] [eta: 2 days, 18:38:55, time (data): 0.543 (0.002)] l_pix: 1.1345e-02 
+2023-10-29 18:25:19,740 INFO: [Class..][epoch:  2, iter:   6,100, lr:(2.000e-04,)] [eta: 2 days, 18:15:18, time (data): 0.540 (0.002)] l_pix: 1.2939e-02 
+2023-10-29 18:26:13,536 INFO: [Class..][epoch:  2, iter:   6,200, lr:(2.000e-04,)] [eta: 2 days, 17:52:20, time (data): 0.539 (0.002)] l_pix: 1.1739e-02 
+2023-10-29 18:27:07,920 INFO: [Class..][epoch:  2, iter:   6,300, lr:(2.000e-04,)] [eta: 2 days, 17:30:32, time (data): 0.546 (0.002)] l_pix: 7.9087e-03 
+2023-10-29 18:28:01,855 INFO: [Class..][epoch:  2, iter:   6,400, lr:(2.000e-04,)] [eta: 2 days, 17:09:03, time (data): 0.542 (0.002)] l_pix: 1.2549e-02 
+2023-10-29 18:28:56,021 INFO: [Class..][epoch:  2, iter:   6,500, lr:(2.000e-04,)] [eta: 2 days, 16:48:22, time (data): 0.542 (0.002)] l_pix: 1.9069e-02 
+2023-10-29 18:29:50,013 INFO: [Class..][epoch:  2, iter:   6,600, lr:(2.000e-04,)] [eta: 2 days, 16:28:09, time (data): 0.541 (0.002)] l_pix: 1.5807e-02 
+2023-10-29 18:30:44,184 INFO: [Class..][epoch:  2, iter:   6,700, lr:(2.000e-04,)] [eta: 2 days, 16:08:39, time (data): 0.539 (0.002)] l_pix: 1.0469e-02 
+2023-10-29 18:31:38,361 INFO: [Class..][epoch:  2, iter:   6,800, lr:(2.000e-04,)] [eta: 2 days, 15:49:41, time (data): 0.541 (0.002)] l_pix: 1.1461e-02 
+2023-10-29 18:32:32,234 INFO: [Class..][epoch:  2, iter:   6,900, lr:(2.000e-04,)] [eta: 2 days, 15:31:02, time (data): 0.537 (0.002)] l_pix: 1.1914e-02 
+2023-10-29 18:33:26,124 INFO: [Class..][epoch:  2, iter:   7,000, lr:(2.000e-04,)] [eta: 2 days, 15:12:55, time (data): 0.538 (0.002)] l_pix: 1.0707e-02 
+2023-10-29 18:34:20,088 INFO: [Class..][epoch:  2, iter:   7,100, lr:(2.000e-04,)] [eta: 2 days, 14:55:19, time (data): 0.540 (0.002)] l_pix: 1.3789e-02 
+2023-10-29 18:35:14,053 INFO: [Class..][epoch:  2, iter:   7,200, lr:(2.000e-04,)] [eta: 2 days, 14:38:12, time (data): 0.540 (0.002)] l_pix: 1.8272e-02 
+2023-10-29 18:36:07,818 INFO: [Class..][epoch:  2, iter:   7,300, lr:(2.000e-04,)] [eta: 2 days, 14:21:23, time (data): 0.537 (0.002)] l_pix: 1.3584e-02 
+2023-10-29 18:37:01,969 INFO: [Class..][epoch:  2, iter:   7,400, lr:(2.000e-04,)] [eta: 2 days, 14:05:15, time (data): 0.540 (0.002)] l_pix: 1.4390e-02 
+2023-10-29 18:37:56,002 INFO: [Class..][epoch:  2, iter:   7,500, lr:(2.000e-04,)] [eta: 2 days, 13:49:26, time (data): 0.542 (0.002)] l_pix: 8.1151e-03 
+2023-10-29 18:38:49,836 INFO: [Class..][epoch:  2, iter:   7,600, lr:(2.000e-04,)] [eta: 2 days, 13:33:54, time (data): 0.540 (0.002)] l_pix: 1.8491e-02 
+2023-10-29 18:39:43,979 INFO: [Class..][epoch:  2, iter:   7,700, lr:(2.000e-04,)] [eta: 2 days, 13:18:56, time (data): 0.543 (0.002)] l_pix: 1.7886e-02 
+2023-10-29 18:40:37,809 INFO: [Class..][epoch:  2, iter:   7,800, lr:(2.000e-04,)] [eta: 2 days, 13:04:08, time (data): 0.540 (0.002)] l_pix: 1.4371e-02 
+2023-10-29 18:41:31,911 INFO: [Class..][epoch:  2, iter:   7,900, lr:(2.000e-04,)] [eta: 2 days, 12:49:52, time (data): 0.541 (0.002)] l_pix: 1.0895e-02 
+2023-10-29 18:42:27,961 INFO: [Class..][epoch:  2, iter:   8,000, lr:(2.000e-04,)] [eta: 2 days, 12:37:06, time (data): 0.553 (0.015)] l_pix: 1.1518e-02 
+2023-10-29 18:43:21,850 INFO: [Class..][epoch:  2, iter:   8,100, lr:(2.000e-04,)] [eta: 2 days, 12:23:20, time (data): 0.539 (0.002)] l_pix: 1.1330e-02 
+2023-10-29 18:47:15,746 INFO: [Class..][epoch:  3, iter:   8,200, lr:(2.000e-04,)] [eta: 2 days, 13:56:38, time (data): 1.664 (1.129)] l_pix: 1.6866e-02 
+2023-10-29 18:48:09,272 INFO: [Class..][epoch:  3, iter:   8,300, lr:(2.000e-04,)] [eta: 2 days, 13:41:57, time (data): 0.536 (0.002)] l_pix: 1.7905e-02 
+2023-10-29 18:49:03,027 INFO: [Class..][epoch:  3, iter:   8,400, lr:(2.000e-04,)] [eta: 2 days, 13:27:44, time (data): 0.537 (0.002)] l_pix: 2.2079e-02 
+2023-10-29 18:49:56,750 INFO: [Class..][epoch:  3, iter:   8,500, lr:(2.000e-04,)] [eta: 2 days, 13:13:48, time (data): 0.538 (0.002)] l_pix: 1.9341e-02 
+2023-10-29 18:50:50,989 INFO: [Class..][epoch:  3, iter:   8,600, lr:(2.000e-04,)] [eta: 2 days, 13:00:28, time (data): 0.541 (0.002)] l_pix: 1.1349e-02 
+2023-10-29 18:51:45,487 INFO: [Class..][epoch:  3, iter:   8,700, lr:(2.000e-04,)] [eta: 2 days, 12:47:34, time (data): 0.545 (0.002)] l_pix: 1.2816e-02 
+2023-10-29 18:52:39,601 INFO: [Class..][epoch:  3, iter:   8,800, lr:(2.000e-04,)] [eta: 2 days, 12:34:44, time (data): 0.543 (0.002)] l_pix: 1.0410e-02 
+2023-10-29 18:53:33,757 INFO: [Class..][epoch:  3, iter:   8,900, lr:(2.000e-04,)] [eta: 2 days, 12:22:11, time (data): 0.543 (0.002)] l_pix: 1.5178e-02 
+2023-10-29 18:54:27,702 INFO: [Class..][epoch:  3, iter:   9,000, lr:(2.000e-04,)] [eta: 2 days, 12:09:46, time (data): 0.541 (0.002)] l_pix: 1.0606e-02 
+2023-10-29 18:55:21,929 INFO: [Class..][epoch:  3, iter:   9,100, lr:(2.000e-04,)] [eta: 2 days, 11:57:46, time (data): 0.540 (0.002)] l_pix: 1.7480e-02 
+2023-10-29 18:56:16,020 INFO: [Class..][epoch:  3, iter:   9,200, lr:(2.000e-04,)] [eta: 2 days, 11:45:56, time (data): 0.541 (0.002)] l_pix: 1.1301e-02 
+2023-10-29 18:57:10,486 INFO: [Class..][epoch:  3, iter:   9,300, lr:(2.000e-04,)] [eta: 2 days, 11:34:32, time (data): 0.544 (0.002)] l_pix: 1.3119e-02 
+2023-10-29 18:58:04,633 INFO: [Class..][epoch:  3, iter:   9,400, lr:(2.000e-04,)] [eta: 2 days, 11:23:11, time (data): 0.542 (0.002)] l_pix: 1.0996e-02 
+2023-10-29 18:58:58,702 INFO: [Class..][epoch:  3, iter:   9,500, lr:(2.000e-04,)] [eta: 2 days, 11:12:02, time (data): 0.540 (0.002)] l_pix: 1.0765e-02 
+2023-10-29 18:59:52,916 INFO: [Class..][epoch:  3, iter:   9,600, lr:(2.000e-04,)] [eta: 2 days, 11:01:09, time (data): 0.542 (0.002)] l_pix: 7.3510e-03 
+2023-10-29 19:00:47,312 INFO: [Class..][epoch:  3, iter:   9,700, lr:(2.000e-04,)] [eta: 2 days, 10:50:34, time (data): 0.547 (0.002)] l_pix: 1.8312e-02 
+2023-10-29 19:01:41,981 INFO: [Class..][epoch:  3, iter:   9,800, lr:(2.000e-04,)] [eta: 2 days, 10:40:19, time (data): 0.547 (0.002)] l_pix: 1.5697e-02 
+2023-10-29 19:02:36,309 INFO: [Class..][epoch:  3, iter:   9,900, lr:(2.000e-04,)] [eta: 2 days, 10:30:06, time (data): 0.543 (0.002)] l_pix: 1.4028e-02 
+2023-10-29 19:03:30,975 INFO: [Class..][epoch:  3, iter:  10,000, lr:(2.000e-04,)] [eta: 2 days, 10:20:13, time (data): 0.545 (0.002)] l_pix: 1.0716e-02 
+2023-10-29 19:03:30,975 INFO: Saving models and training states.
+2023-10-29 19:03:59,400 WARNING: Multiple validation datasets are *only* supported by SRModel.
+2023-10-29 19:04:03,906 INFO: Validation Set5
+	 # psnr: 38.0507	Best: 38.0507 @ 10000 iter
+	 # ssim: 0.9613	Best: 0.9613 @ 10000 iter
+
+2023-10-29 19:04:25,861 INFO: Validation Set14
+	 # psnr: 33.7371	Best: 33.7371 @ 10000 iter
+	 # ssim: 0.9188	Best: 0.9188 @ 10000 iter
+
+2023-10-29 19:06:12,545 INFO: Validation BSD100
+	 # psnr: 32.2920	Best: 32.2920 @ 10000 iter
+	 # ssim: 0.9017	Best: 0.9017 @ 10000 iter
+
+2023-10-29 19:16:11,742 INFO: Validation Urban100
+	 # psnr: 32.3221	Best: 32.3221 @ 10000 iter
+	 # ssim: 0.9302	Best: 0.9302 @ 10000 iter
+
+2023-10-29 19:29:33,459 INFO: Validation Manga109
+	 # psnr: 38.8256	Best: 38.8256 @ 10000 iter
+	 # ssim: 0.9777	Best: 0.9777 @ 10000 iter
+
+2023-10-29 19:30:29,105 INFO: [Class..][epoch:  3, iter:  10,100, lr:(2.000e-04,)] [eta: 2 days, 22:38:23, time (data): 0.555 (0.002)] l_pix: 7.2304e-03 
+2023-10-29 19:31:25,930 INFO: [Class..][epoch:  3, iter:  10,200, lr:(2.000e-04,)] [eta: 2 days, 22:22:17, time (data): 0.564 (0.002)] l_pix: 1.5474e-02 
+2023-10-29 19:32:21,017 INFO: [Class..][epoch:  3, iter:  10,300, lr:(2.000e-04,)] [eta: 2 days, 22:05:40, time (data): 0.541 (0.002)] l_pix: 1.1377e-02 
+2023-10-29 19:33:17,767 INFO: [Class..][epoch:  3, iter:  10,400, lr:(2.000e-04,)] [eta: 2 days, 21:50:08, time (data): 0.559 (0.002)] l_pix: 1.6343e-02 
+2023-10-29 19:34:13,691 INFO: [Class..][epoch:  3, iter:  10,500, lr:(2.000e-04,)] [eta: 2 days, 21:34:30, time (data): 0.558 (0.002)] l_pix: 1.0543e-02 
+2023-10-29 19:35:09,289 INFO: [Class..][epoch:  3, iter:  10,600, lr:(2.000e-04,)] [eta: 2 days, 21:18:59, time (data): 0.557 (0.002)] l_pix: 8.1397e-03 
+2023-10-29 19:36:05,759 INFO: [Class..][epoch:  3, iter:  10,700, lr:(2.000e-04,)] [eta: 2 days, 21:04:09, time (data): 0.574 (0.030)] l_pix: 1.5696e-02 
+2023-10-29 19:37:01,923 INFO: [Class..][epoch:  3, iter:  10,800, lr:(2.000e-04,)] [eta: 2 days, 20:49:25, time (data): 0.566 (0.011)] l_pix: 1.6357e-02 
+2023-10-29 19:39:24,115 INFO: [Class..][epoch:  4, iter:  10,900, lr:(2.000e-04,)] [eta: 2 days, 21:12:58, time (data): 2.435 (1.890)] l_pix: 1.8128e-02 
+2023-10-29 19:40:19,965 INFO: [Class..][epoch:  4, iter:  11,000, lr:(2.000e-04,)] [eta: 2 days, 20:58:15, time (data): 1.150 (0.597)] l_pix: 1.8828e-02 
+2023-10-29 19:41:16,809 INFO: [Class..][epoch:  4, iter:  11,100, lr:(2.000e-04,)] [eta: 2 days, 20:44:13, time (data): 0.569 (0.002)] l_pix: 1.7620e-02 
+2023-10-29 19:42:12,747 INFO: [Class..][epoch:  4, iter:  11,200, lr:(2.000e-04,)] [eta: 2 days, 20:30:01, time (data): 0.562 (0.002)] l_pix: 9.4177e-03 
+2023-10-29 19:43:08,260 INFO: [Class..][epoch:  4, iter:  11,300, lr:(2.000e-04,)] [eta: 2 days, 20:15:52, time (data): 0.556 (0.002)] l_pix: 1.3617e-02 
+2023-10-29 19:44:03,299 INFO: [Class..][epoch:  4, iter:  11,400, lr:(2.000e-04,)] [eta: 2 days, 20:01:45, time (data): 0.552 (0.002)] l_pix: 1.4897e-02 
+2023-10-29 19:44:58,757 INFO: [Class..][epoch:  4, iter:  11,500, lr:(2.000e-04,)] [eta: 2 days, 19:48:03, time (data): 0.561 (0.002)] l_pix: 1.3133e-02 
+2023-10-29 19:45:53,813 INFO: [Class..][epoch:  4, iter:  11,600, lr:(2.000e-04,)] [eta: 2 days, 19:34:24, time (data): 0.554 (0.002)] l_pix: 9.1913e-03 
+2023-10-29 19:46:49,150 INFO: [Class..][epoch:  4, iter:  11,700, lr:(2.000e-04,)] [eta: 2 days, 19:21:05, time (data): 0.549 (0.002)] l_pix: 7.6891e-03 
+2023-10-29 19:47:44,120 INFO: [Class..][epoch:  4, iter:  11,800, lr:(2.000e-04,)] [eta: 2 days, 19:07:49, time (data): 0.549 (0.002)] l_pix: 1.4352e-02 
+2023-10-29 19:48:38,802 INFO: [Class..][epoch:  4, iter:  11,900, lr:(2.000e-04,)] [eta: 2 days, 18:54:39, time (data): 0.548 (0.002)] l_pix: 1.3616e-02 
+2023-10-29 19:49:34,044 INFO: [Class..][epoch:  4, iter:  12,000, lr:(2.000e-04,)] [eta: 2 days, 18:41:55, time (data): 0.551 (0.002)] l_pix: 1.0076e-02 
+2023-10-29 19:50:28,966 INFO: [Class..][epoch:  4, iter:  12,100, lr:(2.000e-04,)] [eta: 2 days, 18:29:14, time (data): 0.556 (0.002)] l_pix: 1.2553e-02 
+2023-10-29 19:51:24,173 INFO: [Class..][epoch:  4, iter:  12,200, lr:(2.000e-04,)] [eta: 2 days, 18:16:52, time (data): 0.553 (0.002)] l_pix: 1.0942e-02 
+2023-10-29 19:52:20,454 INFO: [Class..][epoch:  4, iter:  12,300, lr:(2.000e-04,)] [eta: 2 days, 18:05:07, time (data): 0.558 (0.002)] l_pix: 1.7133e-02 
+2023-10-29 19:53:15,868 INFO: [Class..][epoch:  4, iter:  12,400, lr:(2.000e-04,)] [eta: 2 days, 17:53:11, time (data): 0.555 (0.002)] l_pix: 1.4544e-02 
+2023-10-29 19:54:11,117 INFO: [Class..][epoch:  4, iter:  12,500, lr:(2.000e-04,)] [eta: 2 days, 17:41:23, time (data): 0.555 (0.002)] l_pix: 1.6310e-02 
+2023-10-29 19:55:06,321 INFO: [Class..][epoch:  4, iter:  12,600, lr:(2.000e-04,)] [eta: 2 days, 17:29:44, time (data): 0.553 (0.002)] l_pix: 9.0866e-03 
+2023-10-29 19:56:01,980 INFO: [Class..][epoch:  4, iter:  12,700, lr:(2.000e-04,)] [eta: 2 days, 17:18:25, time (data): 0.553 (0.002)] l_pix: 1.6659e-02 
+2023-10-29 19:56:56,885 INFO: [Class..][epoch:  4, iter:  12,800, lr:(2.000e-04,)] [eta: 2 days, 17:06:59, time (data): 0.550 (0.002)] l_pix: 9.1654e-03 
+2023-10-29 19:57:52,513 INFO: [Class..][epoch:  4, iter:  12,900, lr:(2.000e-04,)] [eta: 2 days, 16:55:59, time (data): 0.563 (0.002)] l_pix: 1.1790e-02 
+2023-10-29 19:58:47,954 INFO: [Class..][epoch:  4, iter:  13,000, lr:(2.000e-04,)] [eta: 2 days, 16:45:04, time (data): 0.557 (0.002)] l_pix: 1.4019e-02 
+2023-10-29 19:59:43,223 INFO: [Class..][epoch:  4, iter:  13,100, lr:(2.000e-04,)] [eta: 2 days, 16:34:14, time (data): 0.558 (0.002)] l_pix: 1.1215e-02 
+2023-10-29 20:00:38,586 INFO: [Class..][epoch:  4, iter:  13,200, lr:(2.000e-04,)] [eta: 2 days, 16:23:36, time (data): 0.555 (0.002)] l_pix: 1.9390e-02 
+2023-10-29 20:01:33,856 INFO: [Class..][epoch:  4, iter:  13,300, lr:(2.000e-04,)] [eta: 2 days, 16:13:04, time (data): 0.556 (0.002)] l_pix: 1.7971e-02 
+2023-10-29 20:02:29,160 INFO: [Class..][epoch:  4, iter:  13,400, lr:(2.000e-04,)] [eta: 2 days, 16:02:42, time (data): 0.554 (0.002)] l_pix: 1.3298e-02 
+2023-10-29 20:03:23,846 INFO: [Class..][epoch:  4, iter:  13,500, lr:(2.000e-04,)] [eta: 2 days, 15:52:14, time (data): 0.551 (0.002)] l_pix: 1.0611e-02 
+2023-10-29 20:05:48,373 INFO: [Class..][epoch:  5, iter:  13,600, lr:(2.000e-04,)] [eta: 2 days, 16:13:27, time (data): 1.223 (0.673)] l_pix: 1.7112e-02 
+2023-10-29 20:06:43,691 INFO: [Class..][epoch:  5, iter:  13,700, lr:(2.000e-04,)] [eta: 2 days, 16:03:16, time (data): 0.565 (0.002)] l_pix: 6.6003e-03 
+2023-10-29 20:07:38,577 INFO: [Class..][epoch:  5, iter:  13,800, lr:(2.000e-04,)] [eta: 2 days, 15:53:03, time (data): 0.553 (0.002)] l_pix: 9.9416e-03 
+2023-10-29 20:08:33,718 INFO: [Class..][epoch:  5, iter:  13,900, lr:(2.000e-04,)] [eta: 2 days, 15:43:04, time (data): 0.548 (0.002)] l_pix: 1.8485e-02 
+2023-10-29 20:09:29,190 INFO: [Class..][epoch:  5, iter:  14,000, lr:(2.000e-04,)] [eta: 2 days, 15:33:19, time (data): 0.553 (0.002)] l_pix: 1.3244e-02 
+2023-10-29 20:10:25,059 INFO: [Class..][epoch:  5, iter:  14,100, lr:(2.000e-04,)] [eta: 2 days, 15:23:50, time (data): 0.548 (0.002)] l_pix: 1.2881e-02 
+2023-10-29 20:11:20,144 INFO: [Class..][epoch:  5, iter:  14,200, lr:(2.000e-04,)] [eta: 2 days, 15:14:12, time (data): 0.550 (0.002)] l_pix: 8.5283e-03 
+2023-10-29 20:12:15,623 INFO: [Class..][epoch:  5, iter:  14,300, lr:(2.000e-04,)] [eta: 2 days, 15:04:49, time (data): 0.548 (0.002)] l_pix: 1.6079e-02 
+2023-10-29 20:13:10,960 INFO: [Class..][epoch:  5, iter:  14,400, lr:(2.000e-04,)] [eta: 2 days, 14:55:31, time (data): 0.552 (0.002)] l_pix: 9.2990e-03 
+2023-10-29 20:14:06,466 INFO: [Class..][epoch:  5, iter:  14,500, lr:(2.000e-04,)] [eta: 2 days, 14:46:23, time (data): 0.551 (0.002)] l_pix: 1.2331e-02 
+2023-10-29 20:15:01,928 INFO: [Class..][epoch:  5, iter:  14,600, lr:(2.000e-04,)] [eta: 2 days, 14:37:20, time (data): 0.554 (0.002)] l_pix: 7.6309e-03 
+2023-10-29 20:15:57,289 INFO: [Class..][epoch:  5, iter:  14,700, lr:(2.000e-04,)] [eta: 2 days, 14:28:23, time (data): 0.552 (0.002)] l_pix: 1.6865e-02 
+2023-10-29 20:16:52,505 INFO: [Class..][epoch:  5, iter:  14,800, lr:(2.000e-04,)] [eta: 2 days, 14:19:29, time (data): 0.552 (0.002)] l_pix: 1.4500e-02 
+2023-10-29 20:17:48,071 INFO: [Class..][epoch:  5, iter:  14,900, lr:(2.000e-04,)] [eta: 2 days, 14:10:48, time (data): 0.563 (0.002)] l_pix: 9.9881e-03 
+2023-10-29 20:18:44,117 INFO: [Class..][epoch:  5, iter:  15,000, lr:(2.000e-04,)] [eta: 2 days, 14:02:23, time (data): 0.561 (0.002)] l_pix: 1.3516e-02 
+2023-10-29 20:18:44,118 INFO: Saving models and training states.
+2023-10-29 20:19:04,194 WARNING: Multiple validation datasets are *only* supported by SRModel.
+2023-10-29 20:19:08,335 INFO: Validation Set5
+	 # psnr: 38.1320	Best: 38.1320 @ 15000 iter
+	 # ssim: 0.9616	Best: 0.9616 @ 15000 iter
+
+2023-10-29 20:19:30,258 INFO: Validation Set14
+	 # psnr: 33.8313	Best: 33.8313 @ 15000 iter
+	 # ssim: 0.9197	Best: 0.9197 @ 15000 iter
+
+2023-10-29 20:21:07,681 INFO: Validation BSD100
+	 # psnr: 32.3362	Best: 32.3362 @ 15000 iter
+	 # ssim: 0.9023	Best: 0.9023 @ 15000 iter
+
+2023-10-29 20:32:20,070 INFO: Validation Urban100
+	 # psnr: 32.5527	Best: 32.5527 @ 15000 iter
+	 # ssim: 0.9321	Best: 0.9321 @ 15000 iter
+
+2023-10-29 20:47:28,798 INFO: Validation Manga109
+	 # psnr: 39.0182	Best: 39.0182 @ 15000 iter
+	 # ssim: 0.9781	Best: 0.9781 @ 15000 iter
+
+2023-10-29 20:48:24,882 INFO: [Class..][epoch:  5, iter:  15,100, lr:(2.000e-04,)] [eta: 2 days, 22:56:22, time (data): 0.563 (0.002)] l_pix: 1.0970e-02 
+2023-10-29 20:49:20,692 INFO: [Class..][epoch:  5, iter:  15,200, lr:(2.000e-04,)] [eta: 2 days, 22:44:19, time (data): 0.559 (0.002)] l_pix: 1.0704e-02 
+2023-10-29 20:50:16,466 INFO: [Class..][epoch:  5, iter:  15,300, lr:(2.000e-04,)] [eta: 2 days, 22:32:23, time (data): 0.557 (0.002)] l_pix: 1.3604e-02 
+2023-10-29 20:51:12,516 INFO: [Class..][epoch:  5, iter:  15,400, lr:(2.000e-04,)] [eta: 2 days, 22:20:42, time (data): 0.560 (0.002)] l_pix: 1.0239e-02 
+2023-10-29 20:52:08,489 INFO: [Class..][epoch:  5, iter:  15,500, lr:(2.000e-04,)] [eta: 2 days, 22:09:07, time (data): 0.560 (0.002)] l_pix: 1.4927e-02 
+2023-10-29 20:53:04,595 INFO: [Class..][epoch:  5, iter:  15,600, lr:(2.000e-04,)] [eta: 2 days, 21:57:43, time (data): 0.561 (0.002)] l_pix: 1.7540e-02 
+2023-10-29 20:54:00,209 INFO: [Class..][epoch:  5, iter:  15,700, lr:(2.000e-04,)] [eta: 2 days, 21:46:18, time (data): 0.557 (0.002)] l_pix: 1.2583e-02 
+2023-10-29 20:54:56,339 INFO: [Class..][epoch:  5, iter:  15,800, lr:(2.000e-04,)] [eta: 2 days, 21:35:10, time (data): 0.561 (0.002)] l_pix: 1.3384e-02 
+2023-10-29 20:55:52,048 INFO: [Class..][epoch:  5, iter:  15,900, lr:(2.000e-04,)] [eta: 2 days, 21:24:02, time (data): 0.551 (0.002)] l_pix: 1.4344e-02 
+2023-10-29 20:56:48,448 INFO: [Class..][epoch:  5, iter:  16,000, lr:(2.000e-04,)] [eta: 2 days, 21:13:14, time (data): 0.562 (0.002)] l_pix: 1.9590e-02 
+2023-10-29 20:57:44,610 INFO: [Class..][epoch:  5, iter:  16,100, lr:(2.000e-04,)] [eta: 2 days, 21:02:30, time (data): 0.565 (0.002)] l_pix: 1.4807e-02 
+2023-10-29 20:58:40,146 INFO: [Class..][epoch:  5, iter:  16,200, lr:(2.000e-04,)] [eta: 2 days, 20:51:41, time (data): 0.557 (0.002)] l_pix: 1.6859e-02 
+2023-10-29 21:00:11,882 INFO: [Class..][epoch:  6, iter:  16,300, lr:(2.000e-04,)] [eta: 2 days, 20:51:30, time (data): 2.489 (1.938)] l_pix: 1.5330e-02 
+2023-10-29 21:01:07,232 INFO: [Class..][epoch:  6, iter:  16,400, lr:(2.000e-04,)] [eta: 2 days, 20:40:49, time (data): 0.863 (0.311)] l_pix: 1.0498e-02 
+2023-10-29 21:02:02,871 INFO: [Class..][epoch:  6, iter:  16,500, lr:(2.000e-04,)] [eta: 2 days, 20:30:20, time (data): 0.550 (0.002)] l_pix: 1.7042e-02 
+2023-10-29 21:02:58,191 INFO: [Class..][epoch:  6, iter:  16,600, lr:(2.000e-04,)] [eta: 2 days, 20:19:52, time (data): 0.553 (0.002)] l_pix: 1.3118e-02 
+2023-10-29 21:03:53,635 INFO: [Class..][epoch:  6, iter:  16,700, lr:(2.000e-04,)] [eta: 2 days, 20:09:34, time (data): 0.553 (0.002)] l_pix: 9.5143e-03 
+2023-10-29 21:04:49,033 INFO: [Class..][epoch:  6, iter:  16,800, lr:(2.000e-04,)] [eta: 2 days, 19:59:21, time (data): 0.554 (0.002)] l_pix: 9.8050e-03 
+2023-10-29 21:05:44,164 INFO: [Class..][epoch:  6, iter:  16,900, lr:(2.000e-04,)] [eta: 2 days, 19:49:10, time (data): 0.551 (0.002)] l_pix: 8.6959e-03 
+2023-10-29 21:06:39,519 INFO: [Class..][epoch:  6, iter:  17,000, lr:(2.000e-04,)] [eta: 2 days, 19:39:10, time (data): 0.553 (0.002)] l_pix: 1.1015e-02 
+2023-10-29 21:07:34,619 INFO: [Class..][epoch:  6, iter:  17,100, lr:(2.000e-04,)] [eta: 2 days, 19:29:12, time (data): 0.546 (0.002)] l_pix: 1.5884e-02 
+2023-10-29 21:08:29,779 INFO: [Class..][epoch:  6, iter:  17,200, lr:(2.000e-04,)] [eta: 2 days, 19:19:21, time (data): 0.551 (0.002)] l_pix: 1.6262e-02 
+2023-10-29 21:09:24,560 INFO: [Class..][epoch:  6, iter:  17,300, lr:(2.000e-04,)] [eta: 2 days, 19:09:30, time (data): 0.542 (0.002)] l_pix: 1.4371e-02 
+2023-10-29 21:10:19,829 INFO: [Class..][epoch:  6, iter:  17,400, lr:(2.000e-04,)] [eta: 2 days, 18:59:53, time (data): 0.551 (0.002)] l_pix: 1.1718e-02 
+2023-10-29 21:11:14,952 INFO: [Class..][epoch:  6, iter:  17,500, lr:(2.000e-04,)] [eta: 2 days, 18:50:20, time (data): 0.544 (0.002)] l_pix: 9.2760e-03 
+2023-10-29 21:12:10,186 INFO: [Class..][epoch:  6, iter:  17,600, lr:(2.000e-04,)] [eta: 2 days, 18:40:54, time (data): 0.551 (0.002)] l_pix: 1.0342e-02 
+2023-10-29 21:13:05,807 INFO: [Class..][epoch:  6, iter:  17,700, lr:(2.000e-04,)] [eta: 2 days, 18:31:40, time (data): 0.552 (0.002)] l_pix: 1.2639e-02 
+2023-10-29 21:14:01,413 INFO: [Class..][epoch:  6, iter:  17,800, lr:(2.000e-04,)] [eta: 2 days, 18:22:32, time (data): 0.556 (0.002)] l_pix: 1.3032e-02 
+2023-10-29 21:14:56,596 INFO: [Class..][epoch:  6, iter:  17,900, lr:(2.000e-04,)] [eta: 2 days, 18:13:23, time (data): 0.545 (0.002)] l_pix: 2.1662e-02 
+2023-10-29 21:15:52,196 INFO: [Class..][epoch:  6, iter:  18,000, lr:(2.000e-04,)] [eta: 2 days, 18:04:25, time (data): 0.555 (0.002)] l_pix: 2.1883e-02 
+2023-10-29 21:16:47,279 INFO: [Class..][epoch:  6, iter:  18,100, lr:(2.000e-04,)] [eta: 2 days, 17:55:25, time (data): 0.550 (0.002)] l_pix: 1.0875e-02 
+2023-10-29 21:17:42,673 INFO: [Class..][epoch:  6, iter:  18,200, lr:(2.000e-04,)] [eta: 2 days, 17:46:35, time (data): 0.554 (0.002)] l_pix: 1.8684e-02 
+2023-10-29 21:18:39,516 INFO: [Class..][epoch:  6, iter:  18,300, lr:(2.000e-04,)] [eta: 2 days, 17:38:13, time (data): 0.565 (0.002)] l_pix: 1.6488e-02 
+2023-10-29 21:19:34,781 INFO: [Class..][epoch:  6, iter:  18,400, lr:(2.000e-04,)] [eta: 2 days, 17:29:31, time (data): 0.554 (0.002)] l_pix: 1.0378e-02 
+2023-10-29 21:20:29,801 INFO: [Class..][epoch:  6, iter:  18,500, lr:(2.000e-04,)] [eta: 2 days, 17:20:50, time (data): 0.549 (0.002)] l_pix: 1.5048e-02 
+2023-10-29 21:21:25,149 INFO: [Class..][epoch:  6, iter:  18,600, lr:(2.000e-04,)] [eta: 2 days, 17:12:20, time (data): 0.553 (0.002)] l_pix: 2.0714e-02 
+2023-10-29 21:22:20,322 INFO: [Class..][epoch:  6, iter:  18,700, lr:(2.000e-04,)] [eta: 2 days, 17:03:51, time (data): 0.565 (0.002)] l_pix: 1.4274e-02 
+2023-10-29 21:23:15,429 INFO: [Class..][epoch:  6, iter:  18,800, lr:(2.000e-04,)] [eta: 2 days, 16:55:27, time (data): 0.552 (0.002)] l_pix: 1.7769e-02 
+2023-10-29 21:24:11,121 INFO: [Class..][epoch:  6, iter:  18,900, lr:(2.000e-04,)] [eta: 2 days, 16:47:16, time (data): 0.553 (0.002)] l_pix: 1.6648e-02 
+2023-10-29 21:25:06,304 INFO: [Class..][epoch:  6, iter:  19,000, lr:(2.000e-04,)] [eta: 2 days, 16:39:02, time (data): 0.552 (0.002)] l_pix: 1.2256e-02 
+2023-10-29 21:26:39,988 INFO: [Class..][epoch:  7, iter:  19,100, lr:(2.000e-04,)] [eta: 2 days, 16:40:19, time (data): 0.552 (0.002)] l_pix: 8.1260e-03 
+2023-10-29 21:27:35,564 INFO: [Class..][epoch:  7, iter:  19,200, lr:(2.000e-04,)] [eta: 2 days, 16:32:17, time (data): 0.556 (0.002)] l_pix: 1.7970e-02 
+2023-10-29 21:28:31,589 INFO: [Class..][epoch:  7, iter:  19,300, lr:(2.000e-04,)] [eta: 2 days, 16:24:25, time (data): 0.570 (0.002)] l_pix: 1.0112e-02 
+2023-10-29 21:29:27,052 INFO: [Class..][epoch:  7, iter:  19,400, lr:(2.000e-04,)] [eta: 2 days, 16:16:30, time (data): 0.555 (0.002)] l_pix: 1.2284e-02 
+2023-10-29 21:30:22,719 INFO: [Class..][epoch:  7, iter:  19,500, lr:(2.000e-04,)] [eta: 2 days, 16:08:42, time (data): 0.550 (0.002)] l_pix: 9.6292e-03 
+2023-10-29 21:31:18,262 INFO: [Class..][epoch:  7, iter:  19,600, lr:(2.000e-04,)] [eta: 2 days, 16:00:57, time (data): 0.555 (0.002)] l_pix: 1.1828e-02 
+2023-10-29 21:32:13,334 INFO: [Class..][epoch:  7, iter:  19,700, lr:(2.000e-04,)] [eta: 2 days, 15:53:09, time (data): 0.540 (0.002)] l_pix: 1.3057e-02 
+2023-10-29 21:33:08,690 INFO: [Class..][epoch:  7, iter:  19,800, lr:(2.000e-04,)] [eta: 2 days, 15:45:29, time (data): 0.553 (0.002)] l_pix: 1.2626e-02 
+2023-10-29 21:34:03,957 INFO: [Class..][epoch:  7, iter:  19,900, lr:(2.000e-04,)] [eta: 2 days, 15:37:52, time (data): 0.543 (0.002)] l_pix: 7.2817e-03 
+2023-10-29 21:34:59,114 INFO: [Class..][epoch:  7, iter:  20,000, lr:(2.000e-04,)] [eta: 2 days, 15:30:18, time (data): 0.551 (0.002)] l_pix: 1.5073e-02 
+2023-10-29 21:34:59,115 INFO: Saving models and training states.
+2023-10-29 21:35:19,402 WARNING: Multiple validation datasets are *only* supported by SRModel.
+2023-10-29 21:35:23,298 INFO: Validation Set5
+	 # psnr: 38.1614	Best: 38.1614 @ 20000 iter
+	 # ssim: 0.9618	Best: 0.9618 @ 20000 iter
+
+2023-10-29 21:35:45,086 INFO: Validation Set14
+	 # psnr: 33.8378	Best: 33.8378 @ 20000 iter
+	 # ssim: 0.9199	Best: 0.9199 @ 20000 iter
+
+2023-10-29 21:37:35,881 INFO: Validation BSD100
+	 # psnr: 32.3632	Best: 32.3632 @ 20000 iter
+	 # ssim: 0.9027	Best: 0.9027 @ 20000 iter
+
+2023-10-29 21:48:38,907 INFO: Validation Urban100
+	 # psnr: 32.7029	Best: 32.7029 @ 20000 iter
+	 # ssim: 0.9336	Best: 0.9336 @ 20000 iter
+
+2023-10-29 22:03:28,622 INFO: Validation Manga109
+	 # psnr: 39.1806	Best: 39.1806 @ 20000 iter
+	 # ssim: 0.9784	Best: 0.9784 @ 20000 iter
+
+2023-10-29 22:04:24,203 INFO: [Class..][epoch:  7, iter:  20,100, lr:(2.000e-04,)] [eta: 2 days, 21:59:37, time (data): 0.554 (0.002)] l_pix: 9.0882e-03 
+2023-10-29 22:05:19,242 INFO: [Class..][epoch:  7, iter:  20,200, lr:(2.000e-04,)] [eta: 2 days, 21:50:03, time (data): 0.550 (0.002)] l_pix: 2.8162e-02 
+2023-10-29 22:06:14,522 INFO: [Class..][epoch:  7, iter:  20,300, lr:(2.000e-04,)] [eta: 2 days, 21:40:36, time (data): 0.552 (0.002)] l_pix: 1.1476e-02 
+2023-10-29 22:07:09,569 INFO: [Class..][epoch:  7, iter:  20,400, lr:(2.000e-04,)] [eta: 2 days, 21:31:12, time (data): 0.550 (0.002)] l_pix: 1.1748e-02 
+2023-10-29 22:08:04,458 INFO: [Class..][epoch:  7, iter:  20,500, lr:(2.000e-04,)] [eta: 2 days, 21:21:51, time (data): 0.550 (0.002)] l_pix: 1.7111e-02 
+2023-10-29 22:09:01,387 INFO: [Class..][epoch:  7, iter:  20,600, lr:(2.000e-04,)] [eta: 2 days, 21:13:02, time (data): 0.568 (0.020)] l_pix: 9.7438e-03 
+2023-10-29 22:09:56,918 INFO: [Class..][epoch:  7, iter:  20,700, lr:(2.000e-04,)] [eta: 2 days, 21:03:58, time (data): 0.562 (0.011)] l_pix: 1.1837e-02 
+2023-10-29 22:10:52,492 INFO: [Class..][epoch:  7, iter:  20,800, lr:(2.000e-04,)] [eta: 2 days, 20:55:00, time (data): 0.556 (0.002)] l_pix: 1.0940e-02 
+2023-10-29 22:11:47,533 INFO: [Class..][epoch:  7, iter:  20,900, lr:(2.000e-04,)] [eta: 2 days, 20:46:00, time (data): 0.553 (0.002)] l_pix: 8.0763e-03 
+2023-10-29 22:12:43,300 INFO: [Class..][epoch:  7, iter:  21,000, lr:(2.000e-04,)] [eta: 2 days, 20:37:14, time (data): 0.556 (0.002)] l_pix: 1.8214e-02 
+2023-10-29 22:13:39,258 INFO: [Class..][epoch:  7, iter:  21,100, lr:(2.000e-04,)] [eta: 2 days, 20:28:34, time (data): 0.558 (0.002)] l_pix: 7.9239e-03 
+2023-10-29 22:14:34,855 INFO: [Class..][epoch:  7, iter:  21,200, lr:(2.000e-04,)] [eta: 2 days, 20:19:55, time (data): 0.556 (0.002)] l_pix: 1.6188e-02 
+2023-10-29 22:15:31,086 INFO: [Class..][epoch:  7, iter:  21,300, lr:(2.000e-04,)] [eta: 2 days, 20:11:28, time (data): 0.559 (0.002)] l_pix: 1.5893e-02 
+2023-10-29 22:16:27,082 INFO: [Class..][epoch:  7, iter:  21,400, lr:(2.000e-04,)] [eta: 2 days, 20:03:02, time (data): 0.560 (0.002)] l_pix: 1.3397e-02 
+2023-10-29 22:17:23,243 INFO: [Class..][epoch:  7, iter:  21,500, lr:(2.000e-04,)] [eta: 2 days, 19:54:43, time (data): 0.561 (0.002)] l_pix: 1.3103e-02 
+2023-10-29 22:18:18,918 INFO: [Class..][epoch:  7, iter:  21,600, lr:(2.000e-04,)] [eta: 2 days, 19:46:21, time (data): 0.557 (0.002)] l_pix: 1.2183e-02 
+2023-10-29 22:19:14,313 INFO: [Class..][epoch:  7, iter:  21,700, lr:(2.000e-04,)] [eta: 2 days, 19:38:00, time (data): 0.555 (0.002)] l_pix: 1.3483e-02 
+2023-10-29 22:20:48,136 INFO: [Class..][epoch:  8, iter:  21,800, lr:(2.000e-04,)] [eta: 2 days, 19:37:53, time (data): 0.972 (0.413)] l_pix: 1.3834e-02 
+2023-10-29 22:21:44,240 INFO: [Class..][epoch:  8, iter:  21,900, lr:(2.000e-04,)] [eta: 2 days, 19:29:47, time (data): 0.758 (0.199)] l_pix: 1.0759e-02 
+2023-10-29 22:22:40,370 INFO: [Class..][epoch:  8, iter:  22,000, lr:(2.000e-04,)] [eta: 2 days, 19:21:45, time (data): 0.561 (0.002)] l_pix: 6.9633e-03 
+2023-10-29 22:23:36,246 INFO: [Class..][epoch:  8, iter:  22,100, lr:(2.000e-04,)] [eta: 2 days, 19:13:43, time (data): 0.560 (0.002)] l_pix: 2.0229e-02 
+2023-10-29 22:24:32,818 INFO: [Class..][epoch:  8, iter:  22,200, lr:(2.000e-04,)] [eta: 2 days, 19:05:54, time (data): 0.566 (0.002)] l_pix: 1.3958e-02 
+2023-10-29 22:25:28,932 INFO: [Class..][epoch:  8, iter:  22,300, lr:(2.000e-04,)] [eta: 2 days, 18:58:03, time (data): 0.564 (0.002)] l_pix: 1.5016e-02 
+2023-10-29 22:26:24,934 INFO: [Class..][epoch:  8, iter:  22,400, lr:(2.000e-04,)] [eta: 2 days, 18:50:15, time (data): 0.558 (0.002)] l_pix: 9.8424e-03 
+2023-10-29 22:27:20,802 INFO: [Class..][epoch:  8, iter:  22,500, lr:(2.000e-04,)] [eta: 2 days, 18:42:28, time (data): 0.558 (0.002)] l_pix: 1.5815e-02 
+2023-10-29 22:28:16,321 INFO: [Class..][epoch:  8, iter:  22,600, lr:(2.000e-04,)] [eta: 2 days, 18:34:41, time (data): 0.555 (0.002)] l_pix: 1.1310e-02 
+2023-10-29 22:29:12,053 INFO: [Class..][epoch:  8, iter:  22,700, lr:(2.000e-04,)] [eta: 2 days, 18:27:00, time (data): 0.556 (0.002)] l_pix: 1.2324e-02 
+2023-10-29 22:30:06,658 INFO: [Class..][epoch:  8, iter:  22,800, lr:(2.000e-04,)] [eta: 2 days, 18:19:08, time (data): 0.546 (0.002)] l_pix: 1.7840e-02 
+2023-10-29 22:31:02,567 INFO: [Class..][epoch:  8, iter:  22,900, lr:(2.000e-04,)] [eta: 2 days, 18:11:37, time (data): 0.553 (0.002)] l_pix: 1.4707e-02 
+2023-10-29 22:31:58,214 INFO: [Class..][epoch:  8, iter:  23,000, lr:(2.000e-04,)] [eta: 2 days, 18:04:05, time (data): 0.557 (0.002)] l_pix: 1.2107e-02 
+2023-10-29 22:32:53,804 INFO: [Class..][epoch:  8, iter:  23,100, lr:(2.000e-04,)] [eta: 2 days, 17:56:36, time (data): 0.556 (0.002)] l_pix: 1.6144e-02 
+2023-10-29 22:33:49,709 INFO: [Class..][epoch:  8, iter:  23,200, lr:(2.000e-04,)] [eta: 2 days, 17:49:15, time (data): 0.560 (0.002)] l_pix: 7.5442e-03 
+2023-10-29 22:34:45,171 INFO: [Class..][epoch:  8, iter:  23,300, lr:(2.000e-04,)] [eta: 2 days, 17:41:51, time (data): 0.557 (0.002)] l_pix: 1.4486e-02 
+2023-10-29 22:35:40,521 INFO: [Class..][epoch:  8, iter:  23,400, lr:(2.000e-04,)] [eta: 2 days, 17:34:30, time (data): 0.554 (0.002)] l_pix: 1.7757e-02 
+2023-10-29 22:36:35,467 INFO: [Class..][epoch:  8, iter:  23,500, lr:(2.000e-04,)] [eta: 2 days, 17:27:07, time (data): 0.551 (0.002)] l_pix: 1.1870e-02 
+2023-10-29 22:37:30,597 INFO: [Class..][epoch:  8, iter:  23,600, lr:(2.000e-04,)] [eta: 2 days, 17:19:49, time (data): 0.548 (0.002)] l_pix: 1.7614e-02 
+2023-10-29 22:38:25,698 INFO: [Class..][epoch:  8, iter:  23,700, lr:(2.000e-04,)] [eta: 2 days, 17:12:34, time (data): 0.549 (0.002)] l_pix: 1.0051e-02 
+2023-10-29 22:39:21,867 INFO: [Class..][epoch:  8, iter:  23,800, lr:(2.000e-04,)] [eta: 2 days, 17:05:35, time (data): 0.563 (0.002)] l_pix: 1.2275e-02 
+2023-10-29 22:40:18,291 INFO: [Class..][epoch:  8, iter:  23,900, lr:(2.000e-04,)] [eta: 2 days, 16:58:42, time (data): 0.564 (0.002)] l_pix: 1.2842e-02 
+2023-10-29 22:41:15,414 INFO: [Class..][epoch:  8, iter:  24,000, lr:(2.000e-04,)] [eta: 2 days, 16:52:00, time (data): 0.572 (0.002)] l_pix: 1.5809e-02 
+2023-10-29 22:42:12,436 INFO: [Class..][epoch:  8, iter:  24,100, lr:(2.000e-04,)] [eta: 2 days, 16:45:19, time (data): 0.571 (0.002)] l_pix: 7.9540e-03 
+2023-10-29 22:43:08,379 INFO: [Class..][epoch:  8, iter:  24,200, lr:(2.000e-04,)] [eta: 2 days, 16:38:30, time (data): 0.559 (0.002)] l_pix: 1.3320e-02 
+2023-10-29 22:44:04,483 INFO: [Class..][epoch:  8, iter:  24,300, lr:(2.000e-04,)] [eta: 2 days, 16:31:44, time (data): 0.560 (0.002)] l_pix: 1.7754e-02 
+2023-10-29 22:45:00,949 INFO: [Class..][epoch:  8, iter:  24,400, lr:(2.000e-04,)] [eta: 2 days, 16:25:06, time (data): 0.565 (0.002)] l_pix: 1.3184e-02 
+2023-10-29 22:47:20,560 INFO: [Class..][epoch:  9, iter:  24,500, lr:(2.000e-04,)] [eta: 2 days, 16:34:06, time (data): 1.029 (0.465)] l_pix: 1.2159e-02 
+2023-10-29 22:48:17,396 INFO: [Class..][epoch:  9, iter:  24,600, lr:(2.000e-04,)] [eta: 2 days, 16:27:33, time (data): 0.567 (0.002)] l_pix: 1.0017e-02 
+2023-10-29 22:49:13,933 INFO: [Class..][epoch:  9, iter:  24,700, lr:(2.000e-04,)] [eta: 2 days, 16:21:00, time (data): 0.566 (0.002)] l_pix: 1.2170e-02 
+2023-10-29 22:50:14,050 INFO: [Class..][epoch:  9, iter:  24,800, lr:(2.000e-04,)] [eta: 2 days, 16:15:09, time (data): 0.611 (0.013)] l_pix: 1.1738e-02 
+2023-10-29 22:51:10,779 INFO: [Class..][epoch:  9, iter:  24,900, lr:(2.000e-04,)] [eta: 2 days, 16:08:43, time (data): 0.586 (0.007)] l_pix: 1.0764e-02 
+2023-10-29 22:52:08,060 INFO: [Class..][epoch:  9, iter:  25,000, lr:(2.000e-04,)] [eta: 2 days, 16:02:26, time (data): 0.570 (0.002)] l_pix: 8.5910e-03 
+2023-10-29 22:52:08,061 INFO: Saving models and training states.
+2023-10-29 22:52:28,620 WARNING: Multiple validation datasets are *only* supported by SRModel.
+2023-10-29 22:52:33,534 INFO: Validation Set5
+	 # psnr: 38.1797	Best: 38.1797 @ 25000 iter
+	 # ssim: 0.9618	Best: 0.9618 @ 25000 iter
+
+2023-10-29 22:52:55,440 INFO: Validation Set14
+	 # psnr: 33.9085	Best: 33.9085 @ 25000 iter
+	 # ssim: 0.9202	Best: 0.9202 @ 25000 iter
+
+2023-10-29 22:54:39,879 INFO: Validation BSD100
+	 # psnr: 32.3778	Best: 32.3778 @ 25000 iter
+	 # ssim: 0.9028	Best: 0.9028 @ 25000 iter
+
+2023-10-29 23:06:02,007 INFO: Validation Urban100
+	 # psnr: 32.7791	Best: 32.7791 @ 25000 iter
+	 # ssim: 0.9344	Best: 0.9344 @ 25000 iter
+
