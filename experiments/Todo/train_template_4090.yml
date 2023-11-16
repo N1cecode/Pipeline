@@ -1,9 +1,5 @@
-# GENERATE TIME: Thu Nov  2 10:10:02 2023
-# CMD:
-# basicsr/train.py -opt options/train/SwinIR/train_SwinIR_Modified_Pretrained_SRx2_DIV2K_Cos.yml
-
-# Light weight
-name: ClassicalX2_013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos
+# 2080ti
+name: ClassicalX2_010_Pretrained_SwinIR_Res_DIV2K_P48W8_LR2e-4_B8G1_4090_cos
 model_type: SwinIRModel
 
 scale: 2
@@ -28,7 +24,7 @@ datasets:
 
     # data loader
     num_worker_per_gpu: 8
-    batch_size_per_gpu: 6
+    batch_size_per_gpu: 16
     dataset_enlarge_ratio: 1
     prefetch_mode: ~
 
@@ -75,7 +71,7 @@ datasets:
 
 # network structures
 network_g:
-  type: SwinIR_Modified
+  type: SwinIR
   upscale: 2
   in_chans: 3
   img_size: 48
@@ -85,7 +81,7 @@ network_g:
   embed_dim: 180
   num_heads: [6, 6, 6, 6, 6, 6]
   mlp_ratio: 2
-  conv_scale: 0.01
+  # conv_scale: 0.5
   upsampler: 'pixelshuffle'
   resi_connection: '1conv'
 
@@ -100,14 +96,14 @@ train:
   ema_decay: 0.999
   optim_g:
     type: Adam
-    lr: !!float 1e-3
+    lr: !!float 2e-4
     weight_decay: 0
     betas: [0.9, 0.99]
 
   scheduler:
     type: CosineAnnealingRestartLR
     periods: [100000, 100000, 100000, 100000, 100000]
-    restart_weights: [1, 0.5, 0.5, 0.5, 0.25]
+    restart_weights: [1, 0.5, 0.5, 0.5, 0.5]
 
   total_iter: 500000
   warmup_iter: -1  # no warm up

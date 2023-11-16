@@ -10,6 +10,27 @@ import torch.utils.checkpoint as checkpoint
 from archs.arch_util import to_2tuple, trunc_normal_
 
 
+class dwconv(nn.Module):
+    def __init__(self, hidden_features):
+        super(dwconv, self).__init__()
+        self.hidden_features = hidden_features
+        self.conv1 = nn.Sequential(
+            nn.Conv2d(hidden_features, hidden_features, kernel_size=1, stride=1, padding=0, groups=hidden_features), nn.GELU())
+        self.conv3 = nn.Sequential(
+            nn.Conv2d(hidden_features, hidden_features, kernel_size=3, stride=1, padding=1, groups=hidden_features), nn.GELU())
+        self.conv5 = nn.Sequential(
+            nn.Conv2d(hidden_features, hidden_features, kernel_size=5, stride=1, padding=2, groups=hidden_features), nn.GELU())
+        self.conv7 = nn.Sequential(
+            nn.Conv2d(hidden_features, hidden_features, kernel_size=7, stride=1, padding=3, groups=hidden_features), nn.GELU())
+        
+        
+    def forward(self, x, x_size):
+        x = x.transpose(1, 2).contiguous().view(x.shape[0], self.hidden_features, x_size[0], x_size[1])  # b Ph*Pw c
+        x = self.conv1(x) + self.conv3(x) + self.conv5(x) + self.conv7(x)
+        x = x.flatten(2).transpose(1, 2).contiguous()
+        return x
+    
+
 def drop_path(x, drop_prob: float = 0., training: bool = False):
     """Drop paths (Stochastic Depth) per sample (when applied in main path of residual blocks).
 
@@ -38,7 +59,7 @@ class DropPath(nn.Module):
     def forward(self, x):
         return drop_path(x, self.drop_prob, self.training)
 
-
+    
 class Mlp(nn.Module):
 
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
@@ -47,16 +68,19 @@ class Mlp(nn.Module):
         hidden_features = hidden_features or in_features
         self.fc1 = nn.Linear(in_features, hidden_features)
         self.act = act_layer()
+        self.dwconv = dwconv(hidden_features=hidden_features)
         self.fc2 = nn.Linear(hidden_features, out_features)
         self.drop = nn.Dropout(drop)
 
-    def forward(self, x):
+    def forward(self, x, x_size):
         x = self.fc1(x)
         x = self.act(x)
+        x = x + self.dwconv(x, x_size)
         x = self.drop(x)
         x = self.fc2(x)
         x = self.drop(x)
         return x
+
 
 
 def window_partition(x, window_size):
@@ -310,14 +334,14 @@ class SwinTransformerBlock(nn.Module):
 
         # reverse cyclic shift
         if self.shift_size > 0:
-            x = torch.roll(shifted_x, shifts=(self.shift_size, self.shift_size), dims=(1, 2)) + x
+            x = torch.roll(shifted_x, shifts=(self.shift_size, self.shift_size), dims=(1, 2))
         else:
-            x = shifted_x + x
+            x = shifted_x
         x = x.view(b, h * w, c)
 
         # FFN
         x = shortcut + self.drop_path(x)
-        x = x + self.drop_path(self.mlp(self.norm2(x)))
+        x = x + self.drop_path(self.mlp(self.norm2(x), x_size))
 
         return x
 
@@ -689,7 +713,7 @@ class UpsampleOneStep(nn.Sequential):
         return flops
 
 
-class SwinIR_Res(nn.Module):
+class SwinIR(nn.Module):
     r""" SwinIR
         A PyTorch impl of : `SwinIR: Image Restoration Using Swin Transformer`, based on Swin Transformer.
 
@@ -740,7 +764,7 @@ class SwinIR_Res(nn.Module):
                  upsampler='',
                  resi_connection='1conv',
                  **kwargs):
-        super(SwinIR_Res, self).__init__()
+        super(SwinIR, self).__init__()
         num_in_ch = in_chans
         num_out_ch = in_chans
         num_feat = 64
@@ -936,7 +960,7 @@ if __name__ == '__main__':
     window_size = 8
     height = (1024 // upscale // window_size + 1) * window_size
     width = (720 // upscale // window_size + 1) * window_size
-    model = SwinIR_Res(
+    model = SwinIR(
         upscale=2,
         img_size=(height, width),
         window_size=window_size,
