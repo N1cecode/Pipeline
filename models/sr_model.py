@@ -18,7 +18,7 @@ class SRModel(BaseModel):
         super(SRModel, self).__init__(opt)
         self.arch = arch
         # define network
-        self.net_g = self.arch
+        self.net_g = arch
         self.net_g = self.model_to_device(self.net_g)
         self.print_network(self.net_g)
 

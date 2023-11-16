@@ -1,5 +1,9 @@
-# titan
-name: ClassicalX2_014_Pretrained_SwinIR_MS-FFN_DIV2K_P48W8_LR2e-4_B8G1_titan_cos
+# GENERATE TIME: Mon Oct 30 15:22:41 2023
+# CMD:
+# basicsr/train.py --launcher pytorch -opt options/train/SwinIR/train_SwinIR_SRx2_scratch.yml --auto_resume
+
+# general settings
+name: ClassicalX2_000_SwinIR_P48W8_DIV2K_1Miters_B8G2_2080ti
 model_type: SwinIRModel
 
 scale: 2
@@ -24,50 +28,25 @@ datasets:
 
     # data loader
     num_worker_per_gpu: 8
-    batch_size_per_gpu: 5
+    batch_size_per_gpu: 8
     dataset_enlarge_ratio: 1
     prefetch_mode: ~
 
   val_1:
     name: Set5
     type: PairedImageDataset
-    dataroot_gt: datasets/Test/HR/Set5/x2
-    dataroot_lq: datasets/Test/LR/Set5/x2
+    dataroot_gt: datasets/Set5/GTmod12
+    dataroot_lq: datasets/Set5/LRbicx2
     io_backend:
       type: disk
 
   val_2:
     name: Set14
     type: PairedImageDataset
-    dataroot_gt: datasets/Test/HR/Set14/x2
-    dataroot_lq: datasets/Test/LR/Set14/x2
+    dataroot_gt: datasets/Set14/GTmod12
+    dataroot_lq: datasets/Set14/LRbicx2
     io_backend:
       type: disk
-
-  val_3:
-    name: BSD100
-    type: PairedImageDataset
-    dataroot_gt: datasets/Test/HR/BSD100/x2
-    dataroot_lq: datasets/Test/LR/BSD100/x2
-    io_backend:
-      type: disk
-
-  val_4:
-    name: Urban100
-    type: PairedImageDataset
-    dataroot_gt: datasets/Test/HR/Urban100/x2
-    dataroot_lq: datasets/Test/LR/Urban100/x2
-    io_backend:
-      type: disk
-
-  val_5:
-    name: Manga109
-    type: PairedImageDataset
-    dataroot_gt: datasets/Test/HR/Manga109/x2
-    dataroot_lq: datasets/Test/LR/Manga109/x2
-    io_backend:
-      type: disk
-
 
 # network structures
 network_g:
@@ -75,7 +54,7 @@ network_g:
   upscale: 2
   in_chans: 3
   img_size: 48
-  window_size: 16
+  window_size: 8
   img_range: 1.
   depths: [6, 6, 6, 6, 6, 6]
   embed_dim: 180
@@ -87,7 +66,7 @@ network_g:
 # path
 path:
   pretrain_network_g: ~
-  strict_load_g: false
+  strict_load_g: true
   resume_state: ~
 
 # training settings
@@ -100,9 +79,9 @@ train:
     betas: [0.9, 0.99]
 
   scheduler:
-    type: CosineAnnealingRestartLR
-    periods: [200000, 200000, 200000, 200000, 200000]
-    restart_weights: [1, 0.5, 0.5, 0.5, 0.5]
+    type: MultiStepLR
+    milestones: [500000, 800000, 900000, 950000]
+    gamma: 0.5
 
   total_iter: 1000000
   warmup_iter: -1  # no warm up
@@ -115,7 +94,7 @@ train:
 
 # validation settings
 val:
-  val_freq: !!float 1e4
+  val_freq: !!float 5e3
   save_img: false
 
   metrics:
@@ -123,7 +102,7 @@ val:
       type: calculate_psnr
       crop_border: 2
       test_y_channel: true
-
+    
     ssim: # metric name, can be arbitrary
       type: calculate_ssim
       crop_border: 2
@@ -132,7 +111,7 @@ val:
 # logging settings
 logger:
   print_freq: 100
-  save_checkpoint_freq: !!float 1e4
+  save_checkpoint_freq: !!float 5e3
   use_tb_logger: true
   wandb:
     project: ~
