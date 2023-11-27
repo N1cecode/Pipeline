@@ -65,7 +65,7 @@ def create_train_val_dataloader(opt, logger):
         else:
             raise ValueError(f'Dataset phase {phase} is not recognized.')
 
-    return train_loader, train_sampler, val_loaders, total_epochs, total_iters
+    return train_loader, train_sampler, val_loaders, total_epochs, total_iters, num_iter_per_epoch
 
 
 def load_resume_state(opt):
@@ -101,6 +101,14 @@ def train_pipeline(root_path):
 
     # load resume states if necessary
     resume_state = load_resume_state(opt)
+    
+    # #! load schedulers from opt file rather than state file
+    # if opt['train']['scheduler']['type'] == 'CosineAnnealingRestartLR':
+    #     resume_state['schedulers'][0]['periods'] = opt['train']['scheduler']['periods']
+    #     resume_state['schedulers'][0]['restart_weights'] = opt['train']['scheduler']['restart_weights']
+    # elif opt['train']['scheduler']['type'] == 'MultiStepLR':
+    #     resume_state['schedulers'][0]['milestones'] = opt['train']['scheduler']['milestones']
+    #     resume_state['schedulers'][0]['gamma'] = opt['train']['scheduler']['gamma']
 
     if not osp.exists(opt['path']['log']):
         os.makedirs(opt['path']['log'], exist_ok=True)
@@ -129,7 +137,7 @@ def train_pipeline(root_path):
 
     # create train and validation dataloaders
     result = create_train_val_dataloader(opt, logger)
-    train_loader, train_sampler, val_loaders, total_epochs, total_iters = result
+    train_loader, train_sampler, val_loaders, total_epochs, total_iters, num_iter_per_epoch = result
     
     # create arch
     arch = build_arch(args.dir, opt)
@@ -139,8 +147,9 @@ def train_pipeline(root_path):
     if resume_state:  # resume training
         model.resume_training(resume_state)  # handle optimizers and schedulers
         logger.info(f"Resuming training from epoch: {resume_state['epoch']}, iter: {resume_state['iter']}.")
-        start_epoch = resume_state['epoch']
+        # start_epoch = resume_state['epoch']
         current_iter = resume_state['iter']
+        start_epoch = current_iter // num_iter_per_epoch
     else:
         start_epoch = 0
         current_iter = 0
