@@ -1,5 +1,5 @@
 # 2080ti
-name: ClassicalX2_019_SwinIR_Split_MSA+DWConvs_DIV2K_P48W8_LR2e-4Cos_B8G1_2080ti
+name: ClassicalX2_020_SwinIR_Split_MSA+Multi-DWConvs_DIV2K_P48W8_LR2e-4Cos_B8G1_2080ti
 model_type: SwinIRModel
 
 scale: 2
