@@ -4,8 +4,7 @@ from os import path as osp
 import torchvision
 
 from data import build_dataloader, build_dataset
-from models import build_model
-from utils.scan import build_arch
+from models import build_model, build_arch
 from utils import get_env_info, get_root_logger, get_time_str
 from utils.options import dict2str, parse_options
 

@@ -1,4 +1,4 @@
-import importlib
+import importlib, os
 from copy import deepcopy
 from os import path as osp
 
@@ -27,3 +27,29 @@ def build_model(opt, arch):
     logger = get_root_logger()
     logger.info(f'Model [{model.__class__.__name__}] is created.')
     return model
+
+
+def build_arch(folder_path, opt):
+    # Scan the folder for yaml and arch files
+    files = os.listdir(folder_path)
+    arch_files = [f for f in files if f.endswith('.py')]
+    
+    # Load arch file
+    if len(arch_files) > 0:
+        spec = importlib.util.spec_from_file_location("arch", os.path.join(folder_path, arch_files[0]))
+        arch_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(arch_module)
+        
+        # Get the class name from the yaml config and instantiate the class
+        network_opt = opt['network_g'].copy()
+        class_name = network_opt.pop('type')
+        hyperparameters = network_opt
+        if class_name:
+            arch_class = getattr(arch_module, class_name)
+            arch = arch_class(**hyperparameters)  # instantiate the network class with hyperparameters
+        else:
+            raise ValueError('Class name not found in the yaml config.')
+    else:
+        raise FileNotFoundError('No arch file found in the specified folder.')
+    
+    return arch
