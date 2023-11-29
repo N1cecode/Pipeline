@@ -173,22 +173,54 @@ class WindowAttention(nn.Module):
         x = self.proj_drop(x)
         return x
 
-    def extra_repr(self) -> str:
-        return f'dim={self.dim}, window_size={self.window_size}, num_heads={self.num_heads}'
+class TokenMixerCNN(nn.Module):
+    def __init__(self, dim, kernel_size):
+        super().__init__()
+        self.dwconvs = nn.Sequential(
+            nn.Conv2d(dim, dim, kernel_size, 1, kernel_size//2, groups=dim), nn.GELU(),
+            nn.Conv2d(dim, dim, kernel_size, 1, kernel_size//2, groups=dim), nn.GELU(),
+            nn.Conv2d(dim, dim, kernel_size, 1, kernel_size//2, groups=dim), nn.GELU(),
+            )
+    
+    def forward(self, x):
+        return self.dwconvs(x)
+        
 
-    def flops(self, n):
-        # calculate flops for 1 window with token length of n
-        flops = 0
-        # qkv = self.qkv(x)
-        flops += n * self.dim * 3 * self.dim
-        # attn = (q @ k.transpose(-2, -1))
-        flops += self.num_heads * n * (self.dim // self.num_heads) * n
-        #  x = (attn @ v)
-        flops += self.num_heads * n * n * (self.dim // self.num_heads)
-        # x = self.proj(x)
-        flops += n * self.dim * self.dim
-        return flops
+class TokenMixer(nn.Module):
+    def __init__(self, dim, window_size, num_heads, kernel_size=5, qkv_bias=True, qk_scale=None, attn_drop=0., proj_drop=0., **kwargs):
+        super().__init__()
+        self.dim = dim
+        self.window_size = window_size
+        
+        self.msa = WindowAttention(
+            dim//2,
+            window_size=to_2tuple(window_size),
+            num_heads=num_heads,
+            qkv_bias=qkv_bias,
+            qk_scale=qk_scale,
+            attn_drop=attn_drop,
+            proj_drop=proj_drop)
+        
+        # Adding CNN layer
+        self.cnn = TokenMixerCNN(dim=dim//2, kernel_size=kernel_size)
+        # self.cnn = nn.Conv2d(dim//2, dim//2, kernel_size=cnn_kernel_size, padding=cnn_kernel_size//2, groups=dim//2)
+        # self.cnn = nn.Identity()
+        
+    def forward(self, x, mask=None):
+        b, n, c = x.shape
+        
+        # Splitting the input into two parts
+        x1, x2 = x.split(c//2, dim=2)
 
+        x1 = self.msa(x1, mask)
+
+        x2 = x2.transpose(1, 2).contiguous().view(x2.shape[0], self.dim//2, self.window_size[0], self.window_size[1])
+        x2 = self.cnn(x2)
+        x2 = x2.flatten(2).transpose(1, 2).contiguous()
+        
+        x = torch.cat((x1, x2), dim=2)
+        
+        return x
 
 class SwinTransformerBlock(nn.Module):
     r""" Swin Transformer Block.
@@ -237,7 +269,7 @@ class SwinTransformerBlock(nn.Module):
         assert 0 <= self.shift_size < self.window_size, 'shift_size must in 0-window_size'
 
         self.norm1 = norm_layer(dim)
-        self.attn = WindowAttention(
+        self.attn = TokenMixer(
             dim,
             window_size=to_2tuple(self.window_size),
             num_heads=num_heads,
@@ -321,23 +353,6 @@ class SwinTransformerBlock(nn.Module):
 
         return x
 
-    def extra_repr(self) -> str:
-        return (f'dim={self.dim}, input_resolution={self.input_resolution}, num_heads={self.num_heads}, '
-                f'window_size={self.window_size}, shift_size={self.shift_size}, mlp_ratio={self.mlp_ratio}')
-
-    def flops(self):
-        flops = 0
-        h, w = self.input_resolution
-        # norm1
-        flops += self.dim * h * w
-        # W-MSA/SW-MSA
-        nw = h * w / self.window_size / self.window_size
-        flops += nw * self.attn.flops(self.window_size * self.window_size)
-        # mlp
-        flops += 2 * h * w * self.dim * self.dim * self.mlp_ratio
-        # norm2
-        flops += self.dim * h * w
-        return flops
 
 
 class PatchMerging(nn.Module):
@@ -464,16 +479,6 @@ class BasicLayer(nn.Module):
             x = self.downsample(x)
         return x
 
-    def extra_repr(self) -> str:
-        return f'dim={self.dim}, input_resolution={self.input_resolution}, depth={self.depth}'
-
-    def flops(self):
-        flops = 0
-        for blk in self.blocks:
-            flops += blk.flops()
-        if self.downsample is not None:
-            flops += self.downsample.flops()
-        return flops
 
 
 class RSTB(nn.Module):
@@ -555,16 +560,6 @@ class RSTB(nn.Module):
 
     def forward(self, x, x_size):
         return self.patch_embed(self.conv(self.patch_unembed(self.residual_group(x, x_size), x_size))) + x
-
-    def flops(self):
-        flops = 0
-        flops += self.residual_group.flops()
-        h, w = self.input_resolution
-        flops += h * w * self.dim * self.dim * 9
-        flops += self.patch_embed.flops()
-        flops += self.patch_unembed.flops()
-
-        return flops
 
 
 class PatchEmbed(nn.Module):
@@ -689,6 +684,7 @@ class UpsampleOneStep(nn.Sequential):
         return flops
 
 
+# @ARCH_REGISTRY.register()
 class SwinIR(nn.Module):
     r""" SwinIR
         A PyTorch impl of : `SwinIR: Image Restoration Using Swin Transformer`, based on Swin Transformer.
@@ -919,21 +915,11 @@ class SwinIR(nn.Module):
 
         return x
 
-    def flops(self):
-        flops = 0
-        h, w = self.patches_resolution
-        flops += h * w * 3 * self.embed_dim * 9
-        flops += self.patch_embed.flops()
-        for layer in self.layers:
-            flops += layer.flops()
-        flops += h * w * 3 * self.embed_dim * self.embed_dim
-        flops += self.upsample.flops()
-        return flops
 
 
 if __name__ == '__main__':
-    upscale = 4
-    window_size = 8
+    upscale = 2
+    window_size = 24
     height = (1024 // upscale // window_size + 1) * window_size
     width = (720 // upscale // window_size + 1) * window_size
     model = SwinIR(
@@ -942,12 +928,11 @@ if __name__ == '__main__':
         window_size=window_size,
         img_range=1.,
         depths=[6, 6, 6, 6],
-        embed_dim=60,
+        embed_dim=180,
         num_heads=[6, 6, 6, 6],
         mlp_ratio=2,
         upsampler='pixelshuffledirect')
     print(model)
-    print(height, width, model.flops() / 1e9)
 
     x = torch.randn((1, 3, height, width))
     x = model(x)

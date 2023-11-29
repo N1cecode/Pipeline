@@ -1,0 +1,1625 @@
+2023-11-16 10:42:53,887 INFO: 
+     ______                   __   __                 __      __
+    / ____/____   ____   ____/ /  / /   __  __ _____ / /__   / /
+   / / __ / __ \ / __ \ / __  /  / /   / / / // ___// //_/  / /
+  / /_/ // /_/ // /_/ // /_/ /  / /___/ /_/ // /__ / /<    /_/
+  \____/ \____/ \____/ \____/  /_____/\____/ \___//_/|_|  (_)
+    
+Version Information: 
+	PyTorch: 2.0.1
+	TorchVision: 0.15.2
+2023-11-16 10:42:53,888 INFO: 
+  name: ClassicalX2_014_Pretrained_SwinIR_MS-FFN_DIV2K_P48W8_LR2e-4_B8G1_titan_cos
+  model_type: SwinIRModel
+  scale: 2
+  num_gpu: 1
+  manual_seed: 3407
+  datasets:[
+    train:[
+      name: DIV2K
+      type: PairedImageDataset
+      dataroot_gt: datasets/DIV2K/DIV2K_train_HR_sub
+      dataroot_lq: datasets/DIV2K/DIV2K_train_LR_bicubic/X2_sub
+      meta_info_file: data/meta_info/meta_info_DIV2K800sub_GT.txt
+      filename_tmpl: {}
+      io_backend:[
+        type: disk
+      ]
+      gt_size: 96
+      use_hflip: True
+      use_rot: True
+      num_worker_per_gpu: 8
+      batch_size_per_gpu: 5
+      dataset_enlarge_ratio: 1
+      prefetch_mode: None
+      phase: train
+      scale: 2
+    ]
+    val_1:[
+      name: Set5
+      type: PairedImageDataset
+      dataroot_gt: datasets/Test/HR/Set5/x2
+      dataroot_lq: datasets/Test/LR/Set5/x2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_2:[
+      name: Set14
+      type: PairedImageDataset
+      dataroot_gt: datasets/Test/HR/Set14/x2
+      dataroot_lq: datasets/Test/LR/Set14/x2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_3:[
+      name: BSD100
+      type: PairedImageDataset
+      dataroot_gt: datasets/Test/HR/BSD100/x2
+      dataroot_lq: datasets/Test/LR/BSD100/x2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_4:[
+      name: Urban100
+      type: PairedImageDataset
+      dataroot_gt: datasets/Test/HR/Urban100/x2
+      dataroot_lq: datasets/Test/LR/Urban100/x2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_5:[
+      name: Manga109
+      type: PairedImageDataset
+      dataroot_gt: datasets/Test/HR/Manga109/x2
+      dataroot_lq: datasets/Test/LR/Manga109/x2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+  ]
+  network_g:[
+    type: SwinIR
+    upscale: 2
+    in_chans: 3
+    img_size: 48
+    window_size: 16
+    img_range: 1.0
+    depths: [6, 6, 6, 6, 6, 6]
+    embed_dim: 180
+    num_heads: [6, 6, 6, 6, 6, 6]
+    mlp_ratio: 2
+    upsampler: pixelshuffle
+    resi_connection: 1conv
+  ]
+  path:[
+    pretrain_network_g: experiments/pretrained_models/SwinIR/X2/001_classicalSR_DIV2K_s48w8_SwinIR-M_x2.pth
+    strict_load_g: False
+    resume_state: None
+    experiments_root: /share3/home/renzihao/Pipeline/experiments/Doing/015_Pretrained_SwinIR_MS-FFN_DIV2K_P48W16_LR2e-4_cos_2080ti
+    models: /share3/home/renzihao/Pipeline/experiments/Doing/015_Pretrained_SwinIR_MS-FFN_DIV2K_P48W16_LR2e-4_cos_2080ti/weights
+    training_states: /share3/home/renzihao/Pipeline/experiments/Doing/015_Pretrained_SwinIR_MS-FFN_DIV2K_P48W16_LR2e-4_cos_2080ti/training_states
+    log: /share3/home/renzihao/Pipeline/experiments/Doing/015_Pretrained_SwinIR_MS-FFN_DIV2K_P48W16_LR2e-4_cos_2080ti
+    visualization: /share3/home/renzihao/Pipeline/experiments/Doing/015_Pretrained_SwinIR_MS-FFN_DIV2K_P48W16_LR2e-4_cos_2080ti/visualization
+    tb_logger: /share3/home/renzihao/Pipeline/experiments/Doing/015_Pretrained_SwinIR_MS-FFN_DIV2K_P48W16_LR2e-4_cos_2080ti/tb_logger
+  ]
+  train:[
+    ema_decay: 0.999
+    optim_g:[
+      type: Adam
+      lr: 0.0002
+      weight_decay: 0
+      betas: [0.9, 0.99]
+    ]
+    scheduler:[
+      type: CosineAnnealingRestartLR
+      periods: [200000, 200000, 200000, 200000, 200000]
+      restart_weights: [1, 0.5, 0.5, 0.5, 0.5]
+    ]
+    total_iter: 1000000
+    warmup_iter: -1
+    pixel_opt:[
+      type: L1Loss
+      loss_weight: 1.0
+      reduction: mean
+    ]
+  ]
+  val:[
+    val_freq: 10000.0
+    save_img: False
+    metrics:[
+      psnr:[
+        type: calculate_psnr
+        crop_border: 2
+        test_y_channel: True
+      ]
+      ssim:[
+        type: calculate_ssim
+        crop_border: 2
+        test_y_channel: True
+      ]
+    ]
+  ]
+  logger:[
+    print_freq: 100
+    save_checkpoint_freq: 10000.0
+    use_tb_logger: True
+    wandb:[
+      project: None
+      resume_id: None
+    ]
+  ]
+  dist_params:[
+    backend: nccl
+    port: 29500
+  ]
+  dist: False
+  rank: 0
+  world_size: 1
+  auto_resume: False
+  is_train: True
+  root_path: /share3/home/renzihao
+
+2023-11-16 10:42:59,108 INFO: Dataset [PairedImageDataset] - DIV2K is built.
+2023-11-16 10:42:59,109 INFO: Training statistics:
+	Number of train images: 32592
+	Dataset enlarge ratio: 1
+	Batch size per gpu: 5
+	World size (gpu number): 1
+	Require iter number per epoch: 6519
+	Total epochs: 154; iters: 1000000.
+2023-11-16 10:42:59,110 INFO: Dataset [PairedImageDataset] - Set5 is built.
+2023-11-16 10:42:59,110 INFO: Number of val images/folders in Set5: 5
+2023-11-16 10:42:59,112 INFO: Dataset [PairedImageDataset] - Set14 is built.
+2023-11-16 10:42:59,112 INFO: Number of val images/folders in Set14: 14
+2023-11-16 10:42:59,117 INFO: Dataset [PairedImageDataset] - BSD100 is built.
+2023-11-16 10:42:59,117 INFO: Number of val images/folders in BSD100: 100
+2023-11-16 10:42:59,123 INFO: Dataset [PairedImageDataset] - Urban100 is built.
+2023-11-16 10:42:59,123 INFO: Number of val images/folders in Urban100: 100
+2023-11-16 10:42:59,129 INFO: Dataset [PairedImageDataset] - Manga109 is built.
+2023-11-16 10:42:59,129 INFO: Number of val images/folders in Manga109: 109
+2023-11-16 10:43:02,303 INFO: Network: SwinIR, with parameters: 13,051,943
+2023-11-16 10:43:02,303 INFO: SwinIR(
+  (conv_first): Conv2d(3, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (patch_embed): PatchEmbed(
+    (norm): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+  )
+  (patch_unembed): PatchUnEmbed()
+  (pos_drop): Dropout(p=0.0, inplace=False)
+  (layers): ModuleList(
+    (0): RSTB(
+      (residual_group): BasicLayer(
+        dim=180, input_resolution=(48, 48), depth=6
+        (blocks): ModuleList(
+          (0): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=16, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(16, 16), num_heads=6
+              (qkv): Linear(in_features=180, out_features=540, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (drop_path): Identity()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (conv1): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(1, 1), stride=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv3): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv5): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv7): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=16, shift_size=8, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(16, 16), num_heads=6
+              (qkv): Linear(in_features=180, out_features=540, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (conv1): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(1, 1), stride=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv3): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv5): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv7): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (2): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=16, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(16, 16), num_heads=6
+              (qkv): Linear(in_features=180, out_features=540, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (conv1): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(1, 1), stride=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv3): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv5): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv7): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (3): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=16, shift_size=8, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(16, 16), num_heads=6
+              (qkv): Linear(in_features=180, out_features=540, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (conv1): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(1, 1), stride=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv3): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv5): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv7): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (4): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=16, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(16, 16), num_heads=6
+              (qkv): Linear(in_features=180, out_features=540, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (conv1): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(1, 1), stride=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv3): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv5): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv7): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (5): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=16, shift_size=8, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(16, 16), num_heads=6
+              (qkv): Linear(in_features=180, out_features=540, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (conv1): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(1, 1), stride=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv3): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv5): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv7): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+        )
+      )
+      (conv): Conv2d(180, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (patch_embed): PatchEmbed()
+      (patch_unembed): PatchUnEmbed()
+    )
+    (1-5): 5 x RSTB(
+      (residual_group): BasicLayer(
+        dim=180, input_resolution=(48, 48), depth=6
+        (blocks): ModuleList(
+          (0): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=16, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(16, 16), num_heads=6
+              (qkv): Linear(in_features=180, out_features=540, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (conv1): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(1, 1), stride=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv3): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv5): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv7): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=16, shift_size=8, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(16, 16), num_heads=6
+              (qkv): Linear(in_features=180, out_features=540, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (conv1): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(1, 1), stride=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv3): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv5): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv7): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (2): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=16, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(16, 16), num_heads=6
+              (qkv): Linear(in_features=180, out_features=540, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (conv1): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(1, 1), stride=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv3): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv5): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv7): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (3): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=16, shift_size=8, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(16, 16), num_heads=6
+              (qkv): Linear(in_features=180, out_features=540, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (conv1): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(1, 1), stride=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv3): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv5): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv7): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (4): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=16, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(16, 16), num_heads=6
+              (qkv): Linear(in_features=180, out_features=540, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (conv1): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(1, 1), stride=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv3): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv5): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv7): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (5): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=16, shift_size=8, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(16, 16), num_heads=6
+              (qkv): Linear(in_features=180, out_features=540, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (conv1): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(1, 1), stride=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv3): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv5): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+                (conv7): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+        )
+      )
+      (conv): Conv2d(180, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (patch_embed): PatchEmbed()
+      (patch_unembed): PatchUnEmbed()
+    )
+  )
+  (norm): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+  (conv_after_body): Conv2d(180, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (conv_before_upsample): Sequential(
+    (0): Conv2d(180, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01, inplace=True)
+  )
+  (upsample): Upsample(
+    (0): Conv2d(64, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): PixelShuffle(upscale_factor=2)
+  )
+  (conv_last): Conv2d(64, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+)
+2023-11-16 10:43:03,983 INFO: Loading SwinIR model from experiments/pretrained_models/SwinIR/X2/001_classicalSR_DIV2K_s48w8_SwinIR-M_x2.pth, with param key: [params].
+2023-11-16 10:43:04,041 WARNING: Current net - loaded net:
+2023-11-16 10:43:04,041 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,041 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,041 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,041 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,041 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,041 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,041 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,041 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,041 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,041 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,042 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,043 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,043 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,043 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,043 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,043 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,043 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,044 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,045 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,046 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,047 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,048 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,048 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,048 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,048 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,048 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,048 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,049 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,050 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,050 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,050 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,050 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,050 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,050 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,050 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,050 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,050 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,050 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,050 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,050 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,050 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,050 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,050 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,050 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,050 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,050 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,050 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,050 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,050 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,051 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,052 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,052 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,052 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,052 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,052 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,052 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,053 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,054 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,055 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,055 WARNING: Loaded net - current net:
+2023-11-16 10:43:04,055 WARNING: Size different, ignore [layers.0.residual_group.blocks.5.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,055 WARNING: Size different, ignore [layers.0.residual_group.blocks.0.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,055 WARNING: Size different, ignore [layers.2.residual_group.blocks.2.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,055 WARNING: Size different, ignore [layers.1.residual_group.blocks.1.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,055 WARNING: Size different, ignore [layers.4.residual_group.blocks.4.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,055 WARNING: Size different, ignore [layers.3.residual_group.blocks.3.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,055 WARNING: Size different, ignore [layers.5.residual_group.blocks.3.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,055 WARNING: Size different, ignore [layers.1.residual_group.blocks.4.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,055 WARNING: Size different, ignore [layers.5.residual_group.blocks.5.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,055 WARNING: Size different, ignore [layers.5.residual_group.blocks.1.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,055 WARNING: Size different, ignore [layers.5.residual_group.blocks.4.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,056 WARNING: Size different, ignore [layers.1.residual_group.blocks.3.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,056 WARNING: Size different, ignore [layers.4.residual_group.blocks.3.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,056 WARNING: Size different, ignore [layers.1.residual_group.blocks.1.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,056 WARNING: Size different, ignore [layers.0.residual_group.blocks.3.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,056 WARNING: Size different, ignore [layers.1.residual_group.blocks.3.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,056 WARNING: Size different, ignore [layers.5.residual_group.blocks.2.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,056 WARNING: Size different, ignore [layers.2.residual_group.blocks.5.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,056 WARNING: Size different, ignore [layers.3.residual_group.blocks.5.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,056 WARNING: Size different, ignore [layers.5.residual_group.blocks.3.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,056 WARNING: Size different, ignore [layers.3.residual_group.blocks.4.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,056 WARNING: Size different, ignore [layers.3.residual_group.blocks.3.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,056 WARNING: Size different, ignore [layers.2.residual_group.blocks.5.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,056 WARNING: Size different, ignore [layers.1.residual_group.blocks.1.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,056 WARNING: Size different, ignore [layers.3.residual_group.blocks.5.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.0.residual_group.blocks.4.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.4.residual_group.blocks.4.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.4.residual_group.blocks.1.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.1.residual_group.blocks.3.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.1.residual_group.blocks.5.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.0.residual_group.blocks.5.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.2.residual_group.blocks.0.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.5.residual_group.blocks.4.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.1.residual_group.blocks.0.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.0.residual_group.blocks.3.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.3.residual_group.blocks.0.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.4.residual_group.blocks.3.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.2.residual_group.blocks.3.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.5.residual_group.blocks.5.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,057 WARNING: Size different, ignore [layers.2.residual_group.blocks.2.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.3.residual_group.blocks.4.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.3.residual_group.blocks.2.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.2.residual_group.blocks.1.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.5.residual_group.blocks.3.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.4.residual_group.blocks.5.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.5.residual_group.blocks.5.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.1.residual_group.blocks.5.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.0.residual_group.blocks.2.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.4.residual_group.blocks.3.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.2.residual_group.blocks.3.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.2.residual_group.blocks.1.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.1.residual_group.blocks.2.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.0.residual_group.blocks.2.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.3.residual_group.blocks.5.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,058 WARNING: Size different, ignore [layers.0.residual_group.blocks.1.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.2.residual_group.blocks.4.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.3.residual_group.blocks.0.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.5.residual_group.blocks.1.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.0.residual_group.blocks.3.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.4.residual_group.blocks.2.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.1.residual_group.blocks.4.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.0.residual_group.blocks.1.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.0.residual_group.blocks.4.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.3.residual_group.blocks.1.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.1.residual_group.blocks.2.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.4.residual_group.blocks.1.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.4.residual_group.blocks.2.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.1.residual_group.blocks.0.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.2.residual_group.blocks.4.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,059 WARNING: Size different, ignore [layers.5.residual_group.blocks.2.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.4.residual_group.blocks.0.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.2.residual_group.blocks.0.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.4.residual_group.blocks.1.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.2.residual_group.blocks.3.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.3.residual_group.blocks.2.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.3.residual_group.blocks.1.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.5.residual_group.blocks.1.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.0.residual_group.blocks.0.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.4.residual_group.blocks.0.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.4.residual_group.blocks.5.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.4.residual_group.blocks.5.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.5.residual_group.blocks.0.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.2.residual_group.blocks.1.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.2.residual_group.blocks.5.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,060 WARNING: Size different, ignore [layers.3.residual_group.blocks.1.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,061 WARNING: Size different, ignore [layers.3.residual_group.blocks.3.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,061 WARNING: Size different, ignore [layers.0.residual_group.blocks.1.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,061 WARNING: Size different, ignore [layers.5.residual_group.blocks.0.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,061 WARNING: Size different, ignore [layers.1.residual_group.blocks.5.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,061 WARNING: Size different, ignore [layers.0.residual_group.blocks.5.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,100 INFO: Use Exponential Moving Average with decay: 0.999
+2023-11-16 10:43:04,273 INFO: Loading: params_ema does not exist, use params.
+2023-11-16 10:43:04,273 INFO: Loading SwinIR model from experiments/pretrained_models/SwinIR/X2/001_classicalSR_DIV2K_s48w8_SwinIR-M_x2.pth, with param key: [params].
+2023-11-16 10:43:04,348 WARNING: Current net - loaded net:
+2023-11-16 10:43:04,348 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,348 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,348 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,349 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,350 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,351 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,351 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,351 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,351 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,351 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,351 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,351 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,351 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,351 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,351 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,351 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,351 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,351 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,351 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,351 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,351 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,351 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,351 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,351 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,351 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,352 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,353 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,353 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,353 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,353 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,353 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,353 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,353 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,353 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,353 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,353 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,353 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,353 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,353 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,353 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,353 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,353 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,353 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,353 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,353 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,353 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,354 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,355 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,356 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,356 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,356 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,357 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,358 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,358 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,358 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,358 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,358 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,358 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,358 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,358 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,358 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,358 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,358 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,358 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,358 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,358 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,358 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,358 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,358 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,358 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,358 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,358 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,358 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,359 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,360 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,360 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,360 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,360 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,360 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,360 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,361 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv1.0.bias
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv1.0.weight
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv3.0.bias
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv3.0.weight
+2023-11-16 10:43:04,362 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv5.0.bias
+2023-11-16 10:43:04,363 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv5.0.weight
+2023-11-16 10:43:04,363 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv7.0.bias
+2023-11-16 10:43:04,363 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.conv7.0.weight
+2023-11-16 10:43:04,363 WARNING: Loaded net - current net:
+2023-11-16 10:43:04,363 WARNING: Size different, ignore [layers.0.residual_group.blocks.5.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,363 WARNING: Size different, ignore [layers.0.residual_group.blocks.0.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,363 WARNING: Size different, ignore [layers.2.residual_group.blocks.2.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,363 WARNING: Size different, ignore [layers.1.residual_group.blocks.1.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,363 WARNING: Size different, ignore [layers.4.residual_group.blocks.4.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,363 WARNING: Size different, ignore [layers.3.residual_group.blocks.3.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,363 WARNING: Size different, ignore [layers.5.residual_group.blocks.3.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,363 WARNING: Size different, ignore [layers.1.residual_group.blocks.4.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,364 WARNING: Size different, ignore [layers.5.residual_group.blocks.5.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,364 WARNING: Size different, ignore [layers.5.residual_group.blocks.1.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,364 WARNING: Size different, ignore [layers.5.residual_group.blocks.4.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,364 WARNING: Size different, ignore [layers.1.residual_group.blocks.3.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,364 WARNING: Size different, ignore [layers.4.residual_group.blocks.3.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,364 WARNING: Size different, ignore [layers.1.residual_group.blocks.1.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,364 WARNING: Size different, ignore [layers.0.residual_group.blocks.3.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,364 WARNING: Size different, ignore [layers.1.residual_group.blocks.3.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,364 WARNING: Size different, ignore [layers.5.residual_group.blocks.2.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,364 WARNING: Size different, ignore [layers.2.residual_group.blocks.5.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,364 WARNING: Size different, ignore [layers.3.residual_group.blocks.5.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,364 WARNING: Size different, ignore [layers.5.residual_group.blocks.3.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,364 WARNING: Size different, ignore [layers.3.residual_group.blocks.4.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,365 WARNING: Size different, ignore [layers.3.residual_group.blocks.3.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,365 WARNING: Size different, ignore [layers.2.residual_group.blocks.5.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,365 WARNING: Size different, ignore [layers.1.residual_group.blocks.1.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,365 WARNING: Size different, ignore [layers.3.residual_group.blocks.5.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,365 WARNING: Size different, ignore [layers.0.residual_group.blocks.4.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,365 WARNING: Size different, ignore [layers.4.residual_group.blocks.4.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,365 WARNING: Size different, ignore [layers.4.residual_group.blocks.1.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,365 WARNING: Size different, ignore [layers.1.residual_group.blocks.3.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,365 WARNING: Size different, ignore [layers.1.residual_group.blocks.5.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,365 WARNING: Size different, ignore [layers.0.residual_group.blocks.5.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,365 WARNING: Size different, ignore [layers.2.residual_group.blocks.0.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,365 WARNING: Size different, ignore [layers.5.residual_group.blocks.4.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,365 WARNING: Size different, ignore [layers.1.residual_group.blocks.0.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,365 WARNING: Size different, ignore [layers.0.residual_group.blocks.3.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,366 WARNING: Size different, ignore [layers.3.residual_group.blocks.0.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,366 WARNING: Size different, ignore [layers.4.residual_group.blocks.3.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,366 WARNING: Size different, ignore [layers.2.residual_group.blocks.3.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,366 WARNING: Size different, ignore [layers.5.residual_group.blocks.5.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,366 WARNING: Size different, ignore [layers.2.residual_group.blocks.2.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,366 WARNING: Size different, ignore [layers.3.residual_group.blocks.4.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,366 WARNING: Size different, ignore [layers.3.residual_group.blocks.2.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,366 WARNING: Size different, ignore [layers.2.residual_group.blocks.1.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,366 WARNING: Size different, ignore [layers.5.residual_group.blocks.3.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,366 WARNING: Size different, ignore [layers.4.residual_group.blocks.5.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,366 WARNING: Size different, ignore [layers.5.residual_group.blocks.5.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,366 WARNING: Size different, ignore [layers.1.residual_group.blocks.5.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,366 WARNING: Size different, ignore [layers.0.residual_group.blocks.2.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,366 WARNING: Size different, ignore [layers.4.residual_group.blocks.3.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,367 WARNING: Size different, ignore [layers.2.residual_group.blocks.3.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,367 WARNING: Size different, ignore [layers.2.residual_group.blocks.1.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,367 WARNING: Size different, ignore [layers.1.residual_group.blocks.2.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,367 WARNING: Size different, ignore [layers.0.residual_group.blocks.2.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,367 WARNING: Size different, ignore [layers.3.residual_group.blocks.5.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,367 WARNING: Size different, ignore [layers.0.residual_group.blocks.1.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,367 WARNING: Size different, ignore [layers.2.residual_group.blocks.4.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,367 WARNING: Size different, ignore [layers.3.residual_group.blocks.0.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,367 WARNING: Size different, ignore [layers.5.residual_group.blocks.1.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,367 WARNING: Size different, ignore [layers.0.residual_group.blocks.3.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,367 WARNING: Size different, ignore [layers.4.residual_group.blocks.2.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,367 WARNING: Size different, ignore [layers.1.residual_group.blocks.4.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,367 WARNING: Size different, ignore [layers.0.residual_group.blocks.1.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,367 WARNING: Size different, ignore [layers.0.residual_group.blocks.4.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,368 WARNING: Size different, ignore [layers.3.residual_group.blocks.1.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,368 WARNING: Size different, ignore [layers.1.residual_group.blocks.2.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,368 WARNING: Size different, ignore [layers.4.residual_group.blocks.1.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,368 WARNING: Size different, ignore [layers.4.residual_group.blocks.2.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,368 WARNING: Size different, ignore [layers.1.residual_group.blocks.0.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,368 WARNING: Size different, ignore [layers.2.residual_group.blocks.4.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,368 WARNING: Size different, ignore [layers.5.residual_group.blocks.2.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,368 WARNING: Size different, ignore [layers.4.residual_group.blocks.0.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,368 WARNING: Size different, ignore [layers.2.residual_group.blocks.0.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,368 WARNING: Size different, ignore [layers.4.residual_group.blocks.1.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,368 WARNING: Size different, ignore [layers.2.residual_group.blocks.3.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,368 WARNING: Size different, ignore [layers.3.residual_group.blocks.2.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,368 WARNING: Size different, ignore [layers.3.residual_group.blocks.1.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,368 WARNING: Size different, ignore [layers.5.residual_group.blocks.1.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,369 WARNING: Size different, ignore [layers.0.residual_group.blocks.0.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,369 WARNING: Size different, ignore [layers.4.residual_group.blocks.0.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,369 WARNING: Size different, ignore [layers.4.residual_group.blocks.5.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,369 WARNING: Size different, ignore [layers.4.residual_group.blocks.5.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,369 WARNING: Size different, ignore [layers.5.residual_group.blocks.0.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,369 WARNING: Size different, ignore [layers.2.residual_group.blocks.1.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,369 WARNING: Size different, ignore [layers.2.residual_group.blocks.5.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,369 WARNING: Size different, ignore [layers.3.residual_group.blocks.1.attn_mask]: crt_net: torch.Size([9, 256, 256]); load_net: torch.Size([36, 64, 64])
+2023-11-16 10:43:04,369 WARNING: Size different, ignore [layers.3.residual_group.blocks.3.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,369 WARNING: Size different, ignore [layers.0.residual_group.blocks.1.attn.relative_position_index]: crt_net: torch.Size([256, 256]); load_net: torch.Size([64, 64])
+2023-11-16 10:43:04,369 WARNING: Size different, ignore [layers.5.residual_group.blocks.0.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,369 WARNING: Size different, ignore [layers.1.residual_group.blocks.5.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,369 WARNING: Size different, ignore [layers.0.residual_group.blocks.5.attn.relative_position_bias_table]: crt_net: torch.Size([961, 6]); load_net: torch.Size([225, 6])
+2023-11-16 10:43:04,417 INFO: Loss [L1Loss] is created.
+2023-11-16 10:43:04,421 INFO: Model [SwinIRModel] is created.
+2023-11-16 10:43:04,844 INFO: Start training from epoch: 0, iter: 0
+2023-11-16 10:43:58,754 INFO: [Class..][epoch:  0, iter:     100, lr:(2.000e-04,)] [eta: 5 days, 18:31:35, time (data): 0.539 (0.009)] l_pix: 3.7467e-02 
+2023-11-16 10:44:50,501 INFO: [Class..][epoch:  0, iter:     200, lr:(2.000e-04,)] [eta: 5 days, 21:06:02, time (data): 0.528 (0.005)] l_pix: 1.8649e-02 
+2023-11-16 10:45:42,274 INFO: [Class..][epoch:  0, iter:     300, lr:(2.000e-04,)] [eta: 5 days, 21:58:40, time (data): 0.518 (0.002)] l_pix: 1.0820e-02 
+2023-11-16 10:46:34,501 INFO: [Class..][epoch:  0, iter:     400, lr:(2.000e-04,)] [eta: 5 days, 22:43:31, time (data): 0.520 (0.002)] l_pix: 1.3981e-02 
+2023-11-16 10:47:26,268 INFO: [Class..][epoch:  0, iter:     500, lr:(2.000e-04,)] [eta: 5 days, 22:54:49, time (data): 0.518 (0.002)] l_pix: 1.1484e-02 
+2023-11-16 10:48:17,766 INFO: [Class..][epoch:  0, iter:     600, lr:(2.000e-04,)] [eta: 5 days, 22:54:35, time (data): 0.516 (0.002)] l_pix: 1.6790e-02 
+2023-11-16 10:49:09,116 INFO: [Class..][epoch:  0, iter:     700, lr:(2.000e-04,)] [eta: 5 days, 22:50:40, time (data): 0.513 (0.002)] l_pix: 1.9394e-02 
+2023-11-16 10:50:00,583 INFO: [Class..][epoch:  0, iter:     800, lr:(2.000e-04,)] [eta: 5 days, 22:49:57, time (data): 0.514 (0.002)] l_pix: 1.9621e-02 
+2023-11-16 10:50:52,043 INFO: [Class..][epoch:  0, iter:     900, lr:(2.000e-04,)] [eta: 5 days, 22:49:06, time (data): 0.515 (0.002)] l_pix: 1.5733e-02 
+2023-11-16 10:51:43,630 INFO: [Class..][epoch:  0, iter:   1,000, lr:(2.000e-04,)] [eta: 5 days, 22:50:20, time (data): 0.515 (0.002)] l_pix: 9.9331e-03 
+2023-11-16 10:52:35,000 INFO: [Class..][epoch:  0, iter:   1,100, lr:(2.000e-04,)] [eta: 5 days, 22:47:55, time (data): 0.514 (0.002)] l_pix: 1.7042e-02 
+2023-11-16 10:53:26,575 INFO: [Class..][epoch:  0, iter:   1,200, lr:(2.000e-04,)] [eta: 5 days, 22:48:35, time (data): 0.515 (0.002)] l_pix: 9.6167e-03 
+2023-11-16 10:54:18,185 INFO: [Class..][epoch:  0, iter:   1,300, lr:(2.000e-04,)] [eta: 5 days, 22:49:29, time (data): 0.516 (0.002)] l_pix: 3.1903e-02 
+2023-11-16 10:55:09,645 INFO: [Class..][epoch:  0, iter:   1,400, lr:(2.000e-04,)] [eta: 5 days, 22:48:20, time (data): 0.515 (0.002)] l_pix: 1.5297e-02 
+2023-11-16 10:56:01,291 INFO: [Class..][epoch:  0, iter:   1,500, lr:(2.000e-04,)] [eta: 5 days, 22:49:18, time (data): 0.517 (0.002)] l_pix: 8.2953e-03 
+2023-11-16 10:56:52,660 INFO: [Class..][epoch:  0, iter:   1,600, lr:(2.000e-04,)] [eta: 5 days, 22:47:09, time (data): 0.515 (0.002)] l_pix: 2.3181e-02 
+2023-11-16 10:57:44,054 INFO: [Class..][epoch:  0, iter:   1,700, lr:(2.000e-04,)] [eta: 5 days, 22:45:23, time (data): 0.514 (0.002)] l_pix: 1.1771e-02 
+2023-11-16 10:58:35,623 INFO: [Class..][epoch:  0, iter:   1,800, lr:(2.000e-04,)] [eta: 5 days, 22:45:21, time (data): 0.515 (0.002)] l_pix: 1.8598e-02 
+2023-11-16 10:59:27,956 INFO: [Class..][epoch:  0, iter:   1,900, lr:(2.000e-04,)] [eta: 5 days, 22:51:55, time (data): 0.524 (0.002)] l_pix: 1.3581e-02 
+2023-11-16 11:00:21,025 INFO: [Class..][epoch:  0, iter:   2,000, lr:(2.000e-04,)] [eta: 5 days, 23:03:51, time (data): 0.527 (0.002)] l_pix: 1.9125e-02 
+2023-11-16 11:01:14,214 INFO: [Class..][epoch:  0, iter:   2,100, lr:(1.999e-04,)] [eta: 5 days, 23:15:31, time (data): 0.531 (0.002)] l_pix: 1.1006e-02 
+2023-11-16 11:02:06,783 INFO: [Class..][epoch:  0, iter:   2,200, lr:(1.999e-04,)] [eta: 5 days, 23:21:22, time (data): 0.528 (0.002)] l_pix: 2.0307e-02 
+2023-11-16 11:02:58,874 INFO: [Class..][epoch:  0, iter:   2,300, lr:(1.999e-04,)] [eta: 5 days, 23:23:10, time (data): 0.521 (0.002)] l_pix: 1.9743e-02 
+2023-11-16 11:03:50,629 INFO: [Class..][epoch:  0, iter:   2,400, lr:(1.999e-04,)] [eta: 5 days, 23:22:25, time (data): 0.519 (0.002)] l_pix: 8.8277e-03 
+2023-11-16 11:04:42,017 INFO: [Class..][epoch:  0, iter:   2,500, lr:(1.999e-04,)] [eta: 5 days, 23:19:14, time (data): 0.514 (0.002)] l_pix: 1.9157e-02 
+2023-11-16 11:05:33,613 INFO: [Class..][epoch:  0, iter:   2,600, lr:(1.999e-04,)] [eta: 5 days, 23:17:33, time (data): 0.515 (0.002)] l_pix: 6.5719e-03 
+2023-11-16 11:06:24,984 INFO: [Class..][epoch:  0, iter:   2,700, lr:(1.999e-04,)] [eta: 5 days, 23:14:32, time (data): 0.514 (0.002)] l_pix: 7.3904e-03 
+2023-11-16 11:07:16,501 INFO: [Class..][epoch:  0, iter:   2,800, lr:(1.999e-04,)] [eta: 5 days, 23:12:33, time (data): 0.514 (0.002)] l_pix: 8.4282e-03 
+2023-11-16 11:08:07,892 INFO: [Class..][epoch:  0, iter:   2,900, lr:(1.999e-04,)] [eta: 5 days, 23:09:55, time (data): 0.514 (0.002)] l_pix: 8.0885e-03 
+2023-11-16 11:08:59,236 INFO: [Class..][epoch:  0, iter:   3,000, lr:(1.999e-04,)] [eta: 5 days, 23:07:08, time (data): 0.513 (0.002)] l_pix: 1.0310e-02 
+2023-11-16 11:09:50,890 INFO: [Class..][epoch:  0, iter:   3,100, lr:(1.999e-04,)] [eta: 5 days, 23:06:09, time (data): 0.517 (0.002)] l_pix: 1.7438e-02 
+2023-11-16 11:10:42,300 INFO: [Class..][epoch:  0, iter:   3,200, lr:(1.999e-04,)] [eta: 5 days, 23:03:54, time (data): 0.515 (0.002)] l_pix: 1.5161e-02 
+2023-11-16 11:11:33,612 INFO: [Class..][epoch:  0, iter:   3,300, lr:(1.999e-04,)] [eta: 5 days, 23:01:15, time (data): 0.513 (0.002)] l_pix: 1.5632e-02 
+2023-11-16 11:12:25,188 INFO: [Class..][epoch:  0, iter:   3,400, lr:(1.999e-04,)] [eta: 5 days, 22:59:59, time (data): 0.515 (0.002)] l_pix: 1.6993e-02 
+2023-11-16 11:13:16,565 INFO: [Class..][epoch:  0, iter:   3,500, lr:(1.998e-04,)] [eta: 5 days, 22:57:48, time (data): 0.514 (0.002)] l_pix: 1.2357e-02 
+2023-11-16 11:14:08,224 INFO: [Class..][epoch:  0, iter:   3,600, lr:(1.998e-04,)] [eta: 5 days, 22:57:00, time (data): 0.515 (0.002)] l_pix: 1.6639e-02 
+2023-11-16 11:15:00,590 INFO: [Class..][epoch:  0, iter:   3,700, lr:(1.998e-04,)] [eta: 5 days, 22:59:21, time (data): 0.524 (0.002)] l_pix: 1.4031e-02 
+2023-11-16 11:15:53,604 INFO: [Class..][epoch:  0, iter:   3,800, lr:(1.998e-04,)] [eta: 5 days, 23:04:23, time (data): 0.527 (0.002)] l_pix: 1.3997e-02 
+2023-11-16 11:16:46,731 INFO: [Class..][epoch:  0, iter:   3,900, lr:(1.998e-04,)] [eta: 5 days, 23:09:34, time (data): 0.530 (0.002)] l_pix: 7.7470e-03 
+2023-11-16 11:17:39,438 INFO: [Class..][epoch:  0, iter:   4,000, lr:(1.998e-04,)] [eta: 5 days, 23:12:44, time (data): 0.529 (0.002)] l_pix: 1.7949e-02 
+2023-11-16 11:18:31,614 INFO: [Class..][epoch:  0, iter:   4,100, lr:(1.998e-04,)] [eta: 5 days, 23:13:32, time (data): 0.521 (0.002)] l_pix: 1.3187e-02 
+2023-11-16 11:19:23,342 INFO: [Class..][epoch:  0, iter:   4,200, lr:(1.998e-04,)] [eta: 5 days, 23:12:29, time (data): 0.519 (0.002)] l_pix: 1.2240e-02 
+2023-11-16 11:20:14,819 INFO: [Class..][epoch:  0, iter:   4,300, lr:(1.998e-04,)] [eta: 5 days, 23:10:29, time (data): 0.515 (0.002)] l_pix: 6.0448e-03 
+2023-11-16 11:21:06,480 INFO: [Class..][epoch:  0, iter:   4,400, lr:(1.998e-04,)] [eta: 5 days, 23:09:14, time (data): 0.516 (0.002)] l_pix: 1.7159e-02 
+2023-11-16 11:21:58,016 INFO: [Class..][epoch:  0, iter:   4,500, lr:(1.998e-04,)] [eta: 5 days, 23:07:32, time (data): 0.516 (0.002)] l_pix: 1.1002e-02 
+2023-11-16 11:22:49,344 INFO: [Class..][epoch:  0, iter:   4,600, lr:(1.997e-04,)] [eta: 5 days, 23:05:07, time (data): 0.514 (0.002)] l_pix: 1.3196e-02 
+2023-11-16 11:23:40,892 INFO: [Class..][epoch:  0, iter:   4,700, lr:(1.997e-04,)] [eta: 5 days, 23:03:33, time (data): 0.516 (0.002)] l_pix: 7.8245e-03 
+2023-11-16 11:24:32,358 INFO: [Class..][epoch:  0, iter:   4,800, lr:(1.997e-04,)] [eta: 5 days, 23:01:43, time (data): 0.515 (0.002)] l_pix: 1.9229e-02 
+2023-11-16 11:25:23,730 INFO: [Class..][epoch:  0, iter:   4,900, lr:(1.997e-04,)] [eta: 5 days, 22:59:37, time (data): 0.514 (0.002)] l_pix: 5.8549e-03 
+2023-11-16 11:26:15,129 INFO: [Class..][epoch:  0, iter:   5,000, lr:(1.997e-04,)] [eta: 5 days, 22:57:39, time (data): 0.514 (0.002)] l_pix: 7.1549e-03 
+2023-11-16 11:27:06,696 INFO: [Class..][epoch:  0, iter:   5,100, lr:(1.997e-04,)] [eta: 5 days, 22:56:17, time (data): 0.516 (0.002)] l_pix: 1.7101e-02 
+2023-11-16 11:27:58,072 INFO: [Class..][epoch:  0, iter:   5,200, lr:(1.997e-04,)] [eta: 5 days, 22:54:19, time (data): 0.515 (0.002)] l_pix: 9.1446e-03 
+2023-11-16 11:28:49,773 INFO: [Class..][epoch:  0, iter:   5,300, lr:(1.997e-04,)] [eta: 5 days, 22:53:25, time (data): 0.517 (0.002)] l_pix: 9.0896e-03 
+2023-11-16 11:29:41,560 INFO: [Class..][epoch:  0, iter:   5,400, lr:(1.996e-04,)] [eta: 5 days, 22:52:46, time (data): 0.517 (0.002)] l_pix: 1.2037e-02 
+2023-11-16 11:30:34,136 INFO: [Class..][epoch:  0, iter:   5,500, lr:(1.996e-04,)] [eta: 5 days, 22:54:30, time (data): 0.526 (0.002)] l_pix: 7.9924e-03 
+2023-11-16 11:31:27,672 INFO: [Class..][epoch:  0, iter:   5,600, lr:(1.996e-04,)] [eta: 5 days, 22:58:59, time (data): 0.532 (0.002)] l_pix: 5.8898e-03 
+2023-11-16 11:32:21,484 INFO: [Class..][epoch:  0, iter:   5,700, lr:(1.996e-04,)] [eta: 5 days, 23:04:04, time (data): 0.538 (0.002)] l_pix: 9.0860e-03 
+2023-11-16 11:33:14,862 INFO: [Class..][epoch:  0, iter:   5,800, lr:(1.996e-04,)] [eta: 5 days, 23:07:43, time (data): 0.536 (0.002)] l_pix: 1.5015e-02 
+2023-11-16 11:34:07,702 INFO: [Class..][epoch:  0, iter:   5,900, lr:(1.996e-04,)] [eta: 5 days, 23:09:41, time (data): 0.528 (0.002)] l_pix: 1.4121e-02 
+2023-11-16 11:34:59,932 INFO: [Class..][epoch:  0, iter:   6,000, lr:(1.996e-04,)] [eta: 5 days, 23:09:54, time (data): 0.525 (0.002)] l_pix: 2.4315e-02 
+2023-11-16 11:35:51,612 INFO: [Class..][epoch:  0, iter:   6,100, lr:(1.995e-04,)] [eta: 5 days, 23:08:34, time (data): 0.516 (0.002)] l_pix: 7.5265e-03 
+2023-11-16 11:36:43,171 INFO: [Class..][epoch:  0, iter:   6,200, lr:(1.995e-04,)] [eta: 5 days, 23:06:56, time (data): 0.516 (0.002)] l_pix: 7.4466e-03 
+2023-11-16 11:37:34,611 INFO: [Class..][epoch:  0, iter:   6,300, lr:(1.995e-04,)] [eta: 5 days, 23:05:00, time (data): 0.514 (0.002)] l_pix: 1.3055e-02 
+2023-11-16 11:38:26,139 INFO: [Class..][epoch:  0, iter:   6,400, lr:(1.995e-04,)] [eta: 5 days, 23:03:21, time (data): 0.515 (0.002)] l_pix: 1.1220e-02 
+2023-11-16 11:39:17,647 INFO: [Class..][epoch:  0, iter:   6,500, lr:(1.995e-04,)] [eta: 5 days, 23:01:39, time (data): 0.515 (0.002)] l_pix: 1.2355e-02 
+2023-11-16 11:40:10,067 INFO: [Class..][epoch:  1, iter:   6,600, lr:(1.995e-04,)] [eta: 5 days, 23:02:17, time (data): 0.521 (0.007)] l_pix: 8.5911e-03 
+2023-11-16 11:41:01,699 INFO: [Class..][epoch:  1, iter:   6,700, lr:(1.994e-04,)] [eta: 5 days, 23:00:55, time (data): 0.514 (0.002)] l_pix: 8.6966e-03 
+2023-11-16 11:41:53,160 INFO: [Class..][epoch:  1, iter:   6,800, lr:(1.994e-04,)] [eta: 5 days, 22:59:08, time (data): 0.514 (0.002)] l_pix: 2.0858e-02 
+2023-11-16 11:42:44,713 INFO: [Class..][epoch:  1, iter:   6,900, lr:(1.994e-04,)] [eta: 5 days, 22:57:37, time (data): 0.514 (0.002)] l_pix: 2.0193e-02 
+2023-11-16 11:43:36,690 INFO: [Class..][epoch:  1, iter:   7,000, lr:(1.994e-04,)] [eta: 5 days, 22:57:07, time (data): 0.517 (0.002)] l_pix: 1.1979e-02 
+2023-11-16 11:44:28,890 INFO: [Class..][epoch:  1, iter:   7,100, lr:(1.994e-04,)] [eta: 5 days, 22:57:08, time (data): 0.522 (0.002)] l_pix: 1.2444e-02 
+2023-11-16 11:45:20,881 INFO: [Class..][epoch:  1, iter:   7,200, lr:(1.994e-04,)] [eta: 5 days, 22:56:38, time (data): 0.521 (0.002)] l_pix: 1.2342e-02 
+2023-11-16 11:46:13,081 INFO: [Class..][epoch:  1, iter:   7,300, lr:(1.993e-04,)] [eta: 5 days, 22:56:36, time (data): 0.524 (0.002)] l_pix: 1.2964e-02 
+2023-11-16 11:47:05,873 INFO: [Class..][epoch:  1, iter:   7,400, lr:(1.993e-04,)] [eta: 5 days, 22:57:52, time (data): 0.526 (0.002)] l_pix: 7.3668e-03 
+2023-11-16 11:47:59,352 INFO: [Class..][epoch:  1, iter:   7,500, lr:(1.993e-04,)] [eta: 5 days, 23:00:36, time (data): 0.535 (0.002)] l_pix: 2.5588e-02 
+2023-11-16 11:48:53,012 INFO: [Class..][epoch:  1, iter:   7,600, lr:(1.993e-04,)] [eta: 5 days, 23:03:37, time (data): 0.536 (0.002)] l_pix: 2.0342e-02 
+2023-11-16 11:49:46,065 INFO: [Class..][epoch:  1, iter:   7,700, lr:(1.993e-04,)] [eta: 5 days, 23:05:14, time (data): 0.530 (0.002)] l_pix: 7.5244e-03 
+2023-11-16 11:50:38,837 INFO: [Class..][epoch:  1, iter:   7,800, lr:(1.993e-04,)] [eta: 5 days, 23:06:12, time (data): 0.529 (0.002)] l_pix: 9.0627e-03 
+2023-11-16 11:51:30,969 INFO: [Class..][epoch:  1, iter:   7,900, lr:(1.992e-04,)] [eta: 5 days, 23:05:46, time (data): 0.520 (0.002)] l_pix: 1.3202e-02 
+2023-11-16 11:52:23,250 INFO: [Class..][epoch:  1, iter:   8,000, lr:(1.992e-04,)] [eta: 5 days, 23:05:38, time (data): 0.522 (0.002)] l_pix: 2.0389e-02 
+2023-11-16 11:53:15,264 INFO: [Class..][epoch:  1, iter:   8,100, lr:(1.992e-04,)] [eta: 5 days, 23:04:57, time (data): 0.519 (0.002)] l_pix: 1.7905e-02 
+2023-11-16 11:54:07,114 INFO: [Class..][epoch:  1, iter:   8,200, lr:(1.992e-04,)] [eta: 5 days, 23:03:55, time (data): 0.519 (0.002)] l_pix: 1.2900e-02 
+2023-11-16 11:54:58,891 INFO: [Class..][epoch:  1, iter:   8,300, lr:(1.992e-04,)] [eta: 5 days, 23:02:45, time (data): 0.518 (0.002)] l_pix: 2.1937e-02 
+2023-11-16 11:55:50,736 INFO: [Class..][epoch:  1, iter:   8,400, lr:(1.991e-04,)] [eta: 5 days, 23:01:43, time (data): 0.518 (0.002)] l_pix: 9.4222e-03 
+2023-11-16 11:56:42,808 INFO: [Class..][epoch:  1, iter:   8,500, lr:(1.991e-04,)] [eta: 5 days, 23:01:08, time (data): 0.521 (0.002)] l_pix: 1.4471e-02 
+2023-11-16 11:57:34,787 INFO: [Class..][epoch:  1, iter:   8,600, lr:(1.991e-04,)] [eta: 5 days, 23:00:22, time (data): 0.520 (0.002)] l_pix: 1.1443e-02 
+2023-11-16 11:58:26,483 INFO: [Class..][epoch:  1, iter:   8,700, lr:(1.991e-04,)] [eta: 5 days, 22:59:04, time (data): 0.517 (0.002)] l_pix: 1.5398e-02 
+2023-11-16 11:59:18,260 INFO: [Class..][epoch:  1, iter:   8,800, lr:(1.990e-04,)] [eta: 5 days, 22:57:55, time (data): 0.517 (0.002)] l_pix: 7.0987e-03 
+2023-11-16 12:00:09,890 INFO: [Class..][epoch:  1, iter:   8,900, lr:(1.990e-04,)] [eta: 5 days, 22:56:30, time (data): 0.516 (0.002)] l_pix: 8.9186e-03 
+2023-11-16 12:01:01,901 INFO: [Class..][epoch:  1, iter:   9,000, lr:(1.990e-04,)] [eta: 5 days, 22:55:48, time (data): 0.518 (0.002)] l_pix: 8.1341e-03 
+2023-11-16 12:01:53,756 INFO: [Class..][epoch:  1, iter:   9,100, lr:(1.990e-04,)] [eta: 5 days, 22:54:49, time (data): 0.518 (0.002)] l_pix: 1.8021e-02 
+2023-11-16 12:02:45,507 INFO: [Class..][epoch:  1, iter:   9,200, lr:(1.990e-04,)] [eta: 5 days, 22:53:39, time (data): 0.518 (0.002)] l_pix: 1.2276e-02 
+2023-11-16 12:03:37,410 INFO: [Class..][epoch:  1, iter:   9,300, lr:(1.989e-04,)] [eta: 5 days, 22:52:45, time (data): 0.522 (0.002)] l_pix: 1.1028e-02 
+2023-11-16 12:04:30,028 INFO: [Class..][epoch:  1, iter:   9,400, lr:(1.989e-04,)] [eta: 5 days, 22:53:07, time (data): 0.525 (0.002)] l_pix: 1.3260e-02 
+2023-11-16 12:05:23,314 INFO: [Class..][epoch:  1, iter:   9,500, lr:(1.989e-04,)] [eta: 5 days, 22:54:37, time (data): 0.533 (0.002)] l_pix: 1.2816e-02 
+2023-11-16 12:06:16,566 INFO: [Class..][epoch:  1, iter:   9,600, lr:(1.989e-04,)] [eta: 5 days, 22:56:00, time (data): 0.533 (0.002)] l_pix: 1.1610e-02 
+2023-11-16 12:07:09,207 INFO: [Class..][epoch:  1, iter:   9,700, lr:(1.988e-04,)] [eta: 5 days, 22:56:18, time (data): 0.525 (0.002)] l_pix: 1.5965e-02 
+2023-11-16 12:08:01,357 INFO: [Class..][epoch:  1, iter:   9,800, lr:(1.988e-04,)] [eta: 5 days, 22:55:45, time (data): 0.523 (0.002)] l_pix: 1.1558e-02 
+2023-11-16 12:08:53,113 INFO: [Class..][epoch:  1, iter:   9,900, lr:(1.988e-04,)] [eta: 5 days, 22:54:32, time (data): 0.517 (0.002)] l_pix: 3.3544e-02 
+2023-11-16 12:09:44,716 INFO: [Class..][epoch:  1, iter:  10,000, lr:(1.988e-04,)] [eta: 5 days, 22:53:05, time (data): 0.516 (0.002)] l_pix: 1.1508e-02 
+2023-11-16 12:09:44,717 INFO: Saving models and training states.
+2023-11-16 12:09:47,002 WARNING: Multiple validation datasets are *only* supported by SRModel.
+2023-11-16 12:09:53,419 INFO: Validation Set5
+	 # psnr: 38.1824	Best: 38.1824 @ 10000 iter
+	 # ssim: 0.9613	Best: 0.9613 @ 10000 iter
+
+2023-11-16 12:10:31,992 INFO: Validation Set14
+	 # psnr: 33.9077	Best: 33.9077 @ 10000 iter
+	 # ssim: 0.9200	Best: 0.9200 @ 10000 iter
+
+2023-11-16 12:13:06,202 INFO: Validation BSD100
+	 # psnr: 32.3675	Best: 32.3675 @ 10000 iter
+	 # ssim: 0.9017	Best: 0.9017 @ 10000 iter
+
+2023-11-16 12:26:00,629 INFO: Validation Urban100
+	 # psnr: 33.1109	Best: 33.1109 @ 10000 iter
+	 # ssim: 0.9368	Best: 0.9368 @ 10000 iter
+
+2023-11-16 12:41:17,598 INFO: Validation Manga109
+	 # psnr: 39.0067	Best: 39.0067 @ 10000 iter
+	 # ssim: 0.9781	Best: 0.9781 @ 10000 iter
+
+2023-11-16 12:42:09,445 INFO: [Class..][epoch:  1, iter:  10,100, lr:(1.987e-04,)] [eta: 8 days, 2:23:45, time (data): 0.515 (0.002)] l_pix: 2.6374e-02 
+2023-11-16 12:43:01,210 INFO: [Class..][epoch:  1, iter:  10,200, lr:(1.987e-04,)] [eta: 8 days, 1:51:57, time (data): 0.517 (0.002)] l_pix: 1.0767e-02 
+2023-11-16 12:43:52,712 INFO: [Class..][epoch:  1, iter:  10,300, lr:(1.987e-04,)] [eta: 8 days, 1:20:20, time (data): 0.515 (0.002)] l_pix: 9.7844e-03 
+2023-11-16 12:44:44,257 INFO: [Class..][epoch:  1, iter:  10,400, lr:(1.987e-04,)] [eta: 8 days, 0:49:23, time (data): 0.515 (0.002)] l_pix: 1.7998e-02 
+2023-11-16 12:45:36,230 INFO: [Class..][epoch:  1, iter:  10,500, lr:(1.986e-04,)] [eta: 8 days, 0:19:40, time (data): 0.516 (0.002)] l_pix: 1.9482e-02 
+2023-11-16 12:46:27,790 INFO: [Class..][epoch:  1, iter:  10,600, lr:(1.986e-04,)] [eta: 7 days, 23:49:52, time (data): 0.516 (0.002)] l_pix: 1.1128e-02 
+2023-11-16 12:47:19,452 INFO: [Class..][epoch:  1, iter:  10,700, lr:(1.986e-04,)] [eta: 7 days, 23:20:45, time (data): 0.515 (0.002)] l_pix: 1.5280e-02 
+2023-11-16 12:48:10,903 INFO: [Class..][epoch:  1, iter:  10,800, lr:(1.986e-04,)] [eta: 7 days, 22:51:51, time (data): 0.515 (0.002)] l_pix: 8.6325e-03 
+2023-11-16 12:49:02,344 INFO: [Class..][epoch:  1, iter:  10,900, lr:(1.985e-04,)] [eta: 7 days, 22:23:26, time (data): 0.514 (0.002)] l_pix: 9.1064e-03 
+2023-11-16 12:49:53,877 INFO: [Class..][epoch:  1, iter:  11,000, lr:(1.985e-04,)] [eta: 7 days, 21:55:40, time (data): 0.515 (0.002)] l_pix: 9.9418e-03 
+2023-11-16 12:50:45,869 INFO: [Class..][epoch:  1, iter:  11,100, lr:(1.985e-04,)] [eta: 7 days, 21:29:04, time (data): 0.522 (0.002)] l_pix: 2.3213e-02 
+2023-11-16 12:51:38,713 INFO: [Class..][epoch:  1, iter:  11,200, lr:(1.985e-04,)] [eta: 7 days, 21:04:10, time (data): 0.526 (0.002)] l_pix: 1.7578e-02 
+2023-11-16 12:52:31,794 INFO: [Class..][epoch:  1, iter:  11,300, lr:(1.984e-04,)] [eta: 7 days, 20:40:03, time (data): 0.531 (0.002)] l_pix: 7.1794e-03 
+2023-11-16 12:53:24,535 INFO: [Class..][epoch:  1, iter:  11,400, lr:(1.984e-04,)] [eta: 7 days, 20:15:51, time (data): 0.528 (0.002)] l_pix: 2.3506e-02 
+2023-11-16 12:54:16,920 INFO: [Class..][epoch:  1, iter:  11,500, lr:(1.984e-04,)] [eta: 7 days, 19:51:32, time (data): 0.525 (0.002)] l_pix: 1.0280e-02 
+2023-11-16 12:55:08,905 INFO: [Class..][epoch:  1, iter:  11,600, lr:(1.983e-04,)] [eta: 7 days, 19:27:04, time (data): 0.521 (0.002)] l_pix: 6.3933e-03 
+2023-11-16 12:56:00,807 INFO: [Class..][epoch:  1, iter:  11,700, lr:(1.983e-04,)] [eta: 7 days, 19:02:53, time (data): 0.521 (0.002)] l_pix: 1.0363e-02 
+2023-11-16 12:56:52,414 INFO: [Class..][epoch:  1, iter:  11,800, lr:(1.983e-04,)] [eta: 7 days, 18:38:41, time (data): 0.517 (0.002)] l_pix: 6.0296e-03 
+2023-11-16 12:57:44,038 INFO: [Class..][epoch:  1, iter:  11,900, lr:(1.983e-04,)] [eta: 7 days, 18:14:53, time (data): 0.517 (0.002)] l_pix: 9.6121e-03 
+2023-11-16 12:58:35,610 INFO: [Class..][epoch:  1, iter:  12,000, lr:(1.982e-04,)] [eta: 7 days, 17:51:25, time (data): 0.516 (0.002)] l_pix: 2.1492e-02 
+2023-11-16 12:59:27,238 INFO: [Class..][epoch:  1, iter:  12,100, lr:(1.982e-04,)] [eta: 7 days, 17:28:23, time (data): 0.516 (0.002)] l_pix: 1.4827e-02 
+2023-11-16 13:00:18,864 INFO: [Class..][epoch:  1, iter:  12,200, lr:(1.982e-04,)] [eta: 7 days, 17:05:44, time (data): 0.516 (0.002)] l_pix: 9.8837e-03 
+2023-11-16 13:01:10,739 INFO: [Class..][epoch:  1, iter:  12,300, lr:(1.981e-04,)] [eta: 7 days, 16:43:45, time (data): 0.523 (0.002)] l_pix: 1.6154e-02 
+2023-11-16 13:02:02,248 INFO: [Class..][epoch:  1, iter:  12,400, lr:(1.981e-04,)] [eta: 7 days, 16:21:37, time (data): 0.517 (0.002)] l_pix: 1.6570e-02 
+2023-11-16 13:02:53,774 INFO: [Class..][epoch:  1, iter:  12,500, lr:(1.981e-04,)] [eta: 7 days, 15:59:52, time (data): 0.515 (0.002)] l_pix: 1.5514e-02 
+2023-11-16 13:03:45,494 INFO: [Class..][epoch:  1, iter:  12,600, lr:(1.980e-04,)] [eta: 7 days, 15:38:41, time (data): 0.517 (0.002)] l_pix: 1.0065e-02 
+2023-11-16 13:04:37,039 INFO: [Class..][epoch:  1, iter:  12,700, lr:(1.980e-04,)] [eta: 7 days, 15:17:37, time (data): 0.515 (0.002)] l_pix: 2.0110e-02 
+2023-11-16 13:05:28,778 INFO: [Class..][epoch:  1, iter:  12,800, lr:(1.980e-04,)] [eta: 7 days, 14:57:06, time (data): 0.517 (0.002)] l_pix: 8.4655e-03 
+2023-11-16 13:06:20,415 INFO: [Class..][epoch:  1, iter:  12,900, lr:(1.980e-04,)] [eta: 7 days, 14:36:45, time (data): 0.517 (0.002)] l_pix: 4.9328e-03 
+2023-11-16 13:07:12,688 INFO: [Class..][epoch:  1, iter:  13,000, lr:(1.979e-04,)] [eta: 7 days, 14:17:31, time (data): 0.521 (0.002)] l_pix: 1.1428e-02 
+2023-11-16 13:08:06,485 INFO: [Class..][epoch:  2, iter:  13,100, lr:(1.979e-04,)] [eta: 7 days, 14:00:28, time (data): 0.531 (0.002)] l_pix: 1.1912e-02 
+2023-11-16 13:08:59,510 INFO: [Class..][epoch:  2, iter:  13,200, lr:(1.979e-04,)] [eta: 7 days, 13:42:43, time (data): 0.531 (0.002)] l_pix: 1.2966e-02 
+2023-11-16 13:09:52,003 INFO: [Class..][epoch:  2, iter:  13,300, lr:(1.978e-04,)] [eta: 7 days, 13:24:33, time (data): 0.524 (0.002)] l_pix: 1.0943e-02 
+2023-11-16 13:10:44,197 INFO: [Class..][epoch:  2, iter:  13,400, lr:(1.978e-04,)] [eta: 7 days, 13:06:16, time (data): 0.522 (0.002)] l_pix: 1.2639e-02 
+2023-11-16 13:11:35,974 INFO: [Class..][epoch:  2, iter:  13,500, lr:(1.978e-04,)] [eta: 7 days, 12:47:45, time (data): 0.517 (0.002)] l_pix: 2.0062e-02 
+2023-11-16 13:12:27,460 INFO: [Class..][epoch:  2, iter:  13,600, lr:(1.977e-04,)] [eta: 7 days, 12:29:08, time (data): 0.515 (0.002)] l_pix: 9.2726e-03 
+2023-11-16 13:13:19,083 INFO: [Class..][epoch:  2, iter:  13,700, lr:(1.977e-04,)] [eta: 7 days, 12:10:56, time (data): 0.514 (0.002)] l_pix: 7.6354e-03 
+2023-11-16 13:14:10,628 INFO: [Class..][epoch:  2, iter:  13,800, lr:(1.977e-04,)] [eta: 7 days, 11:52:54, time (data): 0.515 (0.002)] l_pix: 1.7980e-02 
+2023-11-16 13:15:02,166 INFO: [Class..][epoch:  2, iter:  13,900, lr:(1.976e-04,)] [eta: 7 days, 11:35:07, time (data): 0.514 (0.002)] l_pix: 5.1448e-03 
+2023-11-16 13:15:53,620 INFO: [Class..][epoch:  2, iter:  14,000, lr:(1.976e-04,)] [eta: 7 days, 11:17:28, time (data): 0.514 (0.002)] l_pix: 9.9389e-03 
+2023-11-16 13:16:45,028 INFO: [Class..][epoch:  2, iter:  14,100, lr:(1.976e-04,)] [eta: 7 days, 10:59:59, time (data): 0.514 (0.002)] l_pix: 1.6955e-02 
+2023-11-16 13:17:36,522 INFO: [Class..][epoch:  2, iter:  14,200, lr:(1.975e-04,)] [eta: 7 days, 10:42:51, time (data): 0.515 (0.002)] l_pix: 1.0226e-02 
+2023-11-16 13:18:27,946 INFO: [Class..][epoch:  2, iter:  14,300, lr:(1.975e-04,)] [eta: 7 days, 10:25:52, time (data): 0.515 (0.002)] l_pix: 1.6142e-02 
+2023-11-16 13:19:19,320 INFO: [Class..][epoch:  2, iter:  14,400, lr:(1.975e-04,)] [eta: 7 days, 10:09:03, time (data): 0.514 (0.002)] l_pix: 2.0920e-02 
+2023-11-16 13:20:10,922 INFO: [Class..][epoch:  2, iter:  14,500, lr:(1.974e-04,)] [eta: 7 days, 9:52:43, time (data): 0.515 (0.002)] l_pix: 1.7347e-02 

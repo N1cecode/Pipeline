@@ -1,5 +1,5 @@
-# 2080ti
-name: ClassicalX2_010_Pretrained_SwinIR_Res_DIV2K_P48W8_LR2e-4_B8G1_4090_cos
+# titan
+name: ClassicalX2_018_Pretrained_SwinIR_DIV2K_P48W24_LR2e-4_cos_B12G1_3090
 model_type: SwinIRModel
 
 scale: 2
@@ -24,7 +24,7 @@ datasets:
 
     # data loader
     num_worker_per_gpu: 8
-    batch_size_per_gpu: 16
+    batch_size_per_gpu: 12
     dataset_enlarge_ratio: 1
     prefetch_mode: ~
 
@@ -75,13 +75,12 @@ network_g:
   upscale: 2
   in_chans: 3
   img_size: 48
-  window_size: 8
+  window_size: 24
   img_range: 1.
   depths: [6, 6, 6, 6, 6, 6]
   embed_dim: 180
   num_heads: [6, 6, 6, 6, 6, 6]
   mlp_ratio: 2
-  # conv_scale: 0.5
   upsampler: 'pixelshuffle'
   resi_connection: '1conv'
 
@@ -102,10 +101,10 @@ train:
 
   scheduler:
     type: CosineAnnealingRestartLR
-    periods: [100000, 100000, 100000, 100000, 100000]
+    periods: [200000, 200000, 200000, 200000, 200000]
     restart_weights: [1, 0.5, 0.5, 0.5, 0.5]
 
-  total_iter: 500000
+  total_iter: 1000000
   warmup_iter: -1  # no warm up
 
   # losses

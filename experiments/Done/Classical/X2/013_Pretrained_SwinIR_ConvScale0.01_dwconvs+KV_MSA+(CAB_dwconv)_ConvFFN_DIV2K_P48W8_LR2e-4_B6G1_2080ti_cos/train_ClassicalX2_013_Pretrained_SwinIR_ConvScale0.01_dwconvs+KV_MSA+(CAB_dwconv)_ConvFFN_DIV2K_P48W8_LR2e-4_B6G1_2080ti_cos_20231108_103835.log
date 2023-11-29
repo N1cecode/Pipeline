@@ -1,0 +1,2374 @@
+2023-11-08 10:38:35,649 INFO: 
+     ______                   __   __                 __      __
+    / ____/____   ____   ____/ /  / /   __  __ _____ / /__   / /
+   / / __ / __ \ / __ \ / __  /  / /   / / / // ___// //_/  / /
+  / /_/ // /_/ // /_/ // /_/ /  / /___/ /_/ // /__ / /<    /_/
+  \____/ \____/ \____/ \____/  /_____/\____/ \___//_/|_|  (_)
+    
+Version Information: 
+	PyTorch: 2.0.1
+	TorchVision: 0.15.2
+2023-11-08 10:38:35,650 INFO: 
+  name: ClassicalX2_013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos
+  model_type: SwinIRModel
+  scale: 2
+  num_gpu: 1
+  manual_seed: 3407
+  datasets:[
+    train:[
+      name: DIV2K
+      type: PairedImageDataset
+      dataroot_gt: datasets/DIV2K/DIV2K_train_HR_sub
+      dataroot_lq: datasets/DIV2K/DIV2K_train_LR_bicubic/X2_sub
+      meta_info_file: data/meta_info/meta_info_DIV2K800sub_GT.txt
+      filename_tmpl: {}
+      io_backend:[
+        type: disk
+      ]
+      gt_size: 96
+      use_hflip: True
+      use_rot: True
+      num_worker_per_gpu: 8
+      batch_size_per_gpu: 6
+      dataset_enlarge_ratio: 1
+      prefetch_mode: None
+      phase: train
+      scale: 2
+    ]
+    val_1:[
+      name: Set5
+      type: PairedImageDataset
+      dataroot_gt: datasets/Set5/GTmod12
+      dataroot_lq: datasets/Set5/LRbicx2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_2:[
+      name: Set14
+      type: PairedImageDataset
+      dataroot_gt: datasets/Set14/GTmod12
+      dataroot_lq: datasets/Set14/LRbicx2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_3:[
+      name: BSD100
+      type: PairedImageDataset
+      dataroot_gt: ./datasets/BSDS100/GTmod12
+      dataroot_lq: ./datasets/BSDS100/LRbicx2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_4:[
+      name: Urban100
+      type: PairedImageDataset
+      dataroot_gt: ./datasets/urban100/GTmod12
+      dataroot_lq: ./datasets/urban100/LRbicx2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+  ]
+  network_g:[
+    type: SwinIR_Modified
+    upscale: 2
+    in_chans: 3
+    img_size: 48
+    window_size: 8
+    img_range: 1.0
+    depths: [6, 6, 6, 6, 6, 6]
+    embed_dim: 180
+    num_heads: [6, 6, 6, 6, 6, 6]
+    mlp_ratio: 2
+    conv_scale: 0.01
+    upsampler: pixelshuffle
+    resi_connection: 1conv
+  ]
+  path:[
+    pretrain_network_g: experiments/pretrained_models/SwinIR/X2/001_classicalSR_DIV2K_s48w8_SwinIR-M_x2.pth
+    strict_load_g: False
+    resume_state: None
+    experiments_root: /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos
+    models: /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos/weights
+    training_states: /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos/training_states
+    log: /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos
+    visualization: /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos/visualization
+    tb_logger: /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos/tb_logger
+  ]
+  train:[
+    ema_decay: 0.999
+    optim_g:[
+      type: Adam
+      lr: 0.001
+      weight_decay: 0
+      betas: [0.9, 0.99]
+    ]
+    scheduler:[
+      type: CosineAnnealingRestartLR
+      periods: [100000, 100000, 100000, 100000, 100000]
+      restart_weights: [1, 0.5, 0.5, 0.5, 0.25]
+    ]
+    total_iter: 500000
+    warmup_iter: -1
+    pixel_opt:[
+      type: L1Loss
+      loss_weight: 1.0
+      reduction: mean
+    ]
+  ]
+  val:[
+    val_freq: 5000.0
+    save_img: False
+    metrics:[
+      psnr:[
+        type: calculate_psnr
+        crop_border: 2
+        test_y_channel: True
+      ]
+      ssim:[
+        type: calculate_ssim
+        crop_border: 2
+        test_y_channel: True
+      ]
+    ]
+  ]
+  logger:[
+    print_freq: 100
+    save_checkpoint_freq: 5000.0
+    use_tb_logger: True
+    wandb:[
+      project: None
+      resume_id: None
+    ]
+  ]
+  dist_params:[
+    backend: nccl
+    port: 29500
+  ]
+  dist: False
+  rank: 0
+  world_size: 1
+  auto_resume: False
+  is_train: True
+  root_path: /share3/home/renzihao
+
+2023-11-08 10:38:43,688 INFO: Dataset [PairedImageDataset] - DIV2K is built.
+2023-11-08 10:38:43,690 INFO: Training statistics:
+	Number of train images: 32592
+	Dataset enlarge ratio: 1
+	Batch size per gpu: 6
+	World size (gpu number): 1
+	Require iter number per epoch: 5432
+	Total epochs: 93; iters: 500000.
+2023-11-08 10:38:43,691 INFO: Dataset [PairedImageDataset] - Set5 is built.
+2023-11-08 10:38:43,691 INFO: Number of val images/folders in Set5: 5
+2023-11-08 10:38:43,693 INFO: Dataset [PairedImageDataset] - Set14 is built.
+2023-11-08 10:38:43,693 INFO: Number of val images/folders in Set14: 14
+2023-11-08 10:38:43,700 INFO: Dataset [PairedImageDataset] - BSD100 is built.
+2023-11-08 10:38:43,701 INFO: Number of val images/folders in BSD100: 100
+2023-11-08 10:38:43,711 INFO: Dataset [PairedImageDataset] - Urban100 is built.
+2023-11-08 10:38:43,712 INFO: Number of val images/folders in Urban100: 100
+2023-11-08 10:39:03,778 INFO: Network: SwinIR_Modified, with parameters: 12,267,593
+2023-11-08 10:39:03,780 INFO: SwinIR_Modified(
+  (conv_first): Conv2d(3, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (edge_ex): EdgeExtraction(
+    (hpf): Sobel(
+      (conv_sobel_x): Conv2d(3, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=3, bias=False)
+      (conv_sobel_y): Conv2d(3, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=3, bias=False)
+    )
+    (conv): Conv2d(3, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  )
+  (patch_embed): PatchEmbed(
+    (norm): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+  )
+  (patch_unembed): PatchUnEmbed()
+  (pos_drop): Dropout(p=0.0, inplace=False)
+  (layers): ModuleList(
+    (0): RSTB(
+      (residual_group): BasicLayer(
+        dim=180, input_resolution=(48, 48), depth=6
+        (blocks): ModuleList(
+          (0): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): Identity()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (2): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (3): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (4): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (5): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+        )
+      )
+      (conv): Conv2d(180, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (patch_embed): PatchEmbed()
+      (patch_unembed): PatchUnEmbed()
+    )
+    (1-5): 5 x RSTB(
+      (residual_group): BasicLayer(
+        dim=180, input_resolution=(48, 48), depth=6
+        (blocks): ModuleList(
+          (0): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (2): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (3): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (4): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (5): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+        )
+      )
+      (conv): Conv2d(180, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (patch_embed): PatchEmbed()
+      (patch_unembed): PatchUnEmbed()
+    )
+  )
+  (edge_convs): ModuleList(
+    (0-5): 6 x EdgeConv(
+      (dwconv): Conv2d(180, 180, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=180)
+      (gelu): GELU(approximate='none')
+    )
+  )
+  (norm): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+  (conv_after_body): Conv2d(180, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (conv_before_upsample): Sequential(
+    (0): Conv2d(180, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01, inplace=True)
+  )
+  (upsample): Upsample(
+    (0): Conv2d(64, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): PixelShuffle(upscale_factor=2)
+  )
+  (conv_last): Conv2d(64, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+)
+2023-11-08 10:39:05,357 INFO: Loading SwinIR_Modified model from experiments/pretrained_models/SwinIR/X2/001_classicalSR_DIV2K_s48w8_SwinIR-M_x2.pth, with param key: [params].
+2023-11-08 10:39:06,123 WARNING: Current net - loaded net:
+2023-11-08 10:39:06,124 WARNING:   edge_convs.0.dwconv.bias
+2023-11-08 10:39:06,124 WARNING:   edge_convs.0.dwconv.weight
+2023-11-08 10:39:06,124 WARNING:   edge_convs.1.dwconv.bias
+2023-11-08 10:39:06,124 WARNING:   edge_convs.1.dwconv.weight
+2023-11-08 10:39:06,124 WARNING:   edge_convs.2.dwconv.bias
+2023-11-08 10:39:06,124 WARNING:   edge_convs.2.dwconv.weight
+2023-11-08 10:39:06,124 WARNING:   edge_convs.3.dwconv.bias
+2023-11-08 10:39:06,124 WARNING:   edge_convs.3.dwconv.weight
+2023-11-08 10:39:06,124 WARNING:   edge_convs.4.dwconv.bias
+2023-11-08 10:39:06,124 WARNING:   edge_convs.4.dwconv.weight
+2023-11-08 10:39:06,124 WARNING:   edge_convs.5.dwconv.bias
+2023-11-08 10:39:06,124 WARNING:   edge_convs.5.dwconv.weight
+2023-11-08 10:39:06,125 WARNING:   edge_ex.conv.bias
+2023-11-08 10:39:06,125 WARNING:   edge_ex.conv.weight
+2023-11-08 10:39:06,125 WARNING:   edge_ex.hpf.conv_sobel_x.weight
+2023-11-08 10:39:06,125 WARNING:   edge_ex.hpf.conv_sobel_y.weight
+2023-11-08 10:39:06,125 WARNING:   layers.0.residual_group.blocks.0.attn.kv.bias
+2023-11-08 10:39:06,125 WARNING:   layers.0.residual_group.blocks.0.attn.kv.weight
+2023-11-08 10:39:06,125 WARNING:   layers.0.residual_group.blocks.0.attn.q.bias
+2023-11-08 10:39:06,125 WARNING:   layers.0.residual_group.blocks.0.attn.q.weight
+2023-11-08 10:39:06,125 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.0.bias
+2023-11-08 10:39:06,125 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.0.weight
+2023-11-08 10:39:06,125 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.2.bias
+2023-11-08 10:39:06,125 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.2.weight
+2023-11-08 10:39:06,125 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,125 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,125 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,126 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,126 WARNING:   layers.0.residual_group.blocks.0.conv_scale.scale
+2023-11-08 10:39:06,126 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,126 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,126 WARNING:   layers.0.residual_group.blocks.1.attn.kv.bias
+2023-11-08 10:39:06,126 WARNING:   layers.0.residual_group.blocks.1.attn.kv.weight
+2023-11-08 10:39:06,126 WARNING:   layers.0.residual_group.blocks.1.attn.q.bias
+2023-11-08 10:39:06,126 WARNING:   layers.0.residual_group.blocks.1.attn.q.weight
+2023-11-08 10:39:06,126 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.0.bias
+2023-11-08 10:39:06,126 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.0.weight
+2023-11-08 10:39:06,126 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.2.bias
+2023-11-08 10:39:06,126 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.2.weight
+2023-11-08 10:39:06,126 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,126 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.1.conv_scale.scale
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.2.attn.kv.bias
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.2.attn.kv.weight
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.2.attn.q.bias
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.2.attn.q.weight
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.0.bias
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.0.weight
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.2.bias
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.2.weight
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,127 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,128 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,128 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,128 WARNING:   layers.0.residual_group.blocks.2.conv_scale.scale
+2023-11-08 10:39:06,128 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,128 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,128 WARNING:   layers.0.residual_group.blocks.3.attn.kv.bias
+2023-11-08 10:39:06,128 WARNING:   layers.0.residual_group.blocks.3.attn.kv.weight
+2023-11-08 10:39:06,128 WARNING:   layers.0.residual_group.blocks.3.attn.q.bias
+2023-11-08 10:39:06,128 WARNING:   layers.0.residual_group.blocks.3.attn.q.weight
+2023-11-08 10:39:06,128 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.0.bias
+2023-11-08 10:39:06,128 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.0.weight
+2023-11-08 10:39:06,128 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.2.bias
+2023-11-08 10:39:06,128 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.2.weight
+2023-11-08 10:39:06,128 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.3.conv_scale.scale
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.4.attn.kv.bias
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.4.attn.kv.weight
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.4.attn.q.bias
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.4.attn.q.weight
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.0.bias
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.0.weight
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.2.bias
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.2.weight
+2023-11-08 10:39:06,129 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,130 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,130 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,130 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,130 WARNING:   layers.0.residual_group.blocks.4.conv_scale.scale
+2023-11-08 10:39:06,130 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,130 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,130 WARNING:   layers.0.residual_group.blocks.5.attn.kv.bias
+2023-11-08 10:39:06,130 WARNING:   layers.0.residual_group.blocks.5.attn.kv.weight
+2023-11-08 10:39:06,130 WARNING:   layers.0.residual_group.blocks.5.attn.q.bias
+2023-11-08 10:39:06,130 WARNING:   layers.0.residual_group.blocks.5.attn.q.weight
+2023-11-08 10:39:06,130 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.0.bias
+2023-11-08 10:39:06,130 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.0.weight
+2023-11-08 10:39:06,130 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.2.bias
+2023-11-08 10:39:06,130 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.2.weight
+2023-11-08 10:39:06,131 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,131 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,131 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,131 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,131 WARNING:   layers.0.residual_group.blocks.5.conv_scale.scale
+2023-11-08 10:39:06,131 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,131 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,131 WARNING:   layers.1.residual_group.blocks.0.attn.kv.bias
+2023-11-08 10:39:06,131 WARNING:   layers.1.residual_group.blocks.0.attn.kv.weight
+2023-11-08 10:39:06,131 WARNING:   layers.1.residual_group.blocks.0.attn.q.bias
+2023-11-08 10:39:06,131 WARNING:   layers.1.residual_group.blocks.0.attn.q.weight
+2023-11-08 10:39:06,131 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.0.bias
+2023-11-08 10:39:06,131 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.0.weight
+2023-11-08 10:39:06,131 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.2.bias
+2023-11-08 10:39:06,131 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.2.weight
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.0.conv_scale.scale
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.1.attn.kv.bias
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.1.attn.kv.weight
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.1.attn.q.bias
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.1.attn.q.weight
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.0.bias
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.0.weight
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.2.bias
+2023-11-08 10:39:06,132 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.2.weight
+2023-11-08 10:39:06,133 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,133 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,133 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,133 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,133 WARNING:   layers.1.residual_group.blocks.1.conv_scale.scale
+2023-11-08 10:39:06,133 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,133 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,133 WARNING:   layers.1.residual_group.blocks.2.attn.kv.bias
+2023-11-08 10:39:06,133 WARNING:   layers.1.residual_group.blocks.2.attn.kv.weight
+2023-11-08 10:39:06,133 WARNING:   layers.1.residual_group.blocks.2.attn.q.bias
+2023-11-08 10:39:06,133 WARNING:   layers.1.residual_group.blocks.2.attn.q.weight
+2023-11-08 10:39:06,133 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.0.bias
+2023-11-08 10:39:06,133 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.0.weight
+2023-11-08 10:39:06,133 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.2.bias
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.2.weight
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.2.conv_scale.scale
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.3.attn.kv.bias
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.3.attn.kv.weight
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.3.attn.q.bias
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.3.attn.q.weight
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.0.bias
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.0.weight
+2023-11-08 10:39:06,134 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.2.bias
+2023-11-08 10:39:06,135 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.2.weight
+2023-11-08 10:39:06,135 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,135 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,135 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,135 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,135 WARNING:   layers.1.residual_group.blocks.3.conv_scale.scale
+2023-11-08 10:39:06,135 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,135 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,135 WARNING:   layers.1.residual_group.blocks.4.attn.kv.bias
+2023-11-08 10:39:06,135 WARNING:   layers.1.residual_group.blocks.4.attn.kv.weight
+2023-11-08 10:39:06,135 WARNING:   layers.1.residual_group.blocks.4.attn.q.bias
+2023-11-08 10:39:06,135 WARNING:   layers.1.residual_group.blocks.4.attn.q.weight
+2023-11-08 10:39:06,135 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.0.bias
+2023-11-08 10:39:06,136 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.0.weight
+2023-11-08 10:39:06,136 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.2.bias
+2023-11-08 10:39:06,136 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.2.weight
+2023-11-08 10:39:06,136 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,136 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,136 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,136 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,136 WARNING:   layers.1.residual_group.blocks.4.conv_scale.scale
+2023-11-08 10:39:06,136 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,136 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,136 WARNING:   layers.1.residual_group.blocks.5.attn.kv.bias
+2023-11-08 10:39:06,136 WARNING:   layers.1.residual_group.blocks.5.attn.kv.weight
+2023-11-08 10:39:06,136 WARNING:   layers.1.residual_group.blocks.5.attn.q.bias
+2023-11-08 10:39:06,137 WARNING:   layers.1.residual_group.blocks.5.attn.q.weight
+2023-11-08 10:39:06,137 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.0.bias
+2023-11-08 10:39:06,137 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.0.weight
+2023-11-08 10:39:06,137 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.2.bias
+2023-11-08 10:39:06,137 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.2.weight
+2023-11-08 10:39:06,137 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,137 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,137 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,137 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,137 WARNING:   layers.1.residual_group.blocks.5.conv_scale.scale
+2023-11-08 10:39:06,137 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,137 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,137 WARNING:   layers.2.residual_group.blocks.0.attn.kv.bias
+2023-11-08 10:39:06,137 WARNING:   layers.2.residual_group.blocks.0.attn.kv.weight
+2023-11-08 10:39:06,138 WARNING:   layers.2.residual_group.blocks.0.attn.q.bias
+2023-11-08 10:39:06,138 WARNING:   layers.2.residual_group.blocks.0.attn.q.weight
+2023-11-08 10:39:06,138 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.0.bias
+2023-11-08 10:39:06,138 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.0.weight
+2023-11-08 10:39:06,138 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.2.bias
+2023-11-08 10:39:06,138 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.2.weight
+2023-11-08 10:39:06,138 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,138 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,138 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,138 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,138 WARNING:   layers.2.residual_group.blocks.0.conv_scale.scale
+2023-11-08 10:39:06,139 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,139 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,139 WARNING:   layers.2.residual_group.blocks.1.attn.kv.bias
+2023-11-08 10:39:06,139 WARNING:   layers.2.residual_group.blocks.1.attn.kv.weight
+2023-11-08 10:39:06,139 WARNING:   layers.2.residual_group.blocks.1.attn.q.bias
+2023-11-08 10:39:06,139 WARNING:   layers.2.residual_group.blocks.1.attn.q.weight
+2023-11-08 10:39:06,139 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.0.bias
+2023-11-08 10:39:06,139 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.0.weight
+2023-11-08 10:39:06,139 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.2.bias
+2023-11-08 10:39:06,139 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.2.weight
+2023-11-08 10:39:06,139 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,139 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,140 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,140 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,140 WARNING:   layers.2.residual_group.blocks.1.conv_scale.scale
+2023-11-08 10:39:06,140 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,140 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,140 WARNING:   layers.2.residual_group.blocks.2.attn.kv.bias
+2023-11-08 10:39:06,140 WARNING:   layers.2.residual_group.blocks.2.attn.kv.weight
+2023-11-08 10:39:06,140 WARNING:   layers.2.residual_group.blocks.2.attn.q.bias
+2023-11-08 10:39:06,140 WARNING:   layers.2.residual_group.blocks.2.attn.q.weight
+2023-11-08 10:39:06,140 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.0.bias
+2023-11-08 10:39:06,140 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.0.weight
+2023-11-08 10:39:06,141 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.2.bias
+2023-11-08 10:39:06,141 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.2.weight
+2023-11-08 10:39:06,141 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,141 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,141 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,141 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,141 WARNING:   layers.2.residual_group.blocks.2.conv_scale.scale
+2023-11-08 10:39:06,141 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,141 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,141 WARNING:   layers.2.residual_group.blocks.3.attn.kv.bias
+2023-11-08 10:39:06,141 WARNING:   layers.2.residual_group.blocks.3.attn.kv.weight
+2023-11-08 10:39:06,142 WARNING:   layers.2.residual_group.blocks.3.attn.q.bias
+2023-11-08 10:39:06,142 WARNING:   layers.2.residual_group.blocks.3.attn.q.weight
+2023-11-08 10:39:06,142 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.0.bias
+2023-11-08 10:39:06,142 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.0.weight
+2023-11-08 10:39:06,142 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.2.bias
+2023-11-08 10:39:06,142 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.2.weight
+2023-11-08 10:39:06,142 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,142 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,142 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,142 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,142 WARNING:   layers.2.residual_group.blocks.3.conv_scale.scale
+2023-11-08 10:39:06,142 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,142 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,142 WARNING:   layers.2.residual_group.blocks.4.attn.kv.bias
+2023-11-08 10:39:06,143 WARNING:   layers.2.residual_group.blocks.4.attn.kv.weight
+2023-11-08 10:39:06,143 WARNING:   layers.2.residual_group.blocks.4.attn.q.bias
+2023-11-08 10:39:06,143 WARNING:   layers.2.residual_group.blocks.4.attn.q.weight
+2023-11-08 10:39:06,143 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.0.bias
+2023-11-08 10:39:06,143 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.0.weight
+2023-11-08 10:39:06,143 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.2.bias
+2023-11-08 10:39:06,143 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.2.weight
+2023-11-08 10:39:06,143 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,143 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,143 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,143 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,143 WARNING:   layers.2.residual_group.blocks.4.conv_scale.scale
+2023-11-08 10:39:06,144 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,144 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,144 WARNING:   layers.2.residual_group.blocks.5.attn.kv.bias
+2023-11-08 10:39:06,144 WARNING:   layers.2.residual_group.blocks.5.attn.kv.weight
+2023-11-08 10:39:06,144 WARNING:   layers.2.residual_group.blocks.5.attn.q.bias
+2023-11-08 10:39:06,144 WARNING:   layers.2.residual_group.blocks.5.attn.q.weight
+2023-11-08 10:39:06,144 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.0.bias
+2023-11-08 10:39:06,144 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.0.weight
+2023-11-08 10:39:06,144 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.2.bias
+2023-11-08 10:39:06,144 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.2.weight
+2023-11-08 10:39:06,144 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,145 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,145 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,145 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,145 WARNING:   layers.2.residual_group.blocks.5.conv_scale.scale
+2023-11-08 10:39:06,145 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,145 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,145 WARNING:   layers.3.residual_group.blocks.0.attn.kv.bias
+2023-11-08 10:39:06,145 WARNING:   layers.3.residual_group.blocks.0.attn.kv.weight
+2023-11-08 10:39:06,145 WARNING:   layers.3.residual_group.blocks.0.attn.q.bias
+2023-11-08 10:39:06,145 WARNING:   layers.3.residual_group.blocks.0.attn.q.weight
+2023-11-08 10:39:06,145 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.0.bias
+2023-11-08 10:39:06,146 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.0.weight
+2023-11-08 10:39:06,146 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.2.bias
+2023-11-08 10:39:06,146 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.2.weight
+2023-11-08 10:39:06,146 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,146 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,146 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,146 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,146 WARNING:   layers.3.residual_group.blocks.0.conv_scale.scale
+2023-11-08 10:39:06,146 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,146 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,146 WARNING:   layers.3.residual_group.blocks.1.attn.kv.bias
+2023-11-08 10:39:06,147 WARNING:   layers.3.residual_group.blocks.1.attn.kv.weight
+2023-11-08 10:39:06,147 WARNING:   layers.3.residual_group.blocks.1.attn.q.bias
+2023-11-08 10:39:06,147 WARNING:   layers.3.residual_group.blocks.1.attn.q.weight
+2023-11-08 10:39:06,147 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.0.bias
+2023-11-08 10:39:06,147 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.0.weight
+2023-11-08 10:39:06,147 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.2.bias
+2023-11-08 10:39:06,147 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.2.weight
+2023-11-08 10:39:06,147 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,147 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,147 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,148 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,148 WARNING:   layers.3.residual_group.blocks.1.conv_scale.scale
+2023-11-08 10:39:06,148 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,148 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,148 WARNING:   layers.3.residual_group.blocks.2.attn.kv.bias
+2023-11-08 10:39:06,148 WARNING:   layers.3.residual_group.blocks.2.attn.kv.weight
+2023-11-08 10:39:06,148 WARNING:   layers.3.residual_group.blocks.2.attn.q.bias
+2023-11-08 10:39:06,148 WARNING:   layers.3.residual_group.blocks.2.attn.q.weight
+2023-11-08 10:39:06,148 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.0.bias
+2023-11-08 10:39:06,148 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.0.weight
+2023-11-08 10:39:06,149 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.2.bias
+2023-11-08 10:39:06,149 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.2.weight
+2023-11-08 10:39:06,149 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,149 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,149 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,149 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,149 WARNING:   layers.3.residual_group.blocks.2.conv_scale.scale
+2023-11-08 10:39:06,149 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,149 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,149 WARNING:   layers.3.residual_group.blocks.3.attn.kv.bias
+2023-11-08 10:39:06,149 WARNING:   layers.3.residual_group.blocks.3.attn.kv.weight
+2023-11-08 10:39:06,150 WARNING:   layers.3.residual_group.blocks.3.attn.q.bias
+2023-11-08 10:39:06,150 WARNING:   layers.3.residual_group.blocks.3.attn.q.weight
+2023-11-08 10:39:06,150 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.0.bias
+2023-11-08 10:39:06,150 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.0.weight
+2023-11-08 10:39:06,150 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.2.bias
+2023-11-08 10:39:06,150 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.2.weight
+2023-11-08 10:39:06,150 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,150 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,150 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,150 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,150 WARNING:   layers.3.residual_group.blocks.3.conv_scale.scale
+2023-11-08 10:39:06,150 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,151 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,151 WARNING:   layers.3.residual_group.blocks.4.attn.kv.bias
+2023-11-08 10:39:06,151 WARNING:   layers.3.residual_group.blocks.4.attn.kv.weight
+2023-11-08 10:39:06,151 WARNING:   layers.3.residual_group.blocks.4.attn.q.bias
+2023-11-08 10:39:06,151 WARNING:   layers.3.residual_group.blocks.4.attn.q.weight
+2023-11-08 10:39:06,151 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.0.bias
+2023-11-08 10:39:06,151 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.0.weight
+2023-11-08 10:39:06,151 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.2.bias
+2023-11-08 10:39:06,151 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.2.weight
+2023-11-08 10:39:06,151 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,151 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,152 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,152 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,152 WARNING:   layers.3.residual_group.blocks.4.conv_scale.scale
+2023-11-08 10:39:06,152 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,152 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,152 WARNING:   layers.3.residual_group.blocks.5.attn.kv.bias
+2023-11-08 10:39:06,152 WARNING:   layers.3.residual_group.blocks.5.attn.kv.weight
+2023-11-08 10:39:06,152 WARNING:   layers.3.residual_group.blocks.5.attn.q.bias
+2023-11-08 10:39:06,152 WARNING:   layers.3.residual_group.blocks.5.attn.q.weight
+2023-11-08 10:39:06,152 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.0.bias
+2023-11-08 10:39:06,152 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.0.weight
+2023-11-08 10:39:06,152 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.2.bias
+2023-11-08 10:39:06,153 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.2.weight
+2023-11-08 10:39:06,153 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,153 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,153 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,153 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,153 WARNING:   layers.3.residual_group.blocks.5.conv_scale.scale
+2023-11-08 10:39:06,153 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,153 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,153 WARNING:   layers.4.residual_group.blocks.0.attn.kv.bias
+2023-11-08 10:39:06,153 WARNING:   layers.4.residual_group.blocks.0.attn.kv.weight
+2023-11-08 10:39:06,153 WARNING:   layers.4.residual_group.blocks.0.attn.q.bias
+2023-11-08 10:39:06,153 WARNING:   layers.4.residual_group.blocks.0.attn.q.weight
+2023-11-08 10:39:06,154 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.0.bias
+2023-11-08 10:39:06,154 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.0.weight
+2023-11-08 10:39:06,154 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.2.bias
+2023-11-08 10:39:06,154 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.2.weight
+2023-11-08 10:39:06,154 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,154 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,154 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,154 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,154 WARNING:   layers.4.residual_group.blocks.0.conv_scale.scale
+2023-11-08 10:39:06,154 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,154 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,154 WARNING:   layers.4.residual_group.blocks.1.attn.kv.bias
+2023-11-08 10:39:06,155 WARNING:   layers.4.residual_group.blocks.1.attn.kv.weight
+2023-11-08 10:39:06,155 WARNING:   layers.4.residual_group.blocks.1.attn.q.bias
+2023-11-08 10:39:06,155 WARNING:   layers.4.residual_group.blocks.1.attn.q.weight
+2023-11-08 10:39:06,155 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.0.bias
+2023-11-08 10:39:06,155 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.0.weight
+2023-11-08 10:39:06,155 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.2.bias
+2023-11-08 10:39:06,155 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.2.weight
+2023-11-08 10:39:06,155 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,155 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,155 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,155 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,155 WARNING:   layers.4.residual_group.blocks.1.conv_scale.scale
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.2.attn.kv.bias
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.2.attn.kv.weight
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.2.attn.q.bias
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.2.attn.q.weight
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.0.bias
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.0.weight
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.2.bias
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.2.weight
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,156 WARNING:   layers.4.residual_group.blocks.2.conv_scale.scale
+2023-11-08 10:39:06,157 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,157 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,157 WARNING:   layers.4.residual_group.blocks.3.attn.kv.bias
+2023-11-08 10:39:06,157 WARNING:   layers.4.residual_group.blocks.3.attn.kv.weight
+2023-11-08 10:39:06,157 WARNING:   layers.4.residual_group.blocks.3.attn.q.bias
+2023-11-08 10:39:06,157 WARNING:   layers.4.residual_group.blocks.3.attn.q.weight
+2023-11-08 10:39:06,157 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.0.bias
+2023-11-08 10:39:06,157 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.0.weight
+2023-11-08 10:39:06,157 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.2.bias
+2023-11-08 10:39:06,157 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.2.weight
+2023-11-08 10:39:06,157 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,157 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,157 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,157 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.3.conv_scale.scale
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.4.attn.kv.bias
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.4.attn.kv.weight
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.4.attn.q.bias
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.4.attn.q.weight
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.0.bias
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.0.weight
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.2.bias
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.2.weight
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,158 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,159 WARNING:   layers.4.residual_group.blocks.4.conv_scale.scale
+2023-11-08 10:39:06,159 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,159 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,159 WARNING:   layers.4.residual_group.blocks.5.attn.kv.bias
+2023-11-08 10:39:06,159 WARNING:   layers.4.residual_group.blocks.5.attn.kv.weight
+2023-11-08 10:39:06,159 WARNING:   layers.4.residual_group.blocks.5.attn.q.bias
+2023-11-08 10:39:06,159 WARNING:   layers.4.residual_group.blocks.5.attn.q.weight
+2023-11-08 10:39:06,159 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.0.bias
+2023-11-08 10:39:06,159 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.0.weight
+2023-11-08 10:39:06,159 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.2.bias
+2023-11-08 10:39:06,159 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.2.weight
+2023-11-08 10:39:06,159 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,159 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,159 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,160 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,160 WARNING:   layers.4.residual_group.blocks.5.conv_scale.scale
+2023-11-08 10:39:06,160 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,160 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,160 WARNING:   layers.5.residual_group.blocks.0.attn.kv.bias
+2023-11-08 10:39:06,160 WARNING:   layers.5.residual_group.blocks.0.attn.kv.weight
+2023-11-08 10:39:06,160 WARNING:   layers.5.residual_group.blocks.0.attn.q.bias
+2023-11-08 10:39:06,160 WARNING:   layers.5.residual_group.blocks.0.attn.q.weight
+2023-11-08 10:39:06,160 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.0.bias
+2023-11-08 10:39:06,160 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.0.weight
+2023-11-08 10:39:06,160 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.2.bias
+2023-11-08 10:39:06,160 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.2.weight
+2023-11-08 10:39:06,160 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,160 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,160 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,161 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,161 WARNING:   layers.5.residual_group.blocks.0.conv_scale.scale
+2023-11-08 10:39:06,161 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,161 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,161 WARNING:   layers.5.residual_group.blocks.1.attn.kv.bias
+2023-11-08 10:39:06,161 WARNING:   layers.5.residual_group.blocks.1.attn.kv.weight
+2023-11-08 10:39:06,161 WARNING:   layers.5.residual_group.blocks.1.attn.q.bias
+2023-11-08 10:39:06,161 WARNING:   layers.5.residual_group.blocks.1.attn.q.weight
+2023-11-08 10:39:06,161 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.0.bias
+2023-11-08 10:39:06,161 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.0.weight
+2023-11-08 10:39:06,161 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.2.bias
+2023-11-08 10:39:06,161 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.2.weight
+2023-11-08 10:39:06,161 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,162 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,162 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,162 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,162 WARNING:   layers.5.residual_group.blocks.1.conv_scale.scale
+2023-11-08 10:39:06,162 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,162 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,162 WARNING:   layers.5.residual_group.blocks.2.attn.kv.bias
+2023-11-08 10:39:06,162 WARNING:   layers.5.residual_group.blocks.2.attn.kv.weight
+2023-11-08 10:39:06,162 WARNING:   layers.5.residual_group.blocks.2.attn.q.bias
+2023-11-08 10:39:06,163 WARNING:   layers.5.residual_group.blocks.2.attn.q.weight
+2023-11-08 10:39:06,163 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.0.bias
+2023-11-08 10:39:06,163 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.0.weight
+2023-11-08 10:39:06,163 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.2.bias
+2023-11-08 10:39:06,163 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.2.weight
+2023-11-08 10:39:06,163 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,163 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,163 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,164 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,164 WARNING:   layers.5.residual_group.blocks.2.conv_scale.scale
+2023-11-08 10:39:06,164 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,164 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,164 WARNING:   layers.5.residual_group.blocks.3.attn.kv.bias
+2023-11-08 10:39:06,164 WARNING:   layers.5.residual_group.blocks.3.attn.kv.weight
+2023-11-08 10:39:06,164 WARNING:   layers.5.residual_group.blocks.3.attn.q.bias
+2023-11-08 10:39:06,164 WARNING:   layers.5.residual_group.blocks.3.attn.q.weight
+2023-11-08 10:39:06,164 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.0.bias
+2023-11-08 10:39:06,164 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.0.weight
+2023-11-08 10:39:06,164 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.2.bias
+2023-11-08 10:39:06,164 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.2.weight
+2023-11-08 10:39:06,164 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,165 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,165 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,165 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,165 WARNING:   layers.5.residual_group.blocks.3.conv_scale.scale
+2023-11-08 10:39:06,165 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,165 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,165 WARNING:   layers.5.residual_group.blocks.4.attn.kv.bias
+2023-11-08 10:39:06,165 WARNING:   layers.5.residual_group.blocks.4.attn.kv.weight
+2023-11-08 10:39:06,165 WARNING:   layers.5.residual_group.blocks.4.attn.q.bias
+2023-11-08 10:39:06,165 WARNING:   layers.5.residual_group.blocks.4.attn.q.weight
+2023-11-08 10:39:06,165 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.0.bias
+2023-11-08 10:39:06,165 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.0.weight
+2023-11-08 10:39:06,165 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.2.bias
+2023-11-08 10:39:06,166 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.2.weight
+2023-11-08 10:39:06,166 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,166 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,166 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,166 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,166 WARNING:   layers.5.residual_group.blocks.4.conv_scale.scale
+2023-11-08 10:39:06,166 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,166 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,166 WARNING:   layers.5.residual_group.blocks.5.attn.kv.bias
+2023-11-08 10:39:06,166 WARNING:   layers.5.residual_group.blocks.5.attn.kv.weight
+2023-11-08 10:39:06,166 WARNING:   layers.5.residual_group.blocks.5.attn.q.bias
+2023-11-08 10:39:06,166 WARNING:   layers.5.residual_group.blocks.5.attn.q.weight
+2023-11-08 10:39:06,167 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.0.bias
+2023-11-08 10:39:06,167 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.0.weight
+2023-11-08 10:39:06,167 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.2.bias
+2023-11-08 10:39:06,167 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.2.weight
+2023-11-08 10:39:06,167 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:06,167 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:06,167 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:06,168 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:06,168 WARNING:   layers.5.residual_group.blocks.5.conv_scale.scale
+2023-11-08 10:39:06,168 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:06,168 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:06,168 WARNING: Loaded net - current net:
+2023-11-08 10:39:06,168 WARNING:   layers.0.residual_group.blocks.0.attn.qkv.bias
+2023-11-08 10:39:06,168 WARNING:   layers.0.residual_group.blocks.0.attn.qkv.weight
+2023-11-08 10:39:06,168 WARNING:   layers.0.residual_group.blocks.1.attn.qkv.bias
+2023-11-08 10:39:06,169 WARNING:   layers.0.residual_group.blocks.1.attn.qkv.weight
+2023-11-08 10:39:06,169 WARNING:   layers.0.residual_group.blocks.2.attn.qkv.bias
+2023-11-08 10:39:06,169 WARNING:   layers.0.residual_group.blocks.2.attn.qkv.weight
+2023-11-08 10:39:06,169 WARNING:   layers.0.residual_group.blocks.3.attn.qkv.bias
+2023-11-08 10:39:06,169 WARNING:   layers.0.residual_group.blocks.3.attn.qkv.weight
+2023-11-08 10:39:06,169 WARNING:   layers.0.residual_group.blocks.4.attn.qkv.bias
+2023-11-08 10:39:06,169 WARNING:   layers.0.residual_group.blocks.4.attn.qkv.weight
+2023-11-08 10:39:06,169 WARNING:   layers.0.residual_group.blocks.5.attn.qkv.bias
+2023-11-08 10:39:06,169 WARNING:   layers.0.residual_group.blocks.5.attn.qkv.weight
+2023-11-08 10:39:06,169 WARNING:   layers.1.residual_group.blocks.0.attn.qkv.bias
+2023-11-08 10:39:06,169 WARNING:   layers.1.residual_group.blocks.0.attn.qkv.weight
+2023-11-08 10:39:06,169 WARNING:   layers.1.residual_group.blocks.1.attn.qkv.bias
+2023-11-08 10:39:06,169 WARNING:   layers.1.residual_group.blocks.1.attn.qkv.weight
+2023-11-08 10:39:06,169 WARNING:   layers.1.residual_group.blocks.2.attn.qkv.bias
+2023-11-08 10:39:06,170 WARNING:   layers.1.residual_group.blocks.2.attn.qkv.weight
+2023-11-08 10:39:06,170 WARNING:   layers.1.residual_group.blocks.3.attn.qkv.bias
+2023-11-08 10:39:06,170 WARNING:   layers.1.residual_group.blocks.3.attn.qkv.weight
+2023-11-08 10:39:06,170 WARNING:   layers.1.residual_group.blocks.4.attn.qkv.bias
+2023-11-08 10:39:06,170 WARNING:   layers.1.residual_group.blocks.4.attn.qkv.weight
+2023-11-08 10:39:06,170 WARNING:   layers.1.residual_group.blocks.5.attn.qkv.bias
+2023-11-08 10:39:06,170 WARNING:   layers.1.residual_group.blocks.5.attn.qkv.weight
+2023-11-08 10:39:06,170 WARNING:   layers.2.residual_group.blocks.0.attn.qkv.bias
+2023-11-08 10:39:06,170 WARNING:   layers.2.residual_group.blocks.0.attn.qkv.weight
+2023-11-08 10:39:06,170 WARNING:   layers.2.residual_group.blocks.1.attn.qkv.bias
+2023-11-08 10:39:06,170 WARNING:   layers.2.residual_group.blocks.1.attn.qkv.weight
+2023-11-08 10:39:06,170 WARNING:   layers.2.residual_group.blocks.2.attn.qkv.bias
+2023-11-08 10:39:06,171 WARNING:   layers.2.residual_group.blocks.2.attn.qkv.weight
+2023-11-08 10:39:06,171 WARNING:   layers.2.residual_group.blocks.3.attn.qkv.bias
+2023-11-08 10:39:06,171 WARNING:   layers.2.residual_group.blocks.3.attn.qkv.weight
+2023-11-08 10:39:06,171 WARNING:   layers.2.residual_group.blocks.4.attn.qkv.bias
+2023-11-08 10:39:06,171 WARNING:   layers.2.residual_group.blocks.4.attn.qkv.weight
+2023-11-08 10:39:06,171 WARNING:   layers.2.residual_group.blocks.5.attn.qkv.bias
+2023-11-08 10:39:06,171 WARNING:   layers.2.residual_group.blocks.5.attn.qkv.weight
+2023-11-08 10:39:06,171 WARNING:   layers.3.residual_group.blocks.0.attn.qkv.bias
+2023-11-08 10:39:06,171 WARNING:   layers.3.residual_group.blocks.0.attn.qkv.weight
+2023-11-08 10:39:06,171 WARNING:   layers.3.residual_group.blocks.1.attn.qkv.bias
+2023-11-08 10:39:06,171 WARNING:   layers.3.residual_group.blocks.1.attn.qkv.weight
+2023-11-08 10:39:06,171 WARNING:   layers.3.residual_group.blocks.2.attn.qkv.bias
+2023-11-08 10:39:06,171 WARNING:   layers.3.residual_group.blocks.2.attn.qkv.weight
+2023-11-08 10:39:06,171 WARNING:   layers.3.residual_group.blocks.3.attn.qkv.bias
+2023-11-08 10:39:06,171 WARNING:   layers.3.residual_group.blocks.3.attn.qkv.weight
+2023-11-08 10:39:06,172 WARNING:   layers.3.residual_group.blocks.4.attn.qkv.bias
+2023-11-08 10:39:06,172 WARNING:   layers.3.residual_group.blocks.4.attn.qkv.weight
+2023-11-08 10:39:06,172 WARNING:   layers.3.residual_group.blocks.5.attn.qkv.bias
+2023-11-08 10:39:06,172 WARNING:   layers.3.residual_group.blocks.5.attn.qkv.weight
+2023-11-08 10:39:06,172 WARNING:   layers.4.residual_group.blocks.0.attn.qkv.bias
+2023-11-08 10:39:06,172 WARNING:   layers.4.residual_group.blocks.0.attn.qkv.weight
+2023-11-08 10:39:06,172 WARNING:   layers.4.residual_group.blocks.1.attn.qkv.bias
+2023-11-08 10:39:06,172 WARNING:   layers.4.residual_group.blocks.1.attn.qkv.weight
+2023-11-08 10:39:06,172 WARNING:   layers.4.residual_group.blocks.2.attn.qkv.bias
+2023-11-08 10:39:06,172 WARNING:   layers.4.residual_group.blocks.2.attn.qkv.weight
+2023-11-08 10:39:06,172 WARNING:   layers.4.residual_group.blocks.3.attn.qkv.bias
+2023-11-08 10:39:06,172 WARNING:   layers.4.residual_group.blocks.3.attn.qkv.weight
+2023-11-08 10:39:06,172 WARNING:   layers.4.residual_group.blocks.4.attn.qkv.bias
+2023-11-08 10:39:06,172 WARNING:   layers.4.residual_group.blocks.4.attn.qkv.weight
+2023-11-08 10:39:06,173 WARNING:   layers.4.residual_group.blocks.5.attn.qkv.bias
+2023-11-08 10:39:06,173 WARNING:   layers.4.residual_group.blocks.5.attn.qkv.weight
+2023-11-08 10:39:06,173 WARNING:   layers.5.residual_group.blocks.0.attn.qkv.bias
+2023-11-08 10:39:06,173 WARNING:   layers.5.residual_group.blocks.0.attn.qkv.weight
+2023-11-08 10:39:06,173 WARNING:   layers.5.residual_group.blocks.1.attn.qkv.bias
+2023-11-08 10:39:06,173 WARNING:   layers.5.residual_group.blocks.1.attn.qkv.weight
+2023-11-08 10:39:06,173 WARNING:   layers.5.residual_group.blocks.2.attn.qkv.bias
+2023-11-08 10:39:06,173 WARNING:   layers.5.residual_group.blocks.2.attn.qkv.weight
+2023-11-08 10:39:06,173 WARNING:   layers.5.residual_group.blocks.3.attn.qkv.bias
+2023-11-08 10:39:06,173 WARNING:   layers.5.residual_group.blocks.3.attn.qkv.weight
+2023-11-08 10:39:06,173 WARNING:   layers.5.residual_group.blocks.4.attn.qkv.bias
+2023-11-08 10:39:06,173 WARNING:   layers.5.residual_group.blocks.4.attn.qkv.weight
+2023-11-08 10:39:06,173 WARNING:   layers.5.residual_group.blocks.5.attn.qkv.bias
+2023-11-08 10:39:06,173 WARNING:   layers.5.residual_group.blocks.5.attn.qkv.weight
+2023-11-08 10:39:06,252 INFO: Use Exponential Moving Average with decay: 0.999
+2023-11-08 10:39:06,546 INFO: Loading: params_ema does not exist, use params.
+2023-11-08 10:39:06,546 INFO: Loading SwinIR_Modified model from experiments/pretrained_models/SwinIR/X2/001_classicalSR_DIV2K_s48w8_SwinIR-M_x2.pth, with param key: [params].
+2023-11-08 10:39:07,444 WARNING: Current net - loaded net:
+2023-11-08 10:39:07,445 WARNING:   edge_convs.0.dwconv.bias
+2023-11-08 10:39:07,445 WARNING:   edge_convs.0.dwconv.weight
+2023-11-08 10:39:07,445 WARNING:   edge_convs.1.dwconv.bias
+2023-11-08 10:39:07,445 WARNING:   edge_convs.1.dwconv.weight
+2023-11-08 10:39:07,445 WARNING:   edge_convs.2.dwconv.bias
+2023-11-08 10:39:07,445 WARNING:   edge_convs.2.dwconv.weight
+2023-11-08 10:39:07,445 WARNING:   edge_convs.3.dwconv.bias
+2023-11-08 10:39:07,445 WARNING:   edge_convs.3.dwconv.weight
+2023-11-08 10:39:07,445 WARNING:   edge_convs.4.dwconv.bias
+2023-11-08 10:39:07,445 WARNING:   edge_convs.4.dwconv.weight
+2023-11-08 10:39:07,445 WARNING:   edge_convs.5.dwconv.bias
+2023-11-08 10:39:07,445 WARNING:   edge_convs.5.dwconv.weight
+2023-11-08 10:39:07,445 WARNING:   edge_ex.conv.bias
+2023-11-08 10:39:07,446 WARNING:   edge_ex.conv.weight
+2023-11-08 10:39:07,446 WARNING:   edge_ex.hpf.conv_sobel_x.weight
+2023-11-08 10:39:07,446 WARNING:   edge_ex.hpf.conv_sobel_y.weight
+2023-11-08 10:39:07,446 WARNING:   layers.0.residual_group.blocks.0.attn.kv.bias
+2023-11-08 10:39:07,446 WARNING:   layers.0.residual_group.blocks.0.attn.kv.weight
+2023-11-08 10:39:07,446 WARNING:   layers.0.residual_group.blocks.0.attn.q.bias
+2023-11-08 10:39:07,446 WARNING:   layers.0.residual_group.blocks.0.attn.q.weight
+2023-11-08 10:39:07,451 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.0.bias
+2023-11-08 10:39:07,452 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.0.weight
+2023-11-08 10:39:07,452 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.2.bias
+2023-11-08 10:39:07,452 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.2.weight
+2023-11-08 10:39:07,452 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,452 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,452 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,452 WARNING:   layers.0.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,452 WARNING:   layers.0.residual_group.blocks.0.conv_scale.scale
+2023-11-08 10:39:07,452 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,452 WARNING:   layers.0.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,452 WARNING:   layers.0.residual_group.blocks.1.attn.kv.bias
+2023-11-08 10:39:07,452 WARNING:   layers.0.residual_group.blocks.1.attn.kv.weight
+2023-11-08 10:39:07,452 WARNING:   layers.0.residual_group.blocks.1.attn.q.bias
+2023-11-08 10:39:07,452 WARNING:   layers.0.residual_group.blocks.1.attn.q.weight
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.0.bias
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.0.weight
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.2.bias
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.2.weight
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.1.conv_scale.scale
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.2.attn.kv.bias
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.2.attn.kv.weight
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.2.attn.q.bias
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.2.attn.q.weight
+2023-11-08 10:39:07,453 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.0.bias
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.0.weight
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.2.bias
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.2.weight
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.2.conv_scale.scale
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.3.attn.kv.bias
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.3.attn.kv.weight
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.3.attn.q.bias
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.3.attn.q.weight
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.0.bias
+2023-11-08 10:39:07,454 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.0.weight
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.2.bias
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.2.weight
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.3.conv_scale.scale
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.4.attn.kv.bias
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.4.attn.kv.weight
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.4.attn.q.bias
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.4.attn.q.weight
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.0.bias
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.0.weight
+2023-11-08 10:39:07,455 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.2.bias
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.2.weight
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.4.conv_scale.scale
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.5.attn.kv.bias
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.5.attn.kv.weight
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.5.attn.q.bias
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.5.attn.q.weight
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.0.bias
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.0.weight
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.2.bias
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.2.weight
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,456 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,457 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,457 WARNING:   layers.0.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,457 WARNING:   layers.0.residual_group.blocks.5.conv_scale.scale
+2023-11-08 10:39:07,457 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,457 WARNING:   layers.0.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,457 WARNING:   layers.1.residual_group.blocks.0.attn.kv.bias
+2023-11-08 10:39:07,457 WARNING:   layers.1.residual_group.blocks.0.attn.kv.weight
+2023-11-08 10:39:07,457 WARNING:   layers.1.residual_group.blocks.0.attn.q.bias
+2023-11-08 10:39:07,457 WARNING:   layers.1.residual_group.blocks.0.attn.q.weight
+2023-11-08 10:39:07,457 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.0.bias
+2023-11-08 10:39:07,457 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.0.weight
+2023-11-08 10:39:07,457 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.2.bias
+2023-11-08 10:39:07,457 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.2.weight
+2023-11-08 10:39:07,457 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,457 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,457 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.0.conv_scale.scale
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.1.attn.kv.bias
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.1.attn.kv.weight
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.1.attn.q.bias
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.1.attn.q.weight
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.0.bias
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.0.weight
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.2.bias
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.2.weight
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,458 WARNING:   layers.1.residual_group.blocks.1.conv_scale.scale
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.attn.kv.bias
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.attn.kv.weight
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.attn.q.bias
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.attn.q.weight
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.0.bias
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.0.weight
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.2.bias
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.2.weight
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.conv_scale.scale
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,459 WARNING:   layers.1.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,460 WARNING:   layers.1.residual_group.blocks.3.attn.kv.bias
+2023-11-08 10:39:07,460 WARNING:   layers.1.residual_group.blocks.3.attn.kv.weight
+2023-11-08 10:39:07,460 WARNING:   layers.1.residual_group.blocks.3.attn.q.bias
+2023-11-08 10:39:07,460 WARNING:   layers.1.residual_group.blocks.3.attn.q.weight
+2023-11-08 10:39:07,460 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.0.bias
+2023-11-08 10:39:07,460 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.0.weight
+2023-11-08 10:39:07,460 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.2.bias
+2023-11-08 10:39:07,460 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.2.weight
+2023-11-08 10:39:07,460 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,460 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,460 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,461 WARNING:   layers.1.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,461 WARNING:   layers.1.residual_group.blocks.3.conv_scale.scale
+2023-11-08 10:39:07,461 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,461 WARNING:   layers.1.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,461 WARNING:   layers.1.residual_group.blocks.4.attn.kv.bias
+2023-11-08 10:39:07,461 WARNING:   layers.1.residual_group.blocks.4.attn.kv.weight
+2023-11-08 10:39:07,461 WARNING:   layers.1.residual_group.blocks.4.attn.q.bias
+2023-11-08 10:39:07,462 WARNING:   layers.1.residual_group.blocks.4.attn.q.weight
+2023-11-08 10:39:07,462 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.0.bias
+2023-11-08 10:39:07,462 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.0.weight
+2023-11-08 10:39:07,462 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.2.bias
+2023-11-08 10:39:07,462 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.2.weight
+2023-11-08 10:39:07,462 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,462 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,462 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,462 WARNING:   layers.1.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,462 WARNING:   layers.1.residual_group.blocks.4.conv_scale.scale
+2023-11-08 10:39:07,463 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,463 WARNING:   layers.1.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,463 WARNING:   layers.1.residual_group.blocks.5.attn.kv.bias
+2023-11-08 10:39:07,463 WARNING:   layers.1.residual_group.blocks.5.attn.kv.weight
+2023-11-08 10:39:07,463 WARNING:   layers.1.residual_group.blocks.5.attn.q.bias
+2023-11-08 10:39:07,463 WARNING:   layers.1.residual_group.blocks.5.attn.q.weight
+2023-11-08 10:39:07,463 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.0.bias
+2023-11-08 10:39:07,463 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.0.weight
+2023-11-08 10:39:07,463 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.2.bias
+2023-11-08 10:39:07,463 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.2.weight
+2023-11-08 10:39:07,463 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,464 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,464 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,464 WARNING:   layers.1.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,464 WARNING:   layers.1.residual_group.blocks.5.conv_scale.scale
+2023-11-08 10:39:07,464 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,464 WARNING:   layers.1.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,464 WARNING:   layers.2.residual_group.blocks.0.attn.kv.bias
+2023-11-08 10:39:07,464 WARNING:   layers.2.residual_group.blocks.0.attn.kv.weight
+2023-11-08 10:39:07,464 WARNING:   layers.2.residual_group.blocks.0.attn.q.bias
+2023-11-08 10:39:07,464 WARNING:   layers.2.residual_group.blocks.0.attn.q.weight
+2023-11-08 10:39:07,464 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.0.bias
+2023-11-08 10:39:07,464 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.0.weight
+2023-11-08 10:39:07,464 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.2.bias
+2023-11-08 10:39:07,464 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.2.weight
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.0.conv_scale.scale
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.1.attn.kv.bias
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.1.attn.kv.weight
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.1.attn.q.bias
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.1.attn.q.weight
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.0.bias
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.0.weight
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.2.bias
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.2.weight
+2023-11-08 10:39:07,465 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.1.conv_scale.scale
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.2.attn.kv.bias
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.2.attn.kv.weight
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.2.attn.q.bias
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.2.attn.q.weight
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.0.bias
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.0.weight
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.2.bias
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.2.weight
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,466 WARNING:   layers.2.residual_group.blocks.2.conv_scale.scale
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.attn.kv.bias
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.attn.kv.weight
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.attn.q.bias
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.attn.q.weight
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.0.bias
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.0.weight
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.2.bias
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.2.weight
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.conv_scale.scale
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.4.attn.kv.bias
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.4.attn.kv.weight
+2023-11-08 10:39:07,467 WARNING:   layers.2.residual_group.blocks.4.attn.q.bias
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.4.attn.q.weight
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.0.bias
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.0.weight
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.2.bias
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.2.weight
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.4.conv_scale.scale
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.5.attn.kv.bias
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.5.attn.kv.weight
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.5.attn.q.bias
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.5.attn.q.weight
+2023-11-08 10:39:07,468 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.0.bias
+2023-11-08 10:39:07,469 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.0.weight
+2023-11-08 10:39:07,469 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.2.bias
+2023-11-08 10:39:07,469 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.2.weight
+2023-11-08 10:39:07,469 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,469 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,469 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,469 WARNING:   layers.2.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,469 WARNING:   layers.2.residual_group.blocks.5.conv_scale.scale
+2023-11-08 10:39:07,469 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,469 WARNING:   layers.2.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,469 WARNING:   layers.3.residual_group.blocks.0.attn.kv.bias
+2023-11-08 10:39:07,469 WARNING:   layers.3.residual_group.blocks.0.attn.kv.weight
+2023-11-08 10:39:07,469 WARNING:   layers.3.residual_group.blocks.0.attn.q.bias
+2023-11-08 10:39:07,469 WARNING:   layers.3.residual_group.blocks.0.attn.q.weight
+2023-11-08 10:39:07,469 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.0.bias
+2023-11-08 10:39:07,469 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.0.weight
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.2.bias
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.2.weight
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.0.conv_scale.scale
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.1.attn.kv.bias
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.1.attn.kv.weight
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.1.attn.q.bias
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.1.attn.q.weight
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.0.bias
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.0.weight
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.2.bias
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.2.weight
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,470 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,471 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,471 WARNING:   layers.3.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,471 WARNING:   layers.3.residual_group.blocks.1.conv_scale.scale
+2023-11-08 10:39:07,471 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,471 WARNING:   layers.3.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,471 WARNING:   layers.3.residual_group.blocks.2.attn.kv.bias
+2023-11-08 10:39:07,471 WARNING:   layers.3.residual_group.blocks.2.attn.kv.weight
+2023-11-08 10:39:07,471 WARNING:   layers.3.residual_group.blocks.2.attn.q.bias
+2023-11-08 10:39:07,471 WARNING:   layers.3.residual_group.blocks.2.attn.q.weight
+2023-11-08 10:39:07,471 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.0.bias
+2023-11-08 10:39:07,471 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.0.weight
+2023-11-08 10:39:07,471 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.2.bias
+2023-11-08 10:39:07,472 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.2.weight
+2023-11-08 10:39:07,472 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,472 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,472 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,472 WARNING:   layers.3.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,472 WARNING:   layers.3.residual_group.blocks.2.conv_scale.scale
+2023-11-08 10:39:07,472 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,472 WARNING:   layers.3.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,472 WARNING:   layers.3.residual_group.blocks.3.attn.kv.bias
+2023-11-08 10:39:07,472 WARNING:   layers.3.residual_group.blocks.3.attn.kv.weight
+2023-11-08 10:39:07,472 WARNING:   layers.3.residual_group.blocks.3.attn.q.bias
+2023-11-08 10:39:07,472 WARNING:   layers.3.residual_group.blocks.3.attn.q.weight
+2023-11-08 10:39:07,472 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.0.bias
+2023-11-08 10:39:07,473 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.0.weight
+2023-11-08 10:39:07,473 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.2.bias
+2023-11-08 10:39:07,473 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.2.weight
+2023-11-08 10:39:07,473 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,473 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,473 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,473 WARNING:   layers.3.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,473 WARNING:   layers.3.residual_group.blocks.3.conv_scale.scale
+2023-11-08 10:39:07,473 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,473 WARNING:   layers.3.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,473 WARNING:   layers.3.residual_group.blocks.4.attn.kv.bias
+2023-11-08 10:39:07,473 WARNING:   layers.3.residual_group.blocks.4.attn.kv.weight
+2023-11-08 10:39:07,473 WARNING:   layers.3.residual_group.blocks.4.attn.q.bias
+2023-11-08 10:39:07,473 WARNING:   layers.3.residual_group.blocks.4.attn.q.weight
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.0.bias
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.0.weight
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.2.bias
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.2.weight
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.4.conv_scale.scale
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.5.attn.kv.bias
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.5.attn.kv.weight
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.5.attn.q.bias
+2023-11-08 10:39:07,474 WARNING:   layers.3.residual_group.blocks.5.attn.q.weight
+2023-11-08 10:39:07,475 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.0.bias
+2023-11-08 10:39:07,475 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.0.weight
+2023-11-08 10:39:07,475 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.2.bias
+2023-11-08 10:39:07,475 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.2.weight
+2023-11-08 10:39:07,475 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,475 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,475 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,475 WARNING:   layers.3.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,475 WARNING:   layers.3.residual_group.blocks.5.conv_scale.scale
+2023-11-08 10:39:07,475 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,475 WARNING:   layers.3.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,475 WARNING:   layers.4.residual_group.blocks.0.attn.kv.bias
+2023-11-08 10:39:07,475 WARNING:   layers.4.residual_group.blocks.0.attn.kv.weight
+2023-11-08 10:39:07,475 WARNING:   layers.4.residual_group.blocks.0.attn.q.bias
+2023-11-08 10:39:07,475 WARNING:   layers.4.residual_group.blocks.0.attn.q.weight
+2023-11-08 10:39:07,475 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.0.bias
+2023-11-08 10:39:07,475 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.0.weight
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.2.bias
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.2.weight
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.0.conv_scale.scale
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.1.attn.kv.bias
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.1.attn.kv.weight
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.1.attn.q.bias
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.1.attn.q.weight
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.0.bias
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.0.weight
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.2.bias
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.2.weight
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.1.conv_scale.scale
+2023-11-08 10:39:07,476 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.attn.kv.bias
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.attn.kv.weight
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.attn.q.bias
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.attn.q.weight
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.0.bias
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.0.weight
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.2.bias
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.2.weight
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.conv_scale.scale
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.3.attn.kv.bias
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.3.attn.kv.weight
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.3.attn.q.bias
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.3.attn.q.weight
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.0.bias
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.0.weight
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.2.bias
+2023-11-08 10:39:07,477 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.2.weight
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.3.conv_scale.scale
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.4.attn.kv.bias
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.4.attn.kv.weight
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.4.attn.q.bias
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.4.attn.q.weight
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.0.bias
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.0.weight
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.2.bias
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.2.weight
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,478 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.4.conv_scale.scale
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.attn.kv.bias
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.attn.kv.weight
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.attn.q.bias
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.attn.q.weight
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.0.bias
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.0.weight
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.2.bias
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.2.weight
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.conv_scale.scale
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,479 WARNING:   layers.4.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.attn.kv.bias
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.attn.kv.weight
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.attn.q.bias
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.attn.q.weight
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.0.bias
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.0.weight
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.2.bias
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.2.weight
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.conv_scale.scale
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.0.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.1.attn.kv.bias
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.1.attn.kv.weight
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.1.attn.q.bias
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.1.attn.q.weight
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.0.bias
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.0.weight
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.2.bias
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.2.weight
+2023-11-08 10:39:07,480 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,481 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,481 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,481 WARNING:   layers.5.residual_group.blocks.1.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,481 WARNING:   layers.5.residual_group.blocks.1.conv_scale.scale
+2023-11-08 10:39:07,481 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,481 WARNING:   layers.5.residual_group.blocks.1.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,481 WARNING:   layers.5.residual_group.blocks.2.attn.kv.bias
+2023-11-08 10:39:07,481 WARNING:   layers.5.residual_group.blocks.2.attn.kv.weight
+2023-11-08 10:39:07,481 WARNING:   layers.5.residual_group.blocks.2.attn.q.bias
+2023-11-08 10:39:07,481 WARNING:   layers.5.residual_group.blocks.2.attn.q.weight
+2023-11-08 10:39:07,481 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.0.bias
+2023-11-08 10:39:07,481 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.0.weight
+2023-11-08 10:39:07,481 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.2.bias
+2023-11-08 10:39:07,482 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.2.weight
+2023-11-08 10:39:07,482 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,482 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,482 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,482 WARNING:   layers.5.residual_group.blocks.2.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,482 WARNING:   layers.5.residual_group.blocks.2.conv_scale.scale
+2023-11-08 10:39:07,482 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,482 WARNING:   layers.5.residual_group.blocks.2.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,482 WARNING:   layers.5.residual_group.blocks.3.attn.kv.bias
+2023-11-08 10:39:07,482 WARNING:   layers.5.residual_group.blocks.3.attn.kv.weight
+2023-11-08 10:39:07,482 WARNING:   layers.5.residual_group.blocks.3.attn.q.bias
+2023-11-08 10:39:07,482 WARNING:   layers.5.residual_group.blocks.3.attn.q.weight
+2023-11-08 10:39:07,483 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.0.bias
+2023-11-08 10:39:07,483 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.0.weight
+2023-11-08 10:39:07,483 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.2.bias
+2023-11-08 10:39:07,483 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.2.weight
+2023-11-08 10:39:07,483 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,483 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,483 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,483 WARNING:   layers.5.residual_group.blocks.3.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,483 WARNING:   layers.5.residual_group.blocks.3.conv_scale.scale
+2023-11-08 10:39:07,483 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,483 WARNING:   layers.5.residual_group.blocks.3.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,483 WARNING:   layers.5.residual_group.blocks.4.attn.kv.bias
+2023-11-08 10:39:07,484 WARNING:   layers.5.residual_group.blocks.4.attn.kv.weight
+2023-11-08 10:39:07,484 WARNING:   layers.5.residual_group.blocks.4.attn.q.bias
+2023-11-08 10:39:07,484 WARNING:   layers.5.residual_group.blocks.4.attn.q.weight
+2023-11-08 10:39:07,484 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.0.bias
+2023-11-08 10:39:07,484 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.0.weight
+2023-11-08 10:39:07,484 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.2.bias
+2023-11-08 10:39:07,484 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.2.weight
+2023-11-08 10:39:07,484 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,484 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,484 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,484 WARNING:   layers.5.residual_group.blocks.4.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.4.conv_scale.scale
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.4.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.5.attn.kv.bias
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.5.attn.kv.weight
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.5.attn.q.bias
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.5.attn.q.weight
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.0.bias
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.0.weight
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.2.bias
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.2.weight
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.1.bias
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.1.weight
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.3.bias
+2023-11-08 10:39:07,485 WARNING:   layers.5.residual_group.blocks.5.conv_block.cab.3.attention.3.weight
+2023-11-08 10:39:07,486 WARNING:   layers.5.residual_group.blocks.5.conv_scale.scale
+2023-11-08 10:39:07,486 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.bias
+2023-11-08 10:39:07,486 WARNING:   layers.5.residual_group.blocks.5.mlp.dwconv.depthwise_conv.0.weight
+2023-11-08 10:39:07,486 WARNING: Loaded net - current net:
+2023-11-08 10:39:07,486 WARNING:   layers.0.residual_group.blocks.0.attn.qkv.bias
+2023-11-08 10:39:07,486 WARNING:   layers.0.residual_group.blocks.0.attn.qkv.weight
+2023-11-08 10:39:07,486 WARNING:   layers.0.residual_group.blocks.1.attn.qkv.bias
+2023-11-08 10:39:07,486 WARNING:   layers.0.residual_group.blocks.1.attn.qkv.weight
+2023-11-08 10:39:07,486 WARNING:   layers.0.residual_group.blocks.2.attn.qkv.bias
+2023-11-08 10:39:07,486 WARNING:   layers.0.residual_group.blocks.2.attn.qkv.weight
+2023-11-08 10:39:07,486 WARNING:   layers.0.residual_group.blocks.3.attn.qkv.bias
+2023-11-08 10:39:07,486 WARNING:   layers.0.residual_group.blocks.3.attn.qkv.weight
+2023-11-08 10:39:07,486 WARNING:   layers.0.residual_group.blocks.4.attn.qkv.bias
+2023-11-08 10:39:07,487 WARNING:   layers.0.residual_group.blocks.4.attn.qkv.weight
+2023-11-08 10:39:07,487 WARNING:   layers.0.residual_group.blocks.5.attn.qkv.bias
+2023-11-08 10:39:07,487 WARNING:   layers.0.residual_group.blocks.5.attn.qkv.weight
+2023-11-08 10:39:07,487 WARNING:   layers.1.residual_group.blocks.0.attn.qkv.bias
+2023-11-08 10:39:07,487 WARNING:   layers.1.residual_group.blocks.0.attn.qkv.weight
+2023-11-08 10:39:07,487 WARNING:   layers.1.residual_group.blocks.1.attn.qkv.bias
+2023-11-08 10:39:07,487 WARNING:   layers.1.residual_group.blocks.1.attn.qkv.weight
+2023-11-08 10:39:07,487 WARNING:   layers.1.residual_group.blocks.2.attn.qkv.bias
+2023-11-08 10:39:07,487 WARNING:   layers.1.residual_group.blocks.2.attn.qkv.weight
+2023-11-08 10:39:07,487 WARNING:   layers.1.residual_group.blocks.3.attn.qkv.bias
+2023-11-08 10:39:07,487 WARNING:   layers.1.residual_group.blocks.3.attn.qkv.weight
+2023-11-08 10:39:07,487 WARNING:   layers.1.residual_group.blocks.4.attn.qkv.bias
+2023-11-08 10:39:07,487 WARNING:   layers.1.residual_group.blocks.4.attn.qkv.weight
+2023-11-08 10:39:07,487 WARNING:   layers.1.residual_group.blocks.5.attn.qkv.bias
+2023-11-08 10:39:07,487 WARNING:   layers.1.residual_group.blocks.5.attn.qkv.weight
+2023-11-08 10:39:07,487 WARNING:   layers.2.residual_group.blocks.0.attn.qkv.bias
+2023-11-08 10:39:07,487 WARNING:   layers.2.residual_group.blocks.0.attn.qkv.weight
+2023-11-08 10:39:07,487 WARNING:   layers.2.residual_group.blocks.1.attn.qkv.bias
+2023-11-08 10:39:07,487 WARNING:   layers.2.residual_group.blocks.1.attn.qkv.weight
+2023-11-08 10:39:07,487 WARNING:   layers.2.residual_group.blocks.2.attn.qkv.bias
+2023-11-08 10:39:07,487 WARNING:   layers.2.residual_group.blocks.2.attn.qkv.weight
+2023-11-08 10:39:07,487 WARNING:   layers.2.residual_group.blocks.3.attn.qkv.bias
+2023-11-08 10:39:07,488 WARNING:   layers.2.residual_group.blocks.3.attn.qkv.weight
+2023-11-08 10:39:07,488 WARNING:   layers.2.residual_group.blocks.4.attn.qkv.bias
+2023-11-08 10:39:07,488 WARNING:   layers.2.residual_group.blocks.4.attn.qkv.weight
+2023-11-08 10:39:07,488 WARNING:   layers.2.residual_group.blocks.5.attn.qkv.bias
+2023-11-08 10:39:07,488 WARNING:   layers.2.residual_group.blocks.5.attn.qkv.weight
+2023-11-08 10:39:07,488 WARNING:   layers.3.residual_group.blocks.0.attn.qkv.bias
+2023-11-08 10:39:07,488 WARNING:   layers.3.residual_group.blocks.0.attn.qkv.weight
+2023-11-08 10:39:07,488 WARNING:   layers.3.residual_group.blocks.1.attn.qkv.bias
+2023-11-08 10:39:07,488 WARNING:   layers.3.residual_group.blocks.1.attn.qkv.weight
+2023-11-08 10:39:07,488 WARNING:   layers.3.residual_group.blocks.2.attn.qkv.bias
+2023-11-08 10:39:07,488 WARNING:   layers.3.residual_group.blocks.2.attn.qkv.weight
+2023-11-08 10:39:07,488 WARNING:   layers.3.residual_group.blocks.3.attn.qkv.bias
+2023-11-08 10:39:07,488 WARNING:   layers.3.residual_group.blocks.3.attn.qkv.weight
+2023-11-08 10:39:07,488 WARNING:   layers.3.residual_group.blocks.4.attn.qkv.bias
+2023-11-08 10:39:07,488 WARNING:   layers.3.residual_group.blocks.4.attn.qkv.weight
+2023-11-08 10:39:07,488 WARNING:   layers.3.residual_group.blocks.5.attn.qkv.bias
+2023-11-08 10:39:07,488 WARNING:   layers.3.residual_group.blocks.5.attn.qkv.weight
+2023-11-08 10:39:07,488 WARNING:   layers.4.residual_group.blocks.0.attn.qkv.bias
+2023-11-08 10:39:07,488 WARNING:   layers.4.residual_group.blocks.0.attn.qkv.weight
+2023-11-08 10:39:07,488 WARNING:   layers.4.residual_group.blocks.1.attn.qkv.bias
+2023-11-08 10:39:07,488 WARNING:   layers.4.residual_group.blocks.1.attn.qkv.weight
+2023-11-08 10:39:07,488 WARNING:   layers.4.residual_group.blocks.2.attn.qkv.bias
+2023-11-08 10:39:07,488 WARNING:   layers.4.residual_group.blocks.2.attn.qkv.weight
+2023-11-08 10:39:07,488 WARNING:   layers.4.residual_group.blocks.3.attn.qkv.bias
+2023-11-08 10:39:07,488 WARNING:   layers.4.residual_group.blocks.3.attn.qkv.weight
+2023-11-08 10:39:07,489 WARNING:   layers.4.residual_group.blocks.4.attn.qkv.bias
+2023-11-08 10:39:07,489 WARNING:   layers.4.residual_group.blocks.4.attn.qkv.weight
+2023-11-08 10:39:07,489 WARNING:   layers.4.residual_group.blocks.5.attn.qkv.bias
+2023-11-08 10:39:07,489 WARNING:   layers.4.residual_group.blocks.5.attn.qkv.weight
+2023-11-08 10:39:07,489 WARNING:   layers.5.residual_group.blocks.0.attn.qkv.bias
+2023-11-08 10:39:07,489 WARNING:   layers.5.residual_group.blocks.0.attn.qkv.weight
+2023-11-08 10:39:07,489 WARNING:   layers.5.residual_group.blocks.1.attn.qkv.bias
+2023-11-08 10:39:07,489 WARNING:   layers.5.residual_group.blocks.1.attn.qkv.weight
+2023-11-08 10:39:07,489 WARNING:   layers.5.residual_group.blocks.2.attn.qkv.bias
+2023-11-08 10:39:07,489 WARNING:   layers.5.residual_group.blocks.2.attn.qkv.weight
+2023-11-08 10:39:07,489 WARNING:   layers.5.residual_group.blocks.3.attn.qkv.bias
+2023-11-08 10:39:07,489 WARNING:   layers.5.residual_group.blocks.3.attn.qkv.weight
+2023-11-08 10:39:07,489 WARNING:   layers.5.residual_group.blocks.4.attn.qkv.bias
+2023-11-08 10:39:07,489 WARNING:   layers.5.residual_group.blocks.4.attn.qkv.weight
+2023-11-08 10:39:07,489 WARNING:   layers.5.residual_group.blocks.5.attn.qkv.bias
+2023-11-08 10:39:07,489 WARNING:   layers.5.residual_group.blocks.5.attn.qkv.weight
+2023-11-08 10:39:07,552 INFO: Loss [L1Loss] is created.
+2023-11-08 10:39:07,552 WARNING: Params edge_ex.hpf.conv_sobel_x.weight will not be optimized.
+2023-11-08 10:39:07,553 WARNING: Params edge_ex.hpf.conv_sobel_y.weight will not be optimized.
+2023-11-08 10:39:07,558 INFO: Model [SwinIRModel] is created.
+2023-11-08 10:39:08,367 INFO: Start training from epoch: 0, iter: 0
+2023-11-08 10:40:16,075 INFO: [Class..][epoch:  0, iter:     100, lr:(1.000e-03,)] [eta: 3 days, 0:40:25, time (data): 0.677 (0.021)] l_pix: 2.5417e-02 
+2023-11-08 10:41:08,624 INFO: [Class..][epoch:  0, iter:     200, lr:(1.000e-03,)] [eta: 3 days, 0:48:22, time (data): 0.601 (0.012)] l_pix: 1.5089e-02 
+2023-11-08 10:42:02,176 INFO: [Class..][epoch:  0, iter:     300, lr:(1.000e-03,)] [eta: 3 days, 1:18:14, time (data): 0.535 (0.002)] l_pix: 2.9629e-02 
+2023-11-08 10:42:55,363 INFO: [Class..][epoch:  0, iter:     400, lr:(1.000e-03,)] [eta: 3 days, 1:25:11, time (data): 0.533 (0.002)] l_pix: 2.3213e-02 
+2023-11-08 10:43:48,715 INFO: [Class..][epoch:  0, iter:     500, lr:(9.999e-04,)] [eta: 3 days, 1:31:43, time (data): 0.534 (0.002)] l_pix: 2.6186e-02 
+2023-11-08 10:44:41,630 INFO: [Class..][epoch:  0, iter:     600, lr:(9.999e-04,)] [eta: 3 days, 1:29:45, time (data): 0.532 (0.002)] l_pix: 2.0554e-02 
+2023-11-08 10:45:34,142 INFO: [Class..][epoch:  0, iter:     700, lr:(9.999e-04,)] [eta: 3 days, 1:23:18, time (data): 0.525 (0.002)] l_pix: 1.6654e-02 
+2023-11-08 10:46:27,778 INFO: [Class..][epoch:  0, iter:     800, lr:(9.998e-04,)] [eta: 3 days, 1:29:55, time (data): 0.531 (0.003)] l_pix: 2.0830e-02 
+2023-11-08 10:47:20,389 INFO: [Class..][epoch:  0, iter:     900, lr:(9.998e-04,)] [eta: 3 days, 1:25:24, time (data): 0.526 (0.002)] l_pix: 1.0576e-02 
+2023-11-08 10:48:13,436 INFO: [Class..][epoch:  0, iter:   1,000, lr:(9.998e-04,)] [eta: 3 days, 1:25:15, time (data): 0.528 (0.002)] l_pix: 1.5202e-02 
+2023-11-08 10:49:04,996 INFO: [Class..][epoch:  0, iter:   1,100, lr:(9.997e-04,)] [eta: 3 days, 1:13:43, time (data): 0.515 (0.002)] l_pix: 1.2009e-02 
+2023-11-08 10:49:56,422 INFO: [Class..][epoch:  0, iter:   1,200, lr:(9.996e-04,)] [eta: 3 days, 1:03:02, time (data): 0.515 (0.002)] l_pix: 1.7315e-02 
+2023-11-08 10:50:48,189 INFO: [Class..][epoch:  0, iter:   1,300, lr:(9.996e-04,)] [eta: 3 days, 0:56:03, time (data): 0.517 (0.002)] l_pix: 3.1509e-02 
+2023-11-08 10:51:39,562 INFO: [Class..][epoch:  0, iter:   1,400, lr:(9.995e-04,)] [eta: 3 days, 0:47:36, time (data): 0.515 (0.002)] l_pix: 2.0990e-02 
+2023-11-08 10:52:31,005 INFO: [Class..][epoch:  0, iter:   1,500, lr:(9.994e-04,)] [eta: 3 days, 0:40:33, time (data): 0.513 (0.002)] l_pix: 1.5313e-02 
+2023-11-08 10:53:22,781 INFO: [Class..][epoch:  0, iter:   1,600, lr:(9.994e-04,)] [eta: 3 days, 0:36:00, time (data): 0.515 (0.002)] l_pix: 1.9642e-02 
+2023-11-08 10:54:14,528 INFO: [Class..][epoch:  0, iter:   1,700, lr:(9.993e-04,)] [eta: 3 days, 0:31:45, time (data): 0.518 (0.002)] l_pix: 2.0649e-02 
+2023-11-08 10:55:06,231 INFO: [Class..][epoch:  0, iter:   1,800, lr:(9.992e-04,)] [eta: 3 days, 0:27:40, time (data): 0.517 (0.002)] l_pix: 1.3954e-02 
+2023-11-08 10:55:57,701 INFO: [Class..][epoch:  0, iter:   1,900, lr:(9.991e-04,)] [eta: 3 days, 0:22:54, time (data): 0.515 (0.002)] l_pix: 2.0460e-02 
+2023-11-08 10:56:49,278 INFO: [Class..][epoch:  0, iter:   2,000, lr:(9.990e-04,)] [eta: 3 days, 0:18:58, time (data): 0.515 (0.002)] l_pix: 1.3602e-02 
+2023-11-08 10:57:40,868 INFO: [Class..][epoch:  0, iter:   2,100, lr:(9.989e-04,)] [eta: 3 days, 0:15:23, time (data): 0.516 (0.002)] l_pix: 1.7423e-02 
+2023-11-08 10:58:32,572 INFO: [Class..][epoch:  0, iter:   2,200, lr:(9.988e-04,)] [eta: 3 days, 0:12:29, time (data): 0.516 (0.002)] l_pix: 1.4441e-02 
+2023-11-08 10:59:25,189 INFO: [Class..][epoch:  0, iter:   2,300, lr:(9.987e-04,)] [eta: 3 days, 0:13:02, time (data): 0.526 (0.002)] l_pix: 1.7553e-02 
+2023-11-08 11:00:16,603 INFO: [Class..][epoch:  0, iter:   2,400, lr:(9.986e-04,)] [eta: 3 days, 0:09:20, time (data): 0.520 (0.002)] l_pix: 2.3208e-02 
+2023-11-08 11:01:08,425 INFO: [Class..][epoch:  0, iter:   2,500, lr:(9.985e-04,)] [eta: 3 days, 0:07:12, time (data): 0.519 (0.002)] l_pix: 1.6476e-02 
+2023-11-08 11:02:00,315 INFO: [Class..][epoch:  0, iter:   2,600, lr:(9.983e-04,)] [eta: 3 days, 0:05:23, time (data): 0.519 (0.002)] l_pix: 1.6386e-02 
+2023-11-08 11:02:52,198 INFO: [Class..][epoch:  0, iter:   2,700, lr:(9.982e-04,)] [eta: 3 days, 0:03:36, time (data): 0.518 (0.002)] l_pix: 1.4019e-02 
+2023-11-08 11:03:43,780 INFO: [Class..][epoch:  0, iter:   2,800, lr:(9.981e-04,)] [eta: 3 days, 0:01:01, time (data): 0.517 (0.002)] l_pix: 1.6275e-02 
+2023-11-08 11:04:34,918 INFO: [Class..][epoch:  0, iter:   2,900, lr:(9.979e-04,)] [eta: 2 days, 23:57:16, time (data): 0.511 (0.002)] l_pix: 2.1685e-02 
+2023-11-08 11:05:26,874 INFO: [Class..][epoch:  0, iter:   3,000, lr:(9.978e-04,)] [eta: 2 days, 23:55:59, time (data): 0.515 (0.002)] l_pix: 1.7222e-02 
+2023-11-08 11:06:18,107 INFO: [Class..][epoch:  0, iter:   3,100, lr:(9.976e-04,)] [eta: 2 days, 23:52:47, time (data): 0.514 (0.002)] l_pix: 1.6772e-02 
+2023-11-08 11:07:09,283 INFO: [Class..][epoch:  0, iter:   3,200, lr:(9.975e-04,)] [eta: 2 days, 23:49:35, time (data): 0.513 (0.002)] l_pix: 1.9356e-02 
+2023-11-08 11:08:00,668 INFO: [Class..][epoch:  0, iter:   3,300, lr:(9.973e-04,)] [eta: 2 days, 23:47:03, time (data): 0.514 (0.002)] l_pix: 1.7104e-02 
+2023-11-08 11:08:52,040 INFO: [Class..][epoch:  0, iter:   3,400, lr:(9.972e-04,)] [eta: 2 days, 23:44:35, time (data): 0.514 (0.002)] l_pix: 1.2730e-02 
+2023-11-08 11:09:43,287 INFO: [Class..][epoch:  0, iter:   3,500, lr:(9.970e-04,)] [eta: 2 days, 23:41:55, time (data): 0.513 (0.002)] l_pix: 2.6241e-02 
+2023-11-08 11:10:34,279 INFO: [Class..][epoch:  0, iter:   3,600, lr:(9.968e-04,)] [eta: 2 days, 23:38:46, time (data): 0.511 (0.002)] l_pix: 2.3096e-02 
+2023-11-08 11:11:25,346 INFO: [Class..][epoch:  0, iter:   3,700, lr:(9.966e-04,)] [eta: 2 days, 23:35:55, time (data): 0.511 (0.002)] l_pix: 1.3060e-02 
+2023-11-08 11:12:16,579 INFO: [Class..][epoch:  0, iter:   3,800, lr:(9.964e-04,)] [eta: 2 days, 23:33:31, time (data): 0.512 (0.002)] l_pix: 1.9379e-02 
+2023-11-08 11:13:07,550 INFO: [Class..][epoch:  0, iter:   3,900, lr:(9.963e-04,)] [eta: 2 days, 23:30:39, time (data): 0.509 (0.002)] l_pix: 1.8618e-02 
+2023-11-08 11:13:59,075 INFO: [Class..][epoch:  0, iter:   4,000, lr:(9.961e-04,)] [eta: 2 days, 23:29:01, time (data): 0.512 (0.002)] l_pix: 2.0560e-02 
+2023-11-08 11:14:50,843 INFO: [Class..][epoch:  0, iter:   4,100, lr:(9.959e-04,)] [eta: 2 days, 23:27:55, time (data): 0.519 (0.002)] l_pix: 1.1367e-02 
+2023-11-08 11:15:42,622 INFO: [Class..][epoch:  0, iter:   4,200, lr:(9.957e-04,)] [eta: 2 days, 23:26:51, time (data): 0.518 (0.002)] l_pix: 2.6462e-02 
+2023-11-08 11:16:33,924 INFO: [Class..][epoch:  0, iter:   4,300, lr:(9.954e-04,)] [eta: 2 days, 23:24:53, time (data): 0.514 (0.002)] l_pix: 1.4218e-02 
+2023-11-08 11:17:24,904 INFO: [Class..][epoch:  0, iter:   4,400, lr:(9.952e-04,)] [eta: 2 days, 23:22:22, time (data): 0.512 (0.002)] l_pix: 2.6182e-02 
+2023-11-08 11:18:16,731 INFO: [Class..][epoch:  0, iter:   4,500, lr:(9.950e-04,)] [eta: 2 days, 23:21:28, time (data): 0.522 (0.002)] l_pix: 2.3438e-02 
+2023-11-08 11:19:07,838 INFO: [Class..][epoch:  0, iter:   4,600, lr:(9.948e-04,)] [eta: 2 days, 23:19:17, time (data): 0.516 (0.002)] l_pix: 2.3833e-02 
+2023-11-08 11:19:59,194 INFO: [Class..][epoch:  0, iter:   4,700, lr:(9.946e-04,)] [eta: 2 days, 23:17:35, time (data): 0.510 (0.002)] l_pix: 2.4749e-02 
+2023-11-08 11:20:50,435 INFO: [Class..][epoch:  0, iter:   4,800, lr:(9.943e-04,)] [eta: 2 days, 23:15:44, time (data): 0.511 (0.002)] l_pix: 1.4656e-02 
+2023-11-08 11:21:41,504 INFO: [Class..][epoch:  0, iter:   4,900, lr:(9.941e-04,)] [eta: 2 days, 23:13:37, time (data): 0.510 (0.002)] l_pix: 1.5453e-02 
+2023-11-08 11:22:33,949 INFO: [Class..][epoch:  0, iter:   5,000, lr:(9.938e-04,)] [eta: 2 days, 23:13:50, time (data): 0.518 (0.002)] l_pix: 2.9053e-02 
+2023-11-08 11:22:33,950 INFO: Saving models and training states.
+2023-11-08 11:22:36,086 WARNING: Multiple validation datasets are *only* supported by SRModel.
+2023-11-08 11:22:47,920 INFO: Validation Set5
+	 # psnr: 35.4541	Best: 35.4541 @ 5000 iter
+	 # ssim: 0.9519	Best: 0.9519 @ 5000 iter
+
+2023-11-08 11:23:26,850 INFO: Validation Set14
+	 # psnr: 31.8832	Best: 31.8832 @ 5000 iter
+	 # ssim: 0.9031	Best: 0.9031 @ 5000 iter
+
+2023-11-08 11:28:55,159 INFO: Validation BSD100
+	 # psnr: 30.9067	Best: 30.9067 @ 5000 iter
+	 # ssim: 0.8834	Best: 0.8834 @ 5000 iter
+
+2023-11-08 11:42:05,134 INFO: Validation Urban100
+	 # psnr: 28.6920	Best: 28.6920 @ 5000 iter
+	 # ssim: 0.8856	Best: 0.8856 @ 5000 iter
+
+2023-11-08 11:42:59,444 INFO: [Class..][epoch:  0, iter:   5,100, lr:(9.936e-04,)] [eta: 4 days, 6:50:50, time (data): 0.537 (0.003)] l_pix: 2.4063e-02 
+2023-11-08 11:43:54,081 INFO: [Class..][epoch:  0, iter:   5,200, lr:(9.933e-04,)] [eta: 4 days, 6:17:36, time (data): 0.542 (0.003)] l_pix: 1.1863e-02 
+2023-11-08 11:44:49,131 INFO: [Class..][epoch:  0, iter:   5,300, lr:(9.931e-04,)] [eta: 4 days, 5:46:13, time (data): 0.553 (0.003)] l_pix: 2.5094e-02 
+2023-11-08 11:45:45,270 INFO: [Class..][epoch:  0, iter:   5,400, lr:(9.928e-04,)] [eta: 4 days, 5:17:38, time (data): 0.558 (0.003)] l_pix: 2.4518e-02 
+2023-11-08 11:46:44,601 INFO: [Class..][epoch:  1, iter:   5,500, lr:(9.926e-04,)] [eta: 4 days, 4:54:50, time (data): 0.604 (0.047)] l_pix: 1.2945e-02 
+2023-11-08 11:47:41,483 INFO: [Class..][epoch:  1, iter:   5,600, lr:(9.923e-04,)] [eta: 4 days, 4:29:13, time (data): 0.584 (0.022)] l_pix: 2.2813e-02 
+2023-11-08 11:48:37,898 INFO: [Class..][epoch:  1, iter:   5,700, lr:(9.920e-04,)] [eta: 4 days, 4:03:47, time (data): 0.565 (0.003)] l_pix: 1.6623e-02 
+2023-11-08 11:49:33,980 INFO: [Class..][epoch:  1, iter:   5,800, lr:(9.917e-04,)] [eta: 4 days, 3:38:43, time (data): 0.563 (0.003)] l_pix: 1.7765e-02 
+2023-11-08 11:50:28,984 INFO: [Class..][epoch:  1, iter:   5,900, lr:(9.914e-04,)] [eta: 4 days, 3:12:58, time (data): 0.548 (0.003)] l_pix: 2.8481e-02 
+2023-11-08 11:51:25,631 INFO: [Class..][epoch:  1, iter:   6,000, lr:(9.911e-04,)] [eta: 4 days, 2:50:18, time (data): 0.559 (0.004)] l_pix: 1.1017e-02 
+2023-11-08 11:52:22,582 INFO: [Class..][epoch:  1, iter:   6,100, lr:(9.908e-04,)] [eta: 4 days, 2:28:46, time (data): 0.573 (0.003)] l_pix: 1.5391e-02 
+2023-11-08 11:53:18,982 INFO: [Class..][epoch:  1, iter:   6,200, lr:(9.905e-04,)] [eta: 4 days, 2:07:09, time (data): 0.568 (0.003)] l_pix: 1.1789e-02 
+2023-11-08 11:54:16,160 INFO: [Class..][epoch:  1, iter:   6,300, lr:(9.902e-04,)] [eta: 4 days, 1:47:13, time (data): 0.578 (0.004)] l_pix: 2.5261e-02 
+2023-11-08 11:55:12,452 INFO: [Class..][epoch:  1, iter:   6,400, lr:(9.899e-04,)] [eta: 4 days, 1:26:44, time (data): 0.569 (0.004)] l_pix: 2.5372e-02 
+2023-11-08 11:56:08,967 INFO: [Class..][epoch:  1, iter:   6,500, lr:(9.896e-04,)] [eta: 4 days, 1:07:08, time (data): 0.563 (0.003)] l_pix: 9.9302e-03 
+2023-11-08 11:57:05,712 INFO: [Class..][epoch:  1, iter:   6,600, lr:(9.893e-04,)] [eta: 4 days, 0:48:23, time (data): 0.565 (0.003)] l_pix: 1.2134e-02 
+2023-11-08 11:58:02,112 INFO: [Class..][epoch:  1, iter:   6,700, lr:(9.890e-04,)] [eta: 4 days, 0:29:44, time (data): 0.558 (0.003)] l_pix: 2.1941e-02 
+2023-11-08 11:58:58,545 INFO: [Class..][epoch:  1, iter:   6,800, lr:(9.886e-04,)] [eta: 4 days, 0:11:40, time (data): 0.562 (0.003)] l_pix: 1.9339e-02 
+2023-11-08 11:59:55,728 INFO: [Class..][epoch:  1, iter:   6,900, lr:(9.883e-04,)] [eta: 3 days, 23:54:58, time (data): 0.565 (0.003)] l_pix: 9.8286e-03 
+2023-11-08 12:00:52,354 INFO: [Class..][epoch:  1, iter:   7,000, lr:(9.880e-04,)] [eta: 3 days, 23:38:05, time (data): 0.566 (0.003)] l_pix: 1.8902e-02 
+2023-11-08 12:01:49,138 INFO: [Class..][epoch:  1, iter:   7,100, lr:(9.876e-04,)] [eta: 3 days, 23:21:49, time (data): 0.566 (0.003)] l_pix: 1.9723e-02 
+2023-11-08 12:02:46,150 INFO: [Class..][epoch:  1, iter:   7,200, lr:(9.873e-04,)] [eta: 3 days, 23:06:14, time (data): 0.568 (0.003)] l_pix: 1.9742e-02 
+2023-11-08 12:03:42,404 INFO: [Class..][epoch:  1, iter:   7,300, lr:(9.869e-04,)] [eta: 3 days, 22:50:13, time (data): 0.570 (0.003)] l_pix: 2.0283e-02 
+2023-11-08 12:04:39,061 INFO: [Class..][epoch:  1, iter:   7,400, lr:(9.866e-04,)] [eta: 3 days, 22:35:02, time (data): 0.568 (0.003)] l_pix: 1.1964e-02 
+2023-11-08 12:05:35,589 INFO: [Class..][epoch:  1, iter:   7,500, lr:(9.862e-04,)] [eta: 3 days, 22:20:06, time (data): 0.560 (0.003)] l_pix: 1.9620e-02 
+2023-11-08 12:06:32,370 INFO: [Class..][epoch:  1, iter:   7,600, lr:(9.858e-04,)] [eta: 3 days, 22:05:48, time (data): 0.565 (0.003)] l_pix: 6.8269e-03 
+2023-11-08 12:07:30,021 INFO: [Class..][epoch:  1, iter:   7,700, lr:(9.854e-04,)] [eta: 3 days, 21:52:47, time (data): 0.569 (0.003)] l_pix: 3.1025e-02 
+2023-11-08 12:08:26,040 INFO: [Class..][epoch:  1, iter:   7,800, lr:(9.851e-04,)] [eta: 3 days, 21:38:21, time (data): 0.563 (0.003)] l_pix: 2.6239e-02 
+2023-11-08 12:09:22,565 INFO: [Class..][epoch:  1, iter:   7,900, lr:(9.847e-04,)] [eta: 3 days, 21:24:48, time (data): 0.560 (0.003)] l_pix: 1.5305e-02 
+2023-11-08 12:10:17,107 INFO: [Class..][epoch:  1, iter:   8,000, lr:(9.843e-04,)] [eta: 3 days, 21:09:31, time (data): 0.551 (0.003)] l_pix: 1.1823e-02 
+2023-11-08 12:11:11,798 INFO: [Class..][epoch:  1, iter:   8,100, lr:(9.839e-04,)] [eta: 3 days, 20:54:45, time (data): 0.556 (0.003)] l_pix: 1.5868e-02 
+2023-11-08 12:12:04,456 INFO: [Class..][epoch:  1, iter:   8,200, lr:(9.835e-04,)] [eta: 3 days, 20:38:17, time (data): 0.537 (0.002)] l_pix: 1.5378e-02 
+2023-11-08 12:12:58,702 INFO: [Class..][epoch:  1, iter:   8,300, lr:(9.831e-04,)] [eta: 3 days, 20:23:46, time (data): 0.559 (0.003)] l_pix: 1.6954e-02 
+2023-11-08 12:13:52,548 INFO: [Class..][epoch:  1, iter:   8,400, lr:(9.827e-04,)] [eta: 3 days, 20:09:10, time (data): 0.546 (0.003)] l_pix: 1.9407e-02 
+2023-11-08 12:14:48,280 INFO: [Class..][epoch:  1, iter:   8,500, lr:(9.823e-04,)] [eta: 3 days, 19:56:43, time (data): 0.543 (0.002)] l_pix: 1.9932e-02 
+2023-11-08 12:15:42,670 INFO: [Class..][epoch:  1, iter:   8,600, lr:(9.819e-04,)] [eta: 3 days, 19:43:16, time (data): 0.544 (0.002)] l_pix: 1.8517e-02 
+2023-11-08 12:16:36,088 INFO: [Class..][epoch:  1, iter:   8,700, lr:(9.814e-04,)] [eta: 3 days, 19:29:11, time (data): 0.544 (0.002)] l_pix: 1.4646e-02 
+2023-11-08 12:17:31,272 INFO: [Class..][epoch:  1, iter:   8,800, lr:(9.810e-04,)] [eta: 3 days, 19:17:02, time (data): 0.549 (0.003)] l_pix: 1.7683e-02 
+2023-11-08 12:18:23,879 INFO: [Class..][epoch:  1, iter:   8,900, lr:(9.806e-04,)] [eta: 3 days, 19:02:46, time (data): 0.521 (0.002)] l_pix: 2.0591e-02 
+2023-11-08 12:19:17,540 INFO: [Class..][epoch:  1, iter:   9,000, lr:(9.802e-04,)] [eta: 3 days, 18:49:46, time (data): 0.531 (0.002)] l_pix: 1.0705e-02 
+2023-11-08 12:20:10,912 INFO: [Class..][epoch:  1, iter:   9,100, lr:(9.797e-04,)] [eta: 3 days, 18:36:46, time (data): 0.530 (0.003)] l_pix: 1.2516e-02 
+2023-11-08 12:21:04,825 INFO: [Class..][epoch:  1, iter:   9,200, lr:(9.793e-04,)] [eta: 3 days, 18:24:31, time (data): 0.536 (0.003)] l_pix: 1.5326e-02 
+2023-11-08 12:21:58,320 INFO: [Class..][epoch:  1, iter:   9,300, lr:(9.788e-04,)] [eta: 3 days, 18:12:08, time (data): 0.539 (0.002)] l_pix: 2.4574e-02 
+2023-11-08 12:22:52,549 INFO: [Class..][epoch:  1, iter:   9,400, lr:(9.784e-04,)] [eta: 3 days, 18:00:39, time (data): 0.541 (0.003)] l_pix: 1.1515e-02 
+2023-11-08 12:23:46,113 INFO: [Class..][epoch:  1, iter:   9,500, lr:(9.779e-04,)] [eta: 3 days, 17:48:48, time (data): 0.536 (0.002)] l_pix: 7.6931e-03 
+2023-11-08 12:24:39,933 INFO: [Class..][epoch:  1, iter:   9,600, lr:(9.774e-04,)] [eta: 3 days, 17:37:24, time (data): 0.537 (0.003)] l_pix: 2.2841e-02 
+2023-11-08 12:25:34,681 INFO: [Class..][epoch:  1, iter:   9,700, lr:(9.770e-04,)] [eta: 3 days, 17:27:00, time (data): 0.551 (0.003)] l_pix: 1.4779e-02 
+2023-11-08 12:26:29,163 INFO: [Class..][epoch:  1, iter:   9,800, lr:(9.765e-04,)] [eta: 3 days, 17:16:35, time (data): 0.547 (0.003)] l_pix: 1.5655e-02 
+2023-11-08 12:27:22,937 INFO: [Class..][epoch:  1, iter:   9,900, lr:(9.760e-04,)] [eta: 3 days, 17:05:45, time (data): 0.531 (0.002)] l_pix: 1.1952e-02 
+2023-11-08 12:28:17,694 INFO: [Class..][epoch:  1, iter:  10,000, lr:(9.755e-04,)] [eta: 3 days, 16:55:56, time (data): 0.542 (0.003)] l_pix: 2.2655e-02 
+2023-11-08 12:28:17,694 INFO: Saving models and training states.
+2023-11-08 12:28:20,341 WARNING: Multiple validation datasets are *only* supported by SRModel.
+2023-11-08 12:28:33,784 INFO: Validation Set5
+	 # psnr: 35.2637	Best: 35.4541 @ 5000 iter
+	 # ssim: 0.9548	Best: 0.9548 @ 10000 iter
+
+2023-11-08 12:29:15,350 INFO: Validation Set14
+	 # psnr: 32.1367	Best: 32.1367 @ 10000 iter
+	 # ssim: 0.9077	Best: 0.9077 @ 10000 iter
+
+2023-11-08 12:34:22,241 INFO: Validation BSD100
+	 # psnr: 31.1311	Best: 31.1311 @ 10000 iter
+	 # ssim: 0.8905	Best: 0.8905 @ 10000 iter
+
+2023-11-08 12:44:57,674 INFO: Validation Urban100
+	 # psnr: 29.3870	Best: 29.3870 @ 10000 iter
+	 # ssim: 0.8986	Best: 0.8986 @ 10000 iter
+
+2023-11-08 12:45:51,680 INFO: [Class..][epoch:  1, iter:  10,100, lr:(9.750e-04,)] [eta: 4 days, 6:14:00, time (data): 0.547 (0.003)] l_pix: 1.3190e-02 
+2023-11-08 12:46:45,400 INFO: [Class..][epoch:  1, iter:  10,200, lr:(9.746e-04,)] [eta: 4 days, 5:55:37, time (data): 0.540 (0.003)] l_pix: 1.1112e-02 
+2023-11-08 12:47:38,973 INFO: [Class..][epoch:  1, iter:  10,300, lr:(9.741e-04,)] [eta: 4 days, 5:37:28, time (data): 0.528 (0.002)] l_pix: 1.6730e-02 
+2023-11-08 12:48:32,876 INFO: [Class..][epoch:  1, iter:  10,400, lr:(9.736e-04,)] [eta: 4 days, 5:19:54, time (data): 0.535 (0.002)] l_pix: 2.6791e-02 
+2023-11-08 12:49:26,847 INFO: [Class..][epoch:  1, iter:  10,500, lr:(9.730e-04,)] [eta: 4 days, 5:02:42, time (data): 0.535 (0.002)] l_pix: 2.3586e-02 
+2023-11-08 12:50:20,731 INFO: [Class..][epoch:  1, iter:  10,600, lr:(9.725e-04,)] [eta: 4 days, 4:45:45, time (data): 0.538 (0.002)] l_pix: 1.3560e-02 
+2023-11-08 12:51:13,998 INFO: [Class..][epoch:  1, iter:  10,700, lr:(9.720e-04,)] [eta: 4 days, 4:28:37, time (data): 0.539 (0.002)] l_pix: 3.0147e-02 
+2023-11-08 12:52:08,174 INFO: [Class..][epoch:  1, iter:  10,800, lr:(9.715e-04,)] [eta: 4 days, 4:12:28, time (data): 0.541 (0.002)] l_pix: 1.3256e-02 
+2023-11-08 12:53:04,895 INFO: [Class..][epoch:  2, iter:  10,900, lr:(9.710e-04,)] [eta: 4 days, 3:58:31, time (data): 0.606 (0.065)] l_pix: 1.8658e-02 
+2023-11-08 12:53:59,191 INFO: [Class..][epoch:  2, iter:  11,000, lr:(9.704e-04,)] [eta: 4 days, 3:43:00, time (data): 0.563 (0.022)] l_pix: 1.0256e-02 
+2023-11-08 12:54:52,816 INFO: [Class..][epoch:  2, iter:  11,100, lr:(9.699e-04,)] [eta: 4 days, 3:27:15, time (data): 0.529 (0.002)] l_pix: 1.1784e-02 
+2023-11-08 12:55:45,519 INFO: [Class..][epoch:  2, iter:  11,200, lr:(9.694e-04,)] [eta: 4 days, 3:11:06, time (data): 0.528 (0.002)] l_pix: 2.0574e-02 
+2023-11-08 12:56:39,112 INFO: [Class..][epoch:  2, iter:  11,300, lr:(9.688e-04,)] [eta: 4 days, 2:55:52, time (data): 0.541 (0.003)] l_pix: 1.6375e-02 
+2023-11-08 12:57:32,913 INFO: [Class..][epoch:  2, iter:  11,400, lr:(9.683e-04,)] [eta: 4 days, 2:41:01, time (data): 0.539 (0.003)] l_pix: 1.7609e-02 
+2023-11-08 12:58:27,195 INFO: [Class..][epoch:  2, iter:  11,500, lr:(9.677e-04,)] [eta: 4 days, 2:26:46, time (data): 0.548 (0.003)] l_pix: 1.3405e-02 
+2023-11-08 12:59:21,640 INFO: [Class..][epoch:  2, iter:  11,600, lr:(9.672e-04,)] [eta: 4 days, 2:12:51, time (data): 0.546 (0.003)] l_pix: 1.9930e-02 
+2023-11-08 13:00:15,861 INFO: [Class..][epoch:  2, iter:  11,700, lr:(9.666e-04,)] [eta: 4 days, 1:59:00, time (data): 0.551 (0.003)] l_pix: 1.6569e-02 
+2023-11-08 13:01:11,091 INFO: [Class..][epoch:  2, iter:  11,800, lr:(9.660e-04,)] [eta: 4 days, 1:46:04, time (data): 0.552 (0.003)] l_pix: 1.9856e-02 
+2023-11-08 13:02:05,968 INFO: [Class..][epoch:  2, iter:  11,900, lr:(9.655e-04,)] [eta: 4 days, 1:33:06, time (data): 0.547 (0.003)] l_pix: 1.5755e-02 
+2023-11-08 13:03:00,442 INFO: [Class..][epoch:  2, iter:  12,000, lr:(9.649e-04,)] [eta: 4 days, 1:20:03, time (data): 0.545 (0.003)] l_pix: 1.8353e-02 
+2023-11-08 13:03:55,126 INFO: [Class..][epoch:  2, iter:  12,100, lr:(9.643e-04,)] [eta: 4 days, 1:07:21, time (data): 0.555 (0.004)] l_pix: 1.6590e-02 
+2023-11-08 13:04:50,053 INFO: [Class..][epoch:  2, iter:  12,200, lr:(9.637e-04,)] [eta: 4 days, 0:55:01, time (data): 0.551 (0.003)] l_pix: 1.7898e-02 
+2023-11-08 13:05:44,463 INFO: [Class..][epoch:  2, iter:  12,300, lr:(9.631e-04,)] [eta: 4 days, 0:42:30, time (data): 0.539 (0.003)] l_pix: 1.7635e-02 
+2023-11-08 13:06:39,546 INFO: [Class..][epoch:  2, iter:  12,400, lr:(9.625e-04,)] [eta: 4 days, 0:30:38, time (data): 0.547 (0.003)] l_pix: 1.8266e-02 
+2023-11-08 13:07:36,041 INFO: [Class..][epoch:  2, iter:  12,500, lr:(9.619e-04,)] [eta: 4 days, 0:19:51, time (data): 0.558 (0.003)] l_pix: 1.5500e-02 
+2023-11-08 13:08:32,245 INFO: [Class..][epoch:  2, iter:  12,600, lr:(9.613e-04,)] [eta: 4 days, 0:09:03, time (data): 0.561 (0.003)] l_pix: 2.0551e-02 
+2023-11-08 13:09:29,216 INFO: [Class..][epoch:  2, iter:  12,700, lr:(9.607e-04,)] [eta: 3 days, 23:58:53, time (data): 0.563 (0.003)] l_pix: 2.4843e-02 
+2023-11-08 13:10:24,122 INFO: [Class..][epoch:  2, iter:  12,800, lr:(9.601e-04,)] [eta: 3 days, 23:47:33, time (data): 0.553 (0.003)] l_pix: 2.4188e-02 
+2023-11-08 13:11:19,477 INFO: [Class..][epoch:  2, iter:  12,900, lr:(9.595e-04,)] [eta: 3 days, 23:36:39, time (data): 0.566 (0.003)] l_pix: 1.4409e-02 
+2023-11-08 13:12:15,590 INFO: [Class..][epoch:  2, iter:  13,000, lr:(9.589e-04,)] [eta: 3 days, 23:26:24, time (data): 0.562 (0.003)] l_pix: 2.8074e-02 
+2023-11-08 13:13:11,598 INFO: [Class..][epoch:  2, iter:  13,100, lr:(9.583e-04,)] [eta: 3 days, 23:16:12, time (data): 0.559 (0.003)] l_pix: 2.9367e-02 
+2023-11-08 13:14:07,382 INFO: [Class..][epoch:  2, iter:  13,200, lr:(9.576e-04,)] [eta: 3 days, 23:06:02, time (data): 0.558 (0.003)] l_pix: 2.4690e-02 
+2023-11-08 13:15:03,579 INFO: [Class..][epoch:  2, iter:  13,300, lr:(9.570e-04,)] [eta: 3 days, 22:56:14, time (data): 0.561 (0.003)] l_pix: 1.7046e-02 
+2023-11-08 13:15:59,653 INFO: [Class..][epoch:  2, iter:  13,400, lr:(9.564e-04,)] [eta: 3 days, 22:46:30, time (data): 0.561 (0.003)] l_pix: 9.6277e-03 
+2023-11-08 13:16:56,254 INFO: [Class..][epoch:  2, iter:  13,500, lr:(9.557e-04,)] [eta: 3 days, 22:37:13, time (data): 0.564 (0.003)] l_pix: 1.3313e-02 
+2023-11-08 13:17:51,419 INFO: [Class..][epoch:  2, iter:  13,600, lr:(9.551e-04,)] [eta: 3 days, 22:27:12, time (data): 0.555 (0.003)] l_pix: 2.1182e-02 
+2023-11-08 13:18:46,598 INFO: [Class..][epoch:  2, iter:  13,700, lr:(9.544e-04,)] [eta: 3 days, 22:17:19, time (data): 0.541 (0.003)] l_pix: 1.1035e-02 
+2023-11-08 13:19:42,841 INFO: [Class..][epoch:  2, iter:  13,800, lr:(9.537e-04,)] [eta: 3 days, 22:08:12, time (data): 0.557 (0.003)] l_pix: 2.2059e-02 
+2023-11-08 13:20:40,006 INFO: [Class..][epoch:  2, iter:  13,900, lr:(9.531e-04,)] [eta: 3 days, 21:59:44, time (data): 0.582 (0.003)] l_pix: 1.2728e-02 
+2023-11-08 13:21:37,431 INFO: [Class..][epoch:  2, iter:  14,000, lr:(9.524e-04,)] [eta: 3 days, 21:51:31, time (data): 0.576 (0.004)] l_pix: 1.2909e-02 
+2023-11-08 13:22:32,689 INFO: [Class..][epoch:  2, iter:  14,100, lr:(9.517e-04,)] [eta: 3 days, 21:42:10, time (data): 0.536 (0.002)] l_pix: 1.6845e-02 
+2023-11-08 13:23:26,728 INFO: [Class..][epoch:  2, iter:  14,200, lr:(9.511e-04,)] [eta: 3 days, 21:32:14, time (data): 0.539 (0.003)] l_pix: 1.7073e-02 
+2023-11-08 13:24:20,830 INFO: [Class..][epoch:  2, iter:  14,300, lr:(9.504e-04,)] [eta: 3 days, 21:22:28, time (data): 0.549 (0.002)] l_pix: 2.1710e-02 
+2023-11-08 13:25:15,147 INFO: [Class..][epoch:  2, iter:  14,400, lr:(9.497e-04,)] [eta: 3 days, 21:12:57, time (data): 0.544 (0.003)] l_pix: 1.4771e-02 
+2023-11-08 13:26:08,330 INFO: [Class..][epoch:  2, iter:  14,500, lr:(9.490e-04,)] [eta: 3 days, 21:02:55, time (data): 0.524 (0.003)] l_pix: 2.3857e-02 
+2023-11-08 13:27:03,082 INFO: [Class..][epoch:  2, iter:  14,600, lr:(9.483e-04,)] [eta: 3 days, 20:53:52, time (data): 0.542 (0.003)] l_pix: 1.8252e-02 
+2023-11-08 13:27:59,793 INFO: [Class..][epoch:  2, iter:  14,700, lr:(9.476e-04,)] [eta: 3 days, 20:46:01, time (data): 0.565 (0.003)] l_pix: 1.2247e-02 
+2023-11-08 13:28:55,135 INFO: [Class..][epoch:  2, iter:  14,800, lr:(9.469e-04,)] [eta: 3 days, 20:37:30, time (data): 0.556 (0.003)] l_pix: 2.3383e-02 
+2023-11-08 13:29:48,620 INFO: [Class..][epoch:  2, iter:  14,900, lr:(9.462e-04,)] [eta: 3 days, 20:28:05, time (data): 0.530 (0.002)] l_pix: 1.6624e-02 
+2023-11-08 13:30:42,256 INFO: [Class..][epoch:  2, iter:  15,000, lr:(9.455e-04,)] [eta: 3 days, 20:18:52, time (data): 0.535 (0.003)] l_pix: 8.0647e-03 
+2023-11-08 13:30:42,256 INFO: Saving models and training states.
+2023-11-08 13:30:44,272 WARNING: Multiple validation datasets are *only* supported by SRModel.
+2023-11-08 13:30:55,962 INFO: Validation Set5
+	 # psnr: 36.9948	Best: 36.9948 @ 15000 iter
+	 # ssim: 0.9569	Best: 0.9569 @ 15000 iter
+
+2023-11-08 13:31:29,491 INFO: Validation Set14
+	 # psnr: 32.6926	Best: 32.6926 @ 15000 iter
+	 # ssim: 0.9088	Best: 0.9088 @ 15000 iter
+
+2023-11-08 13:35:46,710 INFO: Validation BSD100
+	 # psnr: 31.5254	Best: 31.5254 @ 15000 iter
+	 # ssim: 0.8909	Best: 0.8909 @ 15000 iter
+
+2023-11-08 13:44:56,787 INFO: Validation Urban100
+	 # psnr: 29.8369	Best: 29.8369 @ 15000 iter
+	 # ssim: 0.9018	Best: 0.9018 @ 15000 iter
+
+2023-11-08 13:45:49,265 INFO: [Class..][epoch:  2, iter:  15,100, lr:(9.448e-04,)] [eta: 4 days, 3:46:28, time (data): 0.538 (0.002)] l_pix: 1.4721e-02 
+2023-11-08 13:46:43,195 INFO: [Class..][epoch:  2, iter:  15,200, lr:(9.441e-04,)] [eta: 4 days, 3:34:31, time (data): 0.539 (0.002)] l_pix: 1.9326e-02 
+2023-11-08 13:47:37,485 INFO: [Class..][epoch:  2, iter:  15,300, lr:(9.434e-04,)] [eta: 4 days, 3:22:55, time (data): 0.538 (0.004)] l_pix: 1.0501e-02 
+2023-11-08 13:48:30,458 INFO: [Class..][epoch:  2, iter:  15,400, lr:(9.426e-04,)] [eta: 4 days, 3:10:45, time (data): 0.531 (0.003)] l_pix: 2.2358e-02 
+2023-11-08 13:49:24,777 INFO: [Class..][epoch:  2, iter:  15,500, lr:(9.419e-04,)] [eta: 4 days, 2:59:27, time (data): 0.554 (0.004)] l_pix: 1.6775e-02 
+2023-11-08 13:50:19,570 INFO: [Class..][epoch:  2, iter:  15,600, lr:(9.412e-04,)] [eta: 4 days, 2:48:30, time (data): 0.549 (0.003)] l_pix: 1.8010e-02 
+2023-11-08 13:51:12,616 INFO: [Class..][epoch:  2, iter:  15,700, lr:(9.404e-04,)] [eta: 4 days, 2:36:48, time (data): 0.519 (0.002)] l_pix: 1.2597e-02 
+2023-11-08 13:52:07,466 INFO: [Class..][epoch:  2, iter:  15,800, lr:(9.397e-04,)] [eta: 4 days, 2:26:09, time (data): 0.543 (0.003)] l_pix: 1.4649e-02 
+2023-11-08 13:53:01,407 INFO: [Class..][epoch:  2, iter:  15,900, lr:(9.389e-04,)] [eta: 4 days, 2:15:10, time (data): 0.533 (0.002)] l_pix: 1.3035e-02 
+2023-11-08 13:53:55,021 INFO: [Class..][epoch:  2, iter:  16,000, lr:(9.382e-04,)] [eta: 4 days, 2:04:09, time (data): 0.536 (0.003)] l_pix: 1.7076e-02 
+2023-11-08 13:54:47,475 INFO: [Class..][epoch:  2, iter:  16,100, lr:(9.374e-04,)] [eta: 4 days, 1:52:40, time (data): 0.533 (0.002)] l_pix: 1.1960e-02 
+2023-11-08 13:55:40,776 INFO: [Class..][epoch:  2, iter:  16,200, lr:(9.366e-04,)] [eta: 4 days, 1:41:44, time (data): 0.533 (0.002)] l_pix: 9.0693e-03 
+2023-11-08 13:56:36,584 INFO: [Class..][epoch:  3, iter:  16,300, lr:(9.359e-04,)] [eta: 4 days, 1:32:11, time (data): 0.668 (0.074)] l_pix: 1.7602e-02 
+2023-11-08 13:57:30,751 INFO: [Class..][epoch:  3, iter:  16,400, lr:(9.351e-04,)] [eta: 4 days, 1:21:55, time (data): 0.562 (0.014)] l_pix: 1.4077e-02 
+2023-11-08 13:58:24,015 INFO: [Class..][epoch:  3, iter:  16,500, lr:(9.343e-04,)] [eta: 4 days, 1:11:19, time (data): 0.521 (0.002)] l_pix: 1.5340e-02 
+2023-11-08 13:59:18,414 INFO: [Class..][epoch:  3, iter:  16,600, lr:(9.335e-04,)] [eta: 4 days, 1:01:24, time (data): 0.540 (0.002)] l_pix: 1.8324e-02 
+2023-11-08 14:00:10,640 INFO: [Class..][epoch:  3, iter:  16,700, lr:(9.328e-04,)] [eta: 4 days, 0:50:32, time (data): 0.517 (0.002)] l_pix: 7.3588e-03 
+2023-11-08 14:01:02,939 INFO: [Class..][epoch:  3, iter:  16,800, lr:(9.320e-04,)] [eta: 4 days, 0:39:49, time (data): 0.522 (0.002)] l_pix: 1.6752e-02 
+2023-11-08 14:01:54,835 INFO: [Class..][epoch:  3, iter:  16,900, lr:(9.312e-04,)] [eta: 4 days, 0:29:02, time (data): 0.516 (0.002)] l_pix: 2.4806e-02 
+2023-11-08 14:02:48,002 INFO: [Class..][epoch:  3, iter:  17,000, lr:(9.304e-04,)] [eta: 4 days, 0:18:58, time (data): 0.529 (0.002)] l_pix: 1.8787e-02 
+2023-11-08 14:03:40,107 INFO: [Class..][epoch:  3, iter:  17,100, lr:(9.296e-04,)] [eta: 4 days, 0:08:30, time (data): 0.549 (0.002)] l_pix: 1.4816e-02 
+2023-11-08 14:04:32,233 INFO: [Class..][epoch:  3, iter:  17,200, lr:(9.288e-04,)] [eta: 3 days, 23:58:10, time (data): 0.525 (0.002)] l_pix: 1.1767e-02 
+2023-11-08 14:05:24,389 INFO: [Class..][epoch:  3, iter:  17,300, lr:(9.280e-04,)] [eta: 3 days, 23:47:57, time (data): 0.546 (0.009)] l_pix: 1.9005e-02 
+2023-11-08 14:06:18,652 INFO: [Class..][epoch:  3, iter:  17,400, lr:(9.271e-04,)] [eta: 3 days, 23:38:49, time (data): 0.543 (0.003)] l_pix: 1.3717e-02 
+2023-11-08 14:07:12,003 INFO: [Class..][epoch:  3, iter:  17,500, lr:(9.263e-04,)] [eta: 3 days, 23:29:21, time (data): 0.519 (0.002)] l_pix: 1.7014e-02 
+2023-11-08 14:08:04,717 INFO: [Class..][epoch:  3, iter:  17,600, lr:(9.255e-04,)] [eta: 3 days, 23:19:42, time (data): 0.526 (0.002)] l_pix: 1.1137e-02 
+2023-11-08 14:08:57,333 INFO: [Class..][epoch:  3, iter:  17,700, lr:(9.247e-04,)] [eta: 3 days, 23:10:06, time (data): 0.531 (0.002)] l_pix: 2.8459e-02 
+2023-11-08 14:09:50,968 INFO: [Class..][epoch:  3, iter:  17,800, lr:(9.238e-04,)] [eta: 3 days, 23:01:04, time (data): 0.536 (0.003)] l_pix: 1.0171e-02 
+2023-11-08 14:10:43,502 INFO: [Class..][epoch:  3, iter:  17,900, lr:(9.230e-04,)] [eta: 3 days, 22:51:37, time (data): 0.511 (0.002)] l_pix: 2.1694e-02 
+2023-11-08 14:11:36,980 INFO: [Class..][epoch:  3, iter:  18,000, lr:(9.222e-04,)] [eta: 3 days, 22:42:42, time (data): 0.532 (0.002)] l_pix: 1.0917e-02 
+2023-11-08 14:12:30,234 INFO: [Class..][epoch:  3, iter:  18,100, lr:(9.213e-04,)] [eta: 3 days, 22:33:46, time (data): 0.521 (0.002)] l_pix: 2.1976e-02 
+2023-11-08 14:13:24,247 INFO: [Class..][epoch:  3, iter:  18,200, lr:(9.205e-04,)] [eta: 3 days, 22:25:15, time (data): 0.538 (0.002)] l_pix: 2.4558e-02 
+2023-11-08 14:14:17,726 INFO: [Class..][epoch:  3, iter:  18,300, lr:(9.196e-04,)] [eta: 3 days, 22:16:35, time (data): 0.556 (0.003)] l_pix: 1.5340e-02 
+2023-11-08 14:15:10,685 INFO: [Class..][epoch:  3, iter:  18,400, lr:(9.188e-04,)] [eta: 3 days, 22:07:46, time (data): 0.532 (0.002)] l_pix: 1.8058e-02 
+2023-11-08 14:16:03,646 INFO: [Class..][epoch:  3, iter:  18,500, lr:(9.179e-04,)] [eta: 3 days, 21:59:03, time (data): 0.538 (0.002)] l_pix: 1.6715e-02 
+2023-11-08 14:16:56,551 INFO: [Class..][epoch:  3, iter:  18,600, lr:(9.170e-04,)] [eta: 3 days, 21:50:23, time (data): 0.530 (0.002)] l_pix: 2.1646e-02 
+2023-11-08 14:17:49,672 INFO: [Class..][epoch:  3, iter:  18,700, lr:(9.162e-04,)] [eta: 3 days, 21:41:54, time (data): 0.529 (0.002)] l_pix: 2.0183e-02 
+2023-11-08 14:18:44,567 INFO: [Class..][epoch:  3, iter:  18,800, lr:(9.153e-04,)] [eta: 3 days, 21:34:15, time (data): 0.548 (0.003)] l_pix: 1.2030e-02 
+2023-11-08 14:19:38,649 INFO: [Class..][epoch:  3, iter:  18,900, lr:(9.144e-04,)] [eta: 3 days, 21:26:20, time (data): 0.540 (0.003)] l_pix: 1.0938e-02 
+2023-11-08 14:20:33,391 INFO: [Class..][epoch:  3, iter:  19,000, lr:(9.135e-04,)] [eta: 3 days, 21:18:46, time (data): 0.547 (0.003)] l_pix: 1.3044e-02 
+2023-11-08 14:21:27,368 INFO: [Class..][epoch:  3, iter:  19,100, lr:(9.127e-04,)] [eta: 3 days, 21:10:57, time (data): 0.550 (0.004)] l_pix: 2.5653e-02 
+2023-11-08 14:22:21,677 INFO: [Class..][epoch:  3, iter:  19,200, lr:(9.118e-04,)] [eta: 3 days, 21:03:20, time (data): 0.543 (0.003)] l_pix: 1.9596e-02 
+2023-11-08 14:23:16,246 INFO: [Class..][epoch:  3, iter:  19,300, lr:(9.109e-04,)] [eta: 3 days, 20:55:54, time (data): 0.538 (0.002)] l_pix: 1.5267e-02 
+2023-11-08 14:24:11,982 INFO: [Class..][epoch:  3, iter:  19,400, lr:(9.100e-04,)] [eta: 3 days, 20:49:01, time (data): 0.557 (0.003)] l_pix: 2.3323e-02 
+2023-11-08 14:25:07,414 INFO: [Class..][epoch:  3, iter:  19,500, lr:(9.091e-04,)] [eta: 3 days, 20:42:05, time (data): 0.552 (0.003)] l_pix: 2.3752e-02 
+2023-11-08 14:26:03,470 INFO: [Class..][epoch:  3, iter:  19,600, lr:(9.082e-04,)] [eta: 3 days, 20:35:27, time (data): 0.560 (0.003)] l_pix: 1.5951e-02 
+2023-11-08 14:26:58,567 INFO: [Class..][epoch:  3, iter:  19,700, lr:(9.073e-04,)] [eta: 3 days, 20:28:29, time (data): 0.534 (0.003)] l_pix: 1.5277e-02 
+2023-11-08 14:27:53,786 INFO: [Class..][epoch:  3, iter:  19,800, lr:(9.064e-04,)] [eta: 3 days, 20:21:38, time (data): 0.552 (0.003)] l_pix: 1.7219e-02 
+2023-11-08 14:28:49,728 INFO: [Class..][epoch:  3, iter:  19,900, lr:(9.054e-04,)] [eta: 3 days, 20:15:08, time (data): 0.536 (0.002)] l_pix: 3.7733e-02 
+2023-11-08 14:29:44,380 INFO: [Class..][epoch:  3, iter:  20,000, lr:(9.045e-04,)] [eta: 3 days, 20:08:10, time (data): 0.546 (0.003)] l_pix: 1.9089e-02 
+2023-11-08 14:29:44,381 INFO: Saving models and training states.
+2023-11-08 14:29:46,319 WARNING: Multiple validation datasets are *only* supported by SRModel.
+2023-11-08 14:29:58,338 INFO: Validation Set5
+	 # psnr: 36.6669	Best: 36.9948 @ 15000 iter
+	 # ssim: 0.9567	Best: 0.9569 @ 15000 iter
+
+2023-11-08 14:30:31,659 INFO: Validation Set14
+	 # psnr: 32.5527	Best: 32.6926 @ 15000 iter
+	 # ssim: 0.9091	Best: 0.9091 @ 20000 iter
+
+2023-11-08 14:35:52,456 INFO: Validation BSD100
+	 # psnr: 31.4629	Best: 31.5254 @ 15000 iter
+	 # ssim: 0.8919	Best: 0.8919 @ 20000 iter
+
+2023-11-08 14:46:11,110 INFO: Validation Urban100
+	 # psnr: 29.8626	Best: 29.8626 @ 20000 iter
+	 # ssim: 0.9041	Best: 0.9041 @ 20000 iter
+
+2023-11-08 14:47:03,720 INFO: [Class..][epoch:  3, iter:  20,100, lr:(9.036e-04,)] [eta: 4 days, 2:33:05, time (data): 0.536 (0.003)] l_pix: 2.0917e-02 
+2023-11-08 14:47:56,111 INFO: [Class..][epoch:  3, iter:  20,200, lr:(9.027e-04,)] [eta: 4 days, 2:23:19, time (data): 0.524 (0.002)] l_pix: 1.0339e-02 
+2023-11-08 14:48:50,749 INFO: [Class..][epoch:  3, iter:  20,300, lr:(9.017e-04,)] [eta: 4 days, 2:14:32, time (data): 0.535 (0.002)] l_pix: 2.3612e-02 
+2023-11-08 14:49:42,396 INFO: [Class..][epoch:  3, iter:  20,400, lr:(9.008e-04,)] [eta: 4 days, 2:04:39, time (data): 0.516 (0.002)] l_pix: 1.4367e-02 
+2023-11-08 14:50:35,084 INFO: [Class..][epoch:  3, iter:  20,500, lr:(8.999e-04,)] [eta: 4 days, 1:55:16, time (data): 0.522 (0.002)] l_pix: 1.8461e-02 
+2023-11-08 14:51:27,455 INFO: [Class..][epoch:  3, iter:  20,600, lr:(8.989e-04,)] [eta: 4 days, 1:45:51, time (data): 0.524 (0.002)] l_pix: 7.9521e-03 
+2023-11-08 14:52:19,826 INFO: [Class..][epoch:  3, iter:  20,700, lr:(8.980e-04,)] [eta: 4 days, 1:36:30, time (data): 0.524 (0.002)] l_pix: 1.4501e-02 
+2023-11-08 14:53:13,429 INFO: [Class..][epoch:  3, iter:  20,800, lr:(8.970e-04,)] [eta: 4 days, 1:27:43, time (data): 0.537 (0.003)] l_pix: 2.4354e-02 
+2023-11-08 14:54:05,817 INFO: [Class..][epoch:  3, iter:  20,900, lr:(8.960e-04,)] [eta: 4 days, 1:18:32, time (data): 0.530 (0.002)] l_pix: 1.1055e-02 
+2023-11-08 14:54:58,057 INFO: [Class..][epoch:  3, iter:  21,000, lr:(8.951e-04,)] [eta: 4 days, 1:09:23, time (data): 0.523 (0.002)] l_pix: 1.5808e-02 
+2023-11-08 14:55:50,679 INFO: [Class..][epoch:  3, iter:  21,100, lr:(8.941e-04,)] [eta: 4 days, 1:00:27, time (data): 0.525 (0.002)] l_pix: 1.5605e-02 
+2023-11-08 14:56:42,146 INFO: [Class..][epoch:  3, iter:  21,200, lr:(8.932e-04,)] [eta: 4 days, 0:51:09, time (data): 0.515 (0.002)] l_pix: 1.5056e-02 
+2023-11-08 14:57:34,400 INFO: [Class..][epoch:  3, iter:  21,300, lr:(8.922e-04,)] [eta: 4 days, 0:42:14, time (data): 0.519 (0.002)] l_pix: 1.7691e-02 
+2023-11-08 14:58:25,958 INFO: [Class..][epoch:  3, iter:  21,400, lr:(8.912e-04,)] [eta: 4 days, 0:33:08, time (data): 0.515 (0.002)] l_pix: 1.5009e-02 
+2023-11-08 14:59:17,492 INFO: [Class..][epoch:  3, iter:  21,500, lr:(8.902e-04,)] [eta: 4 days, 0:24:06, time (data): 0.515 (0.002)] l_pix: 1.7359e-02 
+2023-11-08 15:00:09,012 INFO: [Class..][epoch:  3, iter:  21,600, lr:(8.892e-04,)] [eta: 4 days, 0:15:08, time (data): 0.516 (0.002)] l_pix: 2.6501e-02 
+2023-11-08 15:01:00,299 INFO: [Class..][epoch:  3, iter:  21,700, lr:(8.883e-04,)] [eta: 4 days, 0:06:10, time (data): 0.514 (0.002)] l_pix: 2.6356e-02 
+2023-11-08 15:01:53,657 INFO: [Class..][epoch:  4, iter:  21,800, lr:(8.873e-04,)] [eta: 3 days, 23:58:01, time (data): 0.536 (0.022)] l_pix: 2.3617e-02 
+2023-11-08 15:02:45,867 INFO: [Class..][epoch:  4, iter:  21,900, lr:(8.863e-04,)] [eta: 3 days, 23:49:31, time (data): 0.529 (0.012)] l_pix: 2.3174e-02 
+2023-11-08 15:03:37,515 INFO: [Class..][epoch:  4, iter:  22,000, lr:(8.853e-04,)] [eta: 3 days, 23:40:54, time (data): 0.517 (0.002)] l_pix: 1.7765e-02 
+2023-11-08 15:04:29,205 INFO: [Class..][epoch:  4, iter:  22,100, lr:(8.843e-04,)] [eta: 3 days, 23:32:21, time (data): 0.517 (0.002)] l_pix: 9.8842e-03 
+2023-11-08 15:05:20,635 INFO: [Class..][epoch:  4, iter:  22,200, lr:(8.833e-04,)] [eta: 3 days, 23:23:47, time (data): 0.514 (0.002)] l_pix: 2.5815e-02 
+2023-11-08 15:06:12,614 INFO: [Class..][epoch:  4, iter:  22,300, lr:(8.822e-04,)] [eta: 3 days, 23:15:29, time (data): 0.517 (0.002)] l_pix: 1.7213e-02 
+2023-11-08 15:07:04,192 INFO: [Class..][epoch:  4, iter:  22,400, lr:(8.812e-04,)] [eta: 3 days, 23:07:06, time (data): 0.517 (0.002)] l_pix: 1.0620e-02 
+2023-11-08 15:07:56,142 INFO: [Class..][epoch:  4, iter:  22,500, lr:(8.802e-04,)] [eta: 3 days, 22:58:56, time (data): 0.518 (0.002)] l_pix: 2.0474e-02 
+2023-11-08 15:08:47,552 INFO: [Class..][epoch:  4, iter:  22,600, lr:(8.792e-04,)] [eta: 3 days, 22:50:37, time (data): 0.515 (0.002)] l_pix: 1.4723e-02 
+2023-11-08 15:09:39,458 INFO: [Class..][epoch:  4, iter:  22,700, lr:(8.782e-04,)] [eta: 3 days, 22:42:33, time (data): 0.517 (0.002)] l_pix: 1.4962e-02 
+2023-11-08 15:10:32,456 INFO: [Class..][epoch:  4, iter:  22,800, lr:(8.771e-04,)] [eta: 3 days, 22:34:56, time (data): 0.530 (0.002)] l_pix: 2.2005e-02 
+2023-11-08 15:11:24,394 INFO: [Class..][epoch:  4, iter:  22,900, lr:(8.761e-04,)] [eta: 3 days, 22:27:00, time (data): 0.524 (0.002)] l_pix: 2.1861e-02 
+2023-11-08 15:12:16,673 INFO: [Class..][epoch:  4, iter:  23,000, lr:(8.751e-04,)] [eta: 3 days, 22:19:15, time (data): 0.521 (0.002)] l_pix: 1.1519e-02 
+2023-11-08 15:13:08,129 INFO: [Class..][epoch:  4, iter:  23,100, lr:(8.740e-04,)] [eta: 3 days, 22:11:17, time (data): 0.518 (0.002)] l_pix: 1.5803e-02 
+2023-11-08 15:14:00,405 INFO: [Class..][epoch:  4, iter:  23,200, lr:(8.730e-04,)] [eta: 3 days, 22:03:39, time (data): 0.519 (0.002)] l_pix: 1.4879e-02 
+2023-11-08 15:14:52,626 INFO: [Class..][epoch:  4, iter:  23,300, lr:(8.719e-04,)] [eta: 3 days, 21:56:03, time (data): 0.521 (0.002)] l_pix: 1.4752e-02 
+2023-11-08 15:15:44,473 INFO: [Class..][epoch:  4, iter:  23,400, lr:(8.709e-04,)] [eta: 3 days, 21:48:23, time (data): 0.517 (0.002)] l_pix: 2.8356e-02 
+2023-11-08 15:16:36,737 INFO: [Class..][epoch:  4, iter:  23,500, lr:(8.698e-04,)] [eta: 3 days, 21:40:56, time (data): 0.520 (0.002)] l_pix: 2.3065e-02 
+2023-11-08 15:17:28,974 INFO: [Class..][epoch:  4, iter:  23,600, lr:(8.688e-04,)] [eta: 3 days, 21:33:31, time (data): 0.516 (0.002)] l_pix: 1.8723e-02 
+2023-11-08 15:18:20,932 INFO: [Class..][epoch:  4, iter:  23,700, lr:(8.677e-04,)] [eta: 3 days, 21:26:03, time (data): 0.518 (0.002)] l_pix: 3.2197e-02 
+2023-11-08 15:19:13,396 INFO: [Class..][epoch:  4, iter:  23,800, lr:(8.666e-04,)] [eta: 3 days, 21:18:49, time (data): 0.523 (0.002)] l_pix: 1.8290e-02 
+2023-11-08 15:20:05,392 INFO: [Class..][epoch:  4, iter:  23,900, lr:(8.656e-04,)] [eta: 3 days, 21:11:29, time (data): 0.521 (0.002)] l_pix: 1.4040e-02 
+2023-11-08 15:20:57,386 INFO: [Class..][epoch:  4, iter:  24,000, lr:(8.645e-04,)] [eta: 3 days, 21:04:13, time (data): 0.522 (0.002)] l_pix: 8.9259e-03 
+2023-11-08 15:21:49,262 INFO: [Class..][epoch:  4, iter:  24,100, lr:(8.634e-04,)] [eta: 3 days, 20:56:57, time (data): 0.520 (0.002)] l_pix: 2.2829e-02 
+2023-11-08 15:22:42,095 INFO: [Class..][epoch:  4, iter:  24,200, lr:(8.623e-04,)] [eta: 3 days, 20:50:03, time (data): 0.525 (0.002)] l_pix: 1.5207e-02 
+2023-11-08 15:23:35,520 INFO: [Class..][epoch:  4, iter:  24,300, lr:(8.613e-04,)] [eta: 3 days, 20:43:23, time (data): 0.530 (0.002)] l_pix: 1.4633e-02 
+2023-11-08 15:24:27,951 INFO: [Class..][epoch:  4, iter:  24,400, lr:(8.602e-04,)] [eta: 3 days, 20:36:27, time (data): 0.524 (0.002)] l_pix: 1.6851e-02 
+2023-11-08 15:25:20,773 INFO: [Class..][epoch:  4, iter:  24,500, lr:(8.591e-04,)] [eta: 3 days, 20:29:42, time (data): 0.526 (0.002)] l_pix: 1.7491e-02 
+2023-11-08 15:26:13,551 INFO: [Class..][epoch:  4, iter:  24,600, lr:(8.580e-04,)] [eta: 3 days, 20:22:59, time (data): 0.528 (0.002)] l_pix: 1.4234e-02 
+2023-11-08 15:27:06,190 INFO: [Class..][epoch:  4, iter:  24,700, lr:(8.569e-04,)] [eta: 3 days, 20:16:15, time (data): 0.527 (0.002)] l_pix: 1.9512e-02 
+2023-11-08 15:27:58,773 INFO: [Class..][epoch:  4, iter:  24,800, lr:(8.558e-04,)] [eta: 3 days, 20:09:34, time (data): 0.527 (0.002)] l_pix: 1.3194e-02 
+2023-11-08 15:28:51,377 INFO: [Class..][epoch:  4, iter:  24,900, lr:(8.547e-04,)] [eta: 3 days, 20:02:56, time (data): 0.526 (0.002)] l_pix: 1.5148e-02 
+2023-11-08 15:29:44,412 INFO: [Class..][epoch:  4, iter:  25,000, lr:(8.536e-04,)] [eta: 3 days, 19:56:28, time (data): 0.534 (0.002)] l_pix: 1.3820e-02 
+2023-11-08 15:29:44,412 INFO: Saving models and training states.
+2023-11-08 15:29:46,175 WARNING: Multiple validation datasets are *only* supported by SRModel.
+2023-11-08 15:29:55,429 INFO: Validation Set5
+	 # psnr: 36.4152	Best: 36.9948 @ 15000 iter
+	 # ssim: 0.9573	Best: 0.9573 @ 25000 iter
+
+2023-11-08 15:30:21,741 INFO: Validation Set14
+	 # psnr: 32.3659	Best: 32.6926 @ 15000 iter
+	 # ssim: 0.9100	Best: 0.9100 @ 25000 iter
+
+2023-11-08 15:32:37,834 INFO: Validation BSD100
+	 # psnr: 31.4502	Best: 31.5254 @ 15000 iter
+	 # ssim: 0.8929	Best: 0.8929 @ 25000 iter
+
+2023-11-08 15:41:43,889 INFO: Validation Urban100
+	 # psnr: 29.9385	Best: 29.9385 @ 25000 iter
+	 # ssim: 0.9075	Best: 0.9075 @ 25000 iter
+
+2023-11-08 15:42:38,237 INFO: [Class..][epoch:  4, iter:  25,100, lr:(8.525e-04,)] [eta: 3 days, 23:37:21, time (data): 0.539 (0.002)] l_pix: 1.3540e-02 

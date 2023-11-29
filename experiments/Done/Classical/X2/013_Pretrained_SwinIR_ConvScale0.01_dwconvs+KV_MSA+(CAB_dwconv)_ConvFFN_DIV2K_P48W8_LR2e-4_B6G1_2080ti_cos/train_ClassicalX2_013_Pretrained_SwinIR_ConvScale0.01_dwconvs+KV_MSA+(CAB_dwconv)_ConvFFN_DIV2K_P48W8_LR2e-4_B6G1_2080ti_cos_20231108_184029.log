@@ -1,0 +1,941 @@
+2023-11-08 18:40:29,662 INFO: 
+     ______                   __   __                 __      __
+    / ____/____   ____   ____/ /  / /   __  __ _____ / /__   / /
+   / / __ / __ \ / __ \ / __  /  / /   / / / // ___// //_/  / /
+  / /_/ // /_/ // /_/ // /_/ /  / /___/ /_/ // /__ / /<    /_/
+  \____/ \____/ \____/ \____/  /_____/\____/ \___//_/|_|  (_)
+    
+Version Information: 
+	PyTorch: 2.0.1
+	TorchVision: 0.15.2
+2023-11-08 18:40:29,663 INFO: 
+  name: ClassicalX2_013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos
+  model_type: SwinIRModel
+  scale: 2
+  num_gpu: 1
+  manual_seed: 3407
+  datasets:[
+    train:[
+      name: DIV2K
+      type: PairedImageDataset
+      dataroot_gt: datasets/DIV2K/DIV2K_train_HR_sub
+      dataroot_lq: datasets/DIV2K/DIV2K_train_LR_bicubic/X2_sub
+      meta_info_file: data/meta_info/meta_info_DIV2K800sub_GT.txt
+      filename_tmpl: {}
+      io_backend:[
+        type: disk
+      ]
+      gt_size: 96
+      use_hflip: True
+      use_rot: True
+      num_worker_per_gpu: 8
+      batch_size_per_gpu: 6
+      dataset_enlarge_ratio: 1
+      prefetch_mode: None
+      phase: train
+      scale: 2
+    ]
+    val_1:[
+      name: Set5
+      type: PairedImageDataset
+      dataroot_gt: datasets/Set5/GTmod12
+      dataroot_lq: datasets/Set5/LRbicx2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_2:[
+      name: Set14
+      type: PairedImageDataset
+      dataroot_gt: datasets/Set14/GTmod12
+      dataroot_lq: datasets/Set14/LRbicx2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_3:[
+      name: BSD100
+      type: PairedImageDataset
+      dataroot_gt: ./datasets/BSDS100/GTmod12
+      dataroot_lq: ./datasets/BSDS100/LRbicx2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_4:[
+      name: Urban100
+      type: PairedImageDataset
+      dataroot_gt: ./datasets/urban100/GTmod12
+      dataroot_lq: ./datasets/urban100/LRbicx2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_5:[
+      name: Manga109
+      type: PairedImageDataset
+      dataroot_gt: ./datasets/manga109/GTmod12
+      dataroot_lq: ./datasets/manga109/LRbicx2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+  ]
+  network_g:[
+    type: SwinIR_Modified
+    upscale: 2
+    in_chans: 3
+    img_size: 48
+    window_size: 8
+    img_range: 1.0
+    depths: [6, 6, 6, 6, 6, 6]
+    embed_dim: 180
+    num_heads: [6, 6, 6, 6, 6, 6]
+    mlp_ratio: 2
+    conv_scale: 0.01
+    upsampler: pixelshuffle
+    resi_connection: 1conv
+  ]
+  path:[
+    pretrain_network_g: /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos/weights/net_g_35000.pth
+    strict_load_g: False
+    resume_state: /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos/training_states/35000.state
+    experiments_root: /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos
+    models: /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos/weights
+    training_states: /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos/training_states
+    log: /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos
+    visualization: /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos/visualization
+    tb_logger: /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos/tb_logger
+  ]
+  train:[
+    ema_decay: 0.999
+    optim_g:[
+      type: Adam
+      lr: 0.001
+      weight_decay: 0
+      betas: [0.9, 0.99]
+    ]
+    scheduler:[
+      type: CosineAnnealingRestartLR
+      periods: [100000, 100000, 100000, 100000, 100000]
+      restart_weights: [1, 0.5, 0.5, 0.5, 0.25]
+    ]
+    total_iter: 500000
+    warmup_iter: -1
+    pixel_opt:[
+      type: L1Loss
+      loss_weight: 1.0
+      reduction: mean
+    ]
+  ]
+  val:[
+    val_freq: 10000.0
+    save_img: False
+    metrics:[
+      psnr:[
+        type: calculate_psnr
+        crop_border: 2
+        test_y_channel: True
+      ]
+      ssim:[
+        type: calculate_ssim
+        crop_border: 2
+        test_y_channel: True
+      ]
+    ]
+  ]
+  logger:[
+    print_freq: 100
+    save_checkpoint_freq: 10000.0
+    use_tb_logger: True
+    wandb:[
+      project: None
+      resume_id: None
+    ]
+  ]
+  dist_params:[
+    backend: nccl
+    port: 29500
+  ]
+  dist: False
+  rank: 0
+  world_size: 1
+  auto_resume: True
+  is_train: True
+  root_path: /share3/home/renzihao
+
+2023-11-08 18:40:55,364 INFO: Dataset [PairedImageDataset] - DIV2K is built.
+2023-11-08 18:40:55,366 INFO: Training statistics:
+	Number of train images: 32592
+	Dataset enlarge ratio: 1
+	Batch size per gpu: 6
+	World size (gpu number): 1
+	Require iter number per epoch: 5432
+	Total epochs: 93; iters: 500000.
+2023-11-08 18:40:55,449 INFO: Dataset [PairedImageDataset] - Set5 is built.
+2023-11-08 18:40:55,449 INFO: Number of val images/folders in Set5: 5
+2023-11-08 18:40:55,458 INFO: Dataset [PairedImageDataset] - Set14 is built.
+2023-11-08 18:40:55,459 INFO: Number of val images/folders in Set14: 14
+2023-11-08 18:40:55,505 INFO: Dataset [PairedImageDataset] - BSD100 is built.
+2023-11-08 18:40:55,505 INFO: Number of val images/folders in BSD100: 100
+2023-11-08 18:40:55,657 INFO: Dataset [PairedImageDataset] - Urban100 is built.
+2023-11-08 18:40:55,657 INFO: Number of val images/folders in Urban100: 100
+2023-11-08 18:40:55,670 INFO: Dataset [PairedImageDataset] - Manga109 is built.
+2023-11-08 18:40:55,670 INFO: Number of val images/folders in Manga109: 109
+2023-11-08 18:41:01,172 INFO: Network: SwinIR_Modified, with parameters: 12,267,593
+2023-11-08 18:41:01,172 INFO: SwinIR_Modified(
+  (conv_first): Conv2d(3, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (edge_ex): EdgeExtraction(
+    (hpf): Sobel(
+      (conv_sobel_x): Conv2d(3, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=3, bias=False)
+      (conv_sobel_y): Conv2d(3, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=3, bias=False)
+    )
+    (conv): Conv2d(3, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  )
+  (patch_embed): PatchEmbed(
+    (norm): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+  )
+  (patch_unembed): PatchUnEmbed()
+  (pos_drop): Dropout(p=0.0, inplace=False)
+  (layers): ModuleList(
+    (0): RSTB(
+      (residual_group): BasicLayer(
+        dim=180, input_resolution=(48, 48), depth=6
+        (blocks): ModuleList(
+          (0): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): Identity()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (2): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (3): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (4): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (5): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+        )
+      )
+      (conv): Conv2d(180, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (patch_embed): PatchEmbed()
+      (patch_unembed): PatchUnEmbed()
+    )
+    (1-5): 5 x RSTB(
+      (residual_group): BasicLayer(
+        dim=180, input_resolution=(48, 48), depth=6
+        (blocks): ModuleList(
+          (0): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (2): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (3): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (4): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=0, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (5): SwinTransformerBlock(
+            dim=180, input_resolution=(48, 48), num_heads=6, window_size=8, shift_size=4, mlp_ratio=2
+            (norm1): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (attn): WindowAttention(
+              dim=180, window_size=(8, 8), num_heads=6
+              (q): Linear(in_features=180, out_features=180, bias=True)
+              (kv): Linear(in_features=180, out_features=360, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=180, out_features=180, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+              (softmax): Softmax(dim=-1)
+            )
+            (conv_scale): LearnableScale()
+            (conv_block): CAB(
+              (cab): Sequential(
+                (0): Conv2d(180, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (1): GELU(approximate='none')
+                (2): Conv2d(60, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=60)
+                (3): ChannelAttention(
+                  (attention): Sequential(
+                    (0): AdaptiveAvgPool2d(output_size=1)
+                    (1): Conv2d(180, 6, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (2): ReLU(inplace=True)
+                    (3): Conv2d(6, 180, kernel_size=(1, 1), stride=(1, 1), groups=6)
+                    (4): Sigmoid()
+                  )
+                )
+              )
+            )
+            (drop_path): DropPath()
+            (norm2): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=180, out_features=360, bias=True)
+              (act): GELU(approximate='none')
+              (dwconv): dwconv(
+                (depthwise_conv): Sequential(
+                  (0): Conv2d(360, 360, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=360)
+                  (1): GELU(approximate='none')
+                )
+              )
+              (fc2): Linear(in_features=360, out_features=180, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+        )
+      )
+      (conv): Conv2d(180, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (patch_embed): PatchEmbed()
+      (patch_unembed): PatchUnEmbed()
+    )
+  )
+  (edge_convs): ModuleList(
+    (0-5): 6 x EdgeConv(
+      (dwconv): Conv2d(180, 180, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=180)
+      (gelu): GELU(approximate='none')
+    )
+  )
+  (norm): LayerNorm((180,), eps=1e-05, elementwise_affine=True)
+  (conv_after_body): Conv2d(180, 180, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (conv_before_upsample): Sequential(
+    (0): Conv2d(180, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01, inplace=True)
+  )
+  (upsample): Upsample(
+    (0): Conv2d(64, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): PixelShuffle(upscale_factor=2)
+  )
+  (conv_last): Conv2d(64, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+)
+2023-11-08 18:41:02,967 INFO: Loading SwinIR_Modified model from /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos/weights/net_g_35000.pth, with param key: [params].
+2023-11-08 18:41:03,673 INFO: Use Exponential Moving Average with decay: 0.999
+2023-11-08 18:41:03,970 INFO: Loading SwinIR_Modified model from /share3/home/renzihao/Pipeline/experiments/Doing/013_Pretrained_SwinIR_ConvScale0.01_dwconvs+KV_MSA+(CAB_dwconv)_ConvFFN_DIV2K_P48W8_LR2e-4_B6G1_2080ti_cos/weights/net_g_35000.pth, with param key: [params_ema].
+2023-11-08 18:41:04,351 INFO: Loss [L1Loss] is created.
+2023-11-08 18:41:04,351 WARNING: Params edge_ex.hpf.conv_sobel_x.weight will not be optimized.
+2023-11-08 18:41:04,351 WARNING: Params edge_ex.hpf.conv_sobel_y.weight will not be optimized.
+2023-11-08 18:41:04,356 INFO: Model [SwinIRModel] is created.
+2023-11-08 18:41:04,618 INFO: Resuming training from epoch: 4, iter: 35000.
+2023-11-08 18:41:05,513 INFO: Start training from epoch: 4, iter: 35000
+2023-11-08 18:42:14,533 INFO: [Class..][epoch:  4, iter:  35,100, lr:(7.256e-04,)] [eta: 3 days, 17:22:17, time (data): 0.690 (0.017)] l_pix: 1.4434e-02 
+2023-11-08 18:43:12,660 INFO: [Class..][epoch:  4, iter:  35,200, lr:(7.242e-04,)] [eta: 3 days, 10:14:46, time (data): 0.636 (0.010)] l_pix: 1.5806e-02 
+2023-11-08 18:44:09,575 INFO: [Class..][epoch:  4, iter:  35,300, lr:(7.228e-04,)] [eta: 3 days, 7:19:05, time (data): 0.569 (0.002)] l_pix: 1.2139e-02 
+2023-11-08 18:45:07,406 INFO: [Class..][epoch:  4, iter:  35,400, lr:(7.214e-04,)] [eta: 3 days, 6:08:13, time (data): 0.574 (0.002)] l_pix: 1.0028e-02 
+2023-11-08 18:46:03,679 INFO: [Class..][epoch:  4, iter:  35,500, lr:(7.200e-04,)] [eta: 3 days, 5:01:11, time (data): 0.563 (0.002)] l_pix: 1.7706e-02 
+2023-11-08 18:47:01,770 INFO: [Class..][epoch:  4, iter:  35,600, lr:(7.186e-04,)] [eta: 3 days, 4:39:34, time (data): 0.572 (0.002)] l_pix: 1.5544e-02 
+2023-11-08 18:47:59,710 INFO: [Class..][epoch:  4, iter:  35,700, lr:(7.172e-04,)] [eta: 3 days, 4:22:11, time (data): 0.580 (0.002)] l_pix: 1.6430e-02 
+2023-11-08 18:48:57,415 INFO: [Class..][epoch:  4, iter:  35,800, lr:(7.157e-04,)] [eta: 3 days, 4:06:37, time (data): 0.578 (0.003)] l_pix: 1.5303e-02 
+2023-11-08 18:49:53,333 INFO: [Class..][epoch:  4, iter:  35,900, lr:(7.143e-04,)] [eta: 3 days, 3:38:57, time (data): 0.559 (0.002)] l_pix: 1.5699e-02 
+2023-11-08 18:50:50,530 INFO: [Class..][epoch:  4, iter:  36,000, lr:(7.129e-04,)] [eta: 3 days, 3:26:30, time (data): 0.566 (0.002)] l_pix: 1.7541e-02 
+2023-11-08 18:51:46,574 INFO: [Class..][epoch:  4, iter:  36,100, lr:(7.115e-04,)] [eta: 3 days, 3:08:03, time (data): 0.561 (0.002)] l_pix: 2.2096e-02 
+2023-11-08 18:52:44,075 INFO: [Class..][epoch:  4, iter:  36,200, lr:(7.101e-04,)] [eta: 3 days, 3:01:54, time (data): 0.568 (0.002)] l_pix: 1.8016e-02 
+2023-11-08 18:53:43,012 INFO: [Class..][epoch:  4, iter:  36,300, lr:(7.086e-04,)] [eta: 3 days, 3:05:04, time (data): 0.587 (0.003)] l_pix: 1.8664e-02 
+2023-11-08 18:54:40,692 INFO: [Class..][epoch:  4, iter:  36,400, lr:(7.072e-04,)] [eta: 3 days, 3:00:43, time (data): 0.582 (0.003)] l_pix: 9.0637e-03 
+2023-11-08 18:55:37,986 INFO: [Class..][epoch:  4, iter:  36,500, lr:(7.058e-04,)] [eta: 3 days, 2:54:50, time (data): 0.572 (0.003)] l_pix: 1.6932e-02 
+2023-11-08 18:56:36,427 INFO: [Class..][epoch:  4, iter:  36,600, lr:(7.043e-04,)] [eta: 3 days, 2:55:05, time (data): 0.579 (0.003)] l_pix: 1.3568e-02 
+2023-11-08 18:57:34,242 INFO: [Class..][epoch:  4, iter:  36,700, lr:(7.029e-04,)] [eta: 3 days, 2:52:22, time (data): 0.577 (0.003)] l_pix: 2.4266e-02 
+2023-11-08 18:58:31,931 INFO: [Class..][epoch:  4, iter:  36,800, lr:(7.015e-04,)] [eta: 3 days, 2:49:18, time (data): 0.577 (0.003)] l_pix: 1.1488e-02 
+2023-11-08 18:59:29,587 INFO: [Class..][epoch:  4, iter:  36,900, lr:(7.000e-04,)] [eta: 3 days, 2:46:19, time (data): 0.578 (0.003)] l_pix: 1.2213e-02 
+2023-11-08 19:00:28,592 INFO: [Class..][epoch:  4, iter:  37,000, lr:(6.986e-04,)] [eta: 3 days, 2:48:44, time (data): 0.584 (0.003)] l_pix: 1.4090e-02 
+2023-11-08 19:01:21,967 INFO: [Class..][epoch:  4, iter:  37,100, lr:(6.971e-04,)] [eta: 3 days, 2:30:10, time (data): 0.534 (0.002)] l_pix: 1.6760e-02 
+2023-11-08 19:02:19,475 INFO: [Class..][epoch:  4, iter:  37,200, lr:(6.957e-04,)] [eta: 3 days, 2:27:41, time (data): 0.555 (0.002)] l_pix: 2.7392e-02 
+2023-11-08 19:03:17,759 INFO: [Class..][epoch:  4, iter:  37,300, lr:(6.943e-04,)] [eta: 3 days, 2:27:55, time (data): 0.585 (0.003)] l_pix: 9.5554e-03 
+2023-11-08 19:04:16,990 INFO: [Class..][epoch:  4, iter:  37,400, lr:(6.928e-04,)] [eta: 3 days, 2:31:07, time (data): 0.589 (0.003)] l_pix: 2.0804e-02 
+2023-11-08 19:05:15,386 INFO: [Class..][epoch:  4, iter:  37,500, lr:(6.914e-04,)] [eta: 3 days, 2:31:24, time (data): 0.583 (0.003)] l_pix: 1.4288e-02 
+2023-11-08 19:06:11,242 INFO: [Class..][epoch:  4, iter:  37,600, lr:(6.899e-04,)] [eta: 3 days, 2:24:03, time (data): 0.570 (0.002)] l_pix: 1.2362e-02 
+2023-11-08 19:07:08,189 INFO: [Class..][epoch:  4, iter:  37,700, lr:(6.885e-04,)] [eta: 3 days, 2:20:18, time (data): 0.570 (0.003)] l_pix: 7.6245e-03 
+2023-11-08 19:08:05,414 INFO: [Class..][epoch:  4, iter:  37,800, lr:(6.870e-04,)] [eta: 3 days, 2:17:30, time (data): 0.571 (0.003)] l_pix: 2.1327e-02 
+2023-11-08 19:09:01,529 INFO: [Class..][epoch:  4, iter:  37,900, lr:(6.855e-04,)] [eta: 3 days, 2:11:54, time (data): 0.552 (0.002)] l_pix: 2.4645e-02 
+2023-11-08 19:09:55,835 INFO: [Class..][epoch:  4, iter:  38,000, lr:(6.841e-04,)] [eta: 3 days, 2:01:57, time (data): 0.547 (0.002)] l_pix: 1.8108e-02 
+2023-11-08 19:10:52,893 INFO: [Class..][epoch:  4, iter:  38,100, lr:(6.826e-04,)] [eta: 3 days, 1:59:26, time (data): 0.571 (0.002)] l_pix: 2.2664e-02 
+2023-11-08 19:11:49,705 INFO: [Class..][epoch:  4, iter:  38,200, lr:(6.812e-04,)] [eta: 3 days, 1:56:25, time (data): 0.570 (0.002)] l_pix: 1.6205e-02 
+2023-11-08 19:12:45,691 INFO: [Class..][epoch:  4, iter:  38,300, lr:(6.797e-04,)] [eta: 3 days, 1:51:36, time (data): 0.560 (0.003)] l_pix: 2.0457e-02 
+2023-11-08 19:13:42,162 INFO: [Class..][epoch:  4, iter:  38,400, lr:(6.782e-04,)] [eta: 3 days, 1:48:06, time (data): 0.563 (0.002)] l_pix: 1.3717e-02 
+2023-11-08 19:14:38,495 INFO: [Class..][epoch:  4, iter:  38,500, lr:(6.768e-04,)] [eta: 3 days, 1:44:27, time (data): 0.564 (0.003)] l_pix: 1.9882e-02 
+2023-11-08 19:15:33,930 INFO: [Class..][epoch:  4, iter:  38,600, lr:(6.753e-04,)] [eta: 3 days, 1:39:02, time (data): 0.559 (0.002)] l_pix: 1.3633e-02 
+2023-11-08 19:16:31,311 INFO: [Class..][epoch:  4, iter:  38,700, lr:(6.738e-04,)] [eta: 3 days, 1:37:54, time (data): 0.578 (0.003)] l_pix: 2.3742e-02 
+2023-11-08 19:17:29,699 INFO: [Class..][epoch:  4, iter:  38,800, lr:(6.723e-04,)] [eta: 3 days, 1:38:49, time (data): 0.581 (0.003)] l_pix: 1.4382e-02 
+2023-11-08 19:18:25,262 INFO: [Class..][epoch:  4, iter:  38,900, lr:(6.709e-04,)] [eta: 3 days, 1:34:04, time (data): 0.555 (0.002)] l_pix: 1.8971e-02 
+2023-11-08 19:19:21,436 INFO: [Class..][epoch:  4, iter:  39,000, lr:(6.694e-04,)] [eta: 3 days, 1:30:41, time (data): 0.559 (0.002)] l_pix: 1.6507e-02 
+2023-11-08 19:20:18,000 INFO: [Class..][epoch:  4, iter:  39,100, lr:(6.679e-04,)] [eta: 3 days, 1:28:09, time (data): 0.569 (0.003)] l_pix: 1.0265e-02 
+2023-11-08 19:21:15,243 INFO: [Class..][epoch:  4, iter:  39,200, lr:(6.664e-04,)] [eta: 3 days, 1:26:56, time (data): 0.571 (0.003)] l_pix: 1.3622e-02 
+2023-11-08 19:22:13,927 INFO: [Class..][epoch:  4, iter:  39,300, lr:(6.649e-04,)] [eta: 3 days, 1:28:18, time (data): 0.588 (0.003)] l_pix: 8.2755e-03 
+2023-11-08 19:23:09,915 INFO: [Class..][epoch:  4, iter:  39,400, lr:(6.635e-04,)] [eta: 3 days, 1:24:51, time (data): 0.572 (0.003)] l_pix: 4.9687e-03 
+2023-11-08 19:24:05,840 INFO: [Class..][epoch:  4, iter:  39,500, lr:(6.620e-04,)] [eta: 3 days, 1:21:25, time (data): 0.561 (0.002)] l_pix: 1.6534e-02 
+2023-11-08 19:25:01,525 INFO: [Class..][epoch:  4, iter:  39,600, lr:(6.605e-04,)] [eta: 3 days, 1:17:42, time (data): 0.558 (0.002)] l_pix: 1.8827e-02 
+2023-11-08 19:25:58,804 INFO: [Class..][epoch:  4, iter:  39,700, lr:(6.590e-04,)] [eta: 3 days, 1:16:41, time (data): 0.564 (0.002)] l_pix: 1.3960e-02 
+2023-11-08 19:26:56,551 INFO: [Class..][epoch:  4, iter:  39,800, lr:(6.575e-04,)] [eta: 3 days, 1:16:25, time (data): 0.571 (0.002)] l_pix: 1.1292e-02 
+2023-11-08 19:27:53,081 INFO: [Class..][epoch:  4, iter:  39,900, lr:(6.560e-04,)] [eta: 3 days, 1:14:14, time (data): 0.564 (0.002)] l_pix: 1.6181e-02 
+2023-11-08 19:28:50,232 INFO: [Class..][epoch:  4, iter:  40,000, lr:(6.545e-04,)] [eta: 3 days, 1:13:03, time (data): 0.568 (0.002)] l_pix: 1.2713e-02 
+2023-11-08 19:28:50,232 INFO: Saving models and training states.
+2023-11-08 19:28:52,877 WARNING: Multiple validation datasets are *only* supported by SRModel.
+2023-11-08 19:29:07,528 INFO: Validation Set5
+	 # psnr: 37.1812	Best: 37.1812 @ 40000 iter
+	 # ssim: 0.9590	Best: 0.9590 @ 40000 iter
+
+2023-11-08 19:29:50,766 INFO: Validation Set14
+	 # psnr: 33.0137	Best: 33.0137 @ 40000 iter
+	 # ssim: 0.9138	Best: 0.9138 @ 40000 iter
+
+2023-11-08 19:35:22,043 INFO: Validation BSD100
+	 # psnr: 31.8559	Best: 31.8559 @ 40000 iter
+	 # ssim: 0.8968	Best: 0.8968 @ 40000 iter
+
+2023-11-08 19:48:27,933 INFO: Validation Urban100
+	 # psnr: 30.8730	Best: 30.8730 @ 40000 iter
+	 # ssim: 0.9165	Best: 0.9165 @ 40000 iter
+
+2023-11-08 20:03:11,958 INFO: Validation Manga109
+	 # psnr: 37.0557	Best: 37.0557 @ 40000 iter
+	 # ssim: 0.9740	Best: 0.9740 @ 40000 iter
+
+2023-11-08 20:04:11,145 INFO: [Class..][epoch:  4, iter:  40,100, lr:(6.530e-04,)] [eta: 5 days, 4:52:58, time (data): 0.568 (0.002)] l_pix: 1.3609e-02 
+2023-11-08 20:05:09,382 INFO: [Class..][epoch:  4, iter:  40,200, lr:(6.515e-04,)] [eta: 5 days, 3:53:06, time (data): 0.576 (0.002)] l_pix: 1.2575e-02 
+2023-11-08 20:06:07,041 INFO: [Class..][epoch:  4, iter:  40,300, lr:(6.500e-04,)] [eta: 5 days, 2:54:38, time (data): 0.576 (0.003)] l_pix: 1.7775e-02 
+2023-11-08 20:07:06,217 INFO: [Class..][epoch:  4, iter:  40,400, lr:(6.485e-04,)] [eta: 5 days, 2:00:27, time (data): 0.585 (0.003)] l_pix: 1.0477e-02 
+2023-11-08 20:08:06,670 INFO: [Class..][epoch:  5, iter:  40,500, lr:(6.470e-04,)] [eta: 5 days, 1:09:58, time (data): 0.616 (0.038)] l_pix: 1.7818e-02 
+2023-11-08 20:09:05,540 INFO: [Class..][epoch:  5, iter:  40,600, lr:(6.455e-04,)] [eta: 5 days, 0:19:05, time (data): 0.600 (0.018)] l_pix: 1.6784e-02 
+2023-11-08 20:10:04,163 INFO: [Class..][epoch:  5, iter:  40,700, lr:(6.440e-04,)] [eta: 4 days, 23:29:38, time (data): 0.572 (0.003)] l_pix: 1.0372e-02 
+2023-11-08 20:11:02,722 INFO: [Class..][epoch:  5, iter:  40,800, lr:(6.425e-04,)] [eta: 4 days, 22:41:46, time (data): 0.580 (0.003)] l_pix: 1.8070e-02 
+2023-11-08 20:12:00,762 INFO: [Class..][epoch:  5, iter:  40,900, lr:(6.410e-04,)] [eta: 4 days, 21:54:49, time (data): 0.582 (0.002)] l_pix: 1.1719e-02 
+2023-11-08 20:12:59,974 INFO: [Class..][epoch:  5, iter:  41,000, lr:(6.395e-04,)] [eta: 4 days, 21:10:53, time (data): 0.588 (0.003)] l_pix: 1.7138e-02 
+2023-11-08 20:13:59,293 INFO: [Class..][epoch:  5, iter:  41,100, lr:(6.380e-04,)] [eta: 4 days, 20:28:30, time (data): 0.586 (0.003)] l_pix: 1.7663e-02 
+2023-11-08 20:14:58,111 INFO: [Class..][epoch:  5, iter:  41,200, lr:(6.365e-04,)] [eta: 4 days, 19:46:50, time (data): 0.587 (0.003)] l_pix: 2.3340e-02 
+2023-11-08 20:15:56,353 INFO: [Class..][epoch:  5, iter:  41,300, lr:(6.350e-04,)] [eta: 4 days, 19:05:45, time (data): 0.580 (0.003)] l_pix: 1.3031e-02 
+2023-11-08 20:16:55,428 INFO: [Class..][epoch:  5, iter:  41,400, lr:(6.335e-04,)] [eta: 4 days, 18:26:56, time (data): 0.586 (0.003)] l_pix: 9.4634e-03 
+2023-11-08 20:17:53,317 INFO: [Class..][epoch:  5, iter:  41,500, lr:(6.320e-04,)] [eta: 4 days, 17:47:52, time (data): 0.579 (0.003)] l_pix: 2.3433e-02 
+2023-11-08 20:18:51,939 INFO: [Class..][epoch:  5, iter:  41,600, lr:(6.304e-04,)] [eta: 4 days, 17:10:49, time (data): 0.583 (0.003)] l_pix: 1.4182e-02 
+2023-11-08 20:19:49,888 INFO: [Class..][epoch:  5, iter:  41,700, lr:(6.289e-04,)] [eta: 4 days, 16:34:04, time (data): 0.574 (0.003)] l_pix: 1.2324e-02 
+2023-11-08 20:20:48,272 INFO: [Class..][epoch:  5, iter:  41,800, lr:(6.274e-04,)] [eta: 4 days, 15:58:52, time (data): 0.580 (0.003)] l_pix: 1.6803e-02 
+2023-11-08 20:21:45,729 INFO: [Class..][epoch:  5, iter:  41,900, lr:(6.259e-04,)] [eta: 4 days, 15:23:38, time (data): 0.575 (0.003)] l_pix: 1.8326e-02 
+2023-11-08 20:22:44,183 INFO: [Class..][epoch:  5, iter:  42,000, lr:(6.244e-04,)] [eta: 4 days, 14:50:27, time (data): 0.581 (0.003)] l_pix: 1.2882e-02 
+2023-11-08 20:23:42,202 INFO: [Class..][epoch:  5, iter:  42,100, lr:(6.228e-04,)] [eta: 4 days, 14:17:44, time (data): 0.578 (0.002)] l_pix: 2.0166e-02 
+2023-11-08 20:24:41,268 INFO: [Class..][epoch:  5, iter:  42,200, lr:(6.213e-04,)] [eta: 4 days, 13:46:59, time (data): 0.586 (0.003)] l_pix: 2.4255e-02 
+2023-11-08 20:25:39,924 INFO: [Class..][epoch:  5, iter:  42,300, lr:(6.198e-04,)] [eta: 4 days, 13:16:38, time (data): 0.583 (0.003)] l_pix: 2.1543e-02 
+2023-11-08 20:26:38,636 INFO: [Class..][epoch:  5, iter:  42,400, lr:(6.183e-04,)] [eta: 4 days, 12:47:08, time (data): 0.586 (0.003)] l_pix: 1.1433e-02 
+2023-11-08 20:27:38,256 INFO: [Class..][epoch:  5, iter:  42,500, lr:(6.167e-04,)] [eta: 4 days, 12:19:19, time (data): 0.595 (0.004)] l_pix: 1.5978e-02 
+2023-11-08 20:28:36,164 INFO: [Class..][epoch:  5, iter:  42,600, lr:(6.152e-04,)] [eta: 4 days, 11:50:29, time (data): 0.585 (0.003)] l_pix: 1.9411e-02 
+2023-11-08 20:29:35,913 INFO: [Class..][epoch:  5, iter:  42,700, lr:(6.137e-04,)] [eta: 4 days, 11:24:12, time (data): 0.598 (0.004)] l_pix: 1.0653e-02 
+2023-11-08 20:30:34,444 INFO: [Class..][epoch:  5, iter:  42,800, lr:(6.122e-04,)] [eta: 4 days, 10:57:22, time (data): 0.590 (0.003)] l_pix: 1.3294e-02 
+2023-11-08 20:31:33,203 INFO: [Class..][epoch:  5, iter:  42,900, lr:(6.106e-04,)] [eta: 4 days, 10:31:25, time (data): 0.585 (0.003)] l_pix: 1.7394e-02 
+2023-11-08 20:32:32,729 INFO: [Class..][epoch:  5, iter:  43,000, lr:(6.091e-04,)] [eta: 4 days, 10:06:49, time (data): 0.591 (0.003)] l_pix: 2.2357e-02 
+2023-11-08 20:33:34,096 INFO: [Class..][epoch:  5, iter:  43,100, lr:(6.076e-04,)] [eta: 4 days, 9:44:32, time (data): 0.606 (0.004)] l_pix: 1.0420e-02 
+2023-11-08 20:34:35,919 INFO: [Class..][epoch:  5, iter:  43,200, lr:(6.060e-04,)] [eta: 4 days, 9:23:12, time (data): 0.614 (0.004)] l_pix: 9.5192e-03 
+2023-11-08 20:35:34,310 INFO: [Class..][epoch:  5, iter:  43,300, lr:(6.045e-04,)] [eta: 4 days, 8:59:12, time (data): 0.582 (0.003)] l_pix: 1.4323e-02 
+2023-11-08 20:36:32,410 INFO: [Class..][epoch:  5, iter:  43,400, lr:(6.029e-04,)] [eta: 4 days, 8:35:29, time (data): 0.581 (0.003)] l_pix: 1.6296e-02 
+2023-11-08 20:37:31,896 INFO: [Class..][epoch:  5, iter:  43,500, lr:(6.014e-04,)] [eta: 4 days, 8:13:32, time (data): 0.597 (0.004)] l_pix: 2.5303e-02 
+2023-11-08 20:38:30,005 INFO: [Class..][epoch:  5, iter:  43,600, lr:(5.999e-04,)] [eta: 4 days, 7:50:52, time (data): 0.587 (0.003)] l_pix: 1.2805e-02 
+2023-11-08 20:39:28,961 INFO: [Class..][epoch:  5, iter:  43,700, lr:(5.983e-04,)] [eta: 4 days, 7:29:26, time (data): 0.595 (0.003)] l_pix: 1.4257e-02 
+2023-11-08 20:40:27,301 INFO: [Class..][epoch:  5, iter:  43,800, lr:(5.968e-04,)] [eta: 4 days, 7:07:56, time (data): 0.587 (0.003)] l_pix: 7.4293e-03 
+2023-11-08 20:41:26,886 INFO: [Class..][epoch:  5, iter:  43,900, lr:(5.952e-04,)] [eta: 4 days, 6:47:58, time (data): 0.602 (0.004)] l_pix: 1.6774e-02 
+2023-11-08 20:42:25,499 INFO: [Class..][epoch:  5, iter:  44,000, lr:(5.937e-04,)] [eta: 4 days, 6:27:36, time (data): 0.592 (0.003)] l_pix: 1.2148e-02 
+2023-11-08 20:43:24,416 INFO: [Class..][epoch:  5, iter:  44,100, lr:(5.922e-04,)] [eta: 4 days, 6:07:54, time (data): 0.590 (0.003)] l_pix: 1.7706e-02 
+2023-11-08 20:44:21,806 INFO: [Class..][epoch:  5, iter:  44,200, lr:(5.906e-04,)] [eta: 4 days, 5:47:21, time (data): 0.580 (0.003)] l_pix: 1.3419e-02 
+2023-11-08 20:45:19,600 INFO: [Class..][epoch:  5, iter:  44,300, lr:(5.891e-04,)] [eta: 4 days, 5:27:34, time (data): 0.576 (0.003)] l_pix: 1.1966e-02 
+2023-11-08 20:46:18,422 INFO: [Class..][epoch:  5, iter:  44,400, lr:(5.875e-04,)] [eta: 4 days, 5:09:00, time (data): 0.584 (0.003)] l_pix: 2.0529e-02 
+2023-11-08 20:47:17,682 INFO: [Class..][epoch:  5, iter:  44,500, lr:(5.860e-04,)] [eta: 4 days, 4:51:09, time (data): 0.602 (0.003)] l_pix: 1.8454e-02 
+2023-11-08 20:48:15,733 INFO: [Class..][epoch:  5, iter:  44,600, lr:(5.844e-04,)] [eta: 4 days, 4:32:42, time (data): 0.588 (0.003)] l_pix: 9.8873e-03 
+2023-11-08 20:49:15,768 INFO: [Class..][epoch:  5, iter:  44,700, lr:(5.829e-04,)] [eta: 4 days, 4:16:10, time (data): 0.595 (0.003)] l_pix: 1.5367e-02 
+2023-11-08 20:50:15,369 INFO: [Class..][epoch:  5, iter:  44,800, lr:(5.813e-04,)] [eta: 4 days, 3:59:36, time (data): 0.596 (0.003)] l_pix: 9.8776e-03 
+2023-11-08 20:51:14,133 INFO: [Class..][epoch:  5, iter:  44,900, lr:(5.798e-04,)] [eta: 4 days, 3:42:43, time (data): 0.594 (0.004)] l_pix: 1.4318e-02 
+2023-11-08 20:52:16,206 INFO: [Class..][epoch:  5, iter:  45,000, lr:(5.782e-04,)] [eta: 4 days, 3:28:40, time (data): 0.612 (0.004)] l_pix: 1.2836e-02 
+2023-11-08 20:53:18,573 INFO: [Class..][epoch:  5, iter:  45,100, lr:(5.767e-04,)] [eta: 4 days, 3:15:05, time (data): 0.613 (0.004)] l_pix: 9.8036e-03 
+2023-11-08 20:54:18,510 INFO: [Class..][epoch:  5, iter:  45,200, lr:(5.751e-04,)] [eta: 4 days, 2:59:57, time (data): 0.604 (0.003)] l_pix: 7.8669e-03 
+2023-11-08 20:55:17,834 INFO: [Class..][epoch:  5, iter:  45,300, lr:(5.736e-04,)] [eta: 4 days, 2:44:38, time (data): 0.595 (0.003)] l_pix: 1.0846e-02 
+2023-11-08 20:56:17,498 INFO: [Class..][epoch:  5, iter:  45,400, lr:(5.720e-04,)] [eta: 4 days, 2:29:51, time (data): 0.596 (0.003)] l_pix: 1.3975e-02 
+2023-11-08 20:57:17,040 INFO: [Class..][epoch:  5, iter:  45,500, lr:(5.705e-04,)] [eta: 4 days, 2:15:14, time (data): 0.592 (0.003)] l_pix: 2.5748e-02 
+2023-11-08 20:58:16,472 INFO: [Class..][epoch:  5, iter:  45,600, lr:(5.689e-04,)] [eta: 4 days, 2:00:48, time (data): 0.593 (0.003)] l_pix: 1.8560e-02 
+2023-11-08 20:59:14,962 INFO: [Class..][epoch:  5, iter:  45,700, lr:(5.674e-04,)] [eta: 4 days, 1:45:57, time (data): 0.571 (0.002)] l_pix: 1.7287e-02 
+2023-11-08 21:00:13,254 INFO: [Class..][epoch:  5, iter:  45,800, lr:(5.658e-04,)] [eta: 4 days, 1:31:13, time (data): 0.579 (0.003)] l_pix: 2.6762e-02 
+2023-11-08 21:01:13,992 INFO: [Class..][epoch:  6, iter:  45,900, lr:(5.642e-04,)] [eta: 4 days, 1:18:26, time (data): 0.634 (0.054)] l_pix: 1.0443e-02 
+2023-11-08 21:02:13,161 INFO: [Class..][epoch:  6, iter:  46,000, lr:(5.627e-04,)] [eta: 4 days, 1:04:47, time (data): 0.605 (0.019)] l_pix: 7.7517e-03 
+2023-11-08 21:03:11,003 INFO: [Class..][epoch:  6, iter:  46,100, lr:(5.611e-04,)] [eta: 4 days, 0:50:27, time (data): 0.575 (0.003)] l_pix: 2.0240e-02 
+2023-11-08 21:04:09,299 INFO: [Class..][epoch:  6, iter:  46,200, lr:(5.596e-04,)] [eta: 4 days, 0:36:41, time (data): 0.580 (0.003)] l_pix: 2.4380e-02 
+2023-11-08 21:05:08,424 INFO: [Class..][epoch:  6, iter:  46,300, lr:(5.580e-04,)] [eta: 4 days, 0:23:41, time (data): 0.593 (0.003)] l_pix: 1.2652e-02 
+2023-11-08 21:06:06,871 INFO: [Class..][epoch:  6, iter:  46,400, lr:(5.564e-04,)] [eta: 4 days, 0:10:26, time (data): 0.587 (0.003)] l_pix: 3.0343e-02 
+2023-11-08 21:07:05,755 INFO: [Class..][epoch:  6, iter:  46,500, lr:(5.549e-04,)] [eta: 3 days, 23:57:42, time (data): 0.598 (0.003)] l_pix: 1.0214e-02 
+2023-11-08 21:08:04,072 INFO: [Class..][epoch:  6, iter:  46,600, lr:(5.533e-04,)] [eta: 3 days, 23:44:48, time (data): 0.588 (0.003)] l_pix: 1.1652e-02 
+2023-11-08 21:09:04,245 INFO: [Class..][epoch:  6, iter:  46,700, lr:(5.518e-04,)] [eta: 3 days, 23:33:18, time (data): 0.582 (0.003)] l_pix: 1.5177e-02 
+2023-11-08 21:10:03,017 INFO: [Class..][epoch:  6, iter:  46,800, lr:(5.502e-04,)] [eta: 3 days, 23:21:05, time (data): 0.586 (0.003)] l_pix: 1.8215e-02 
+2023-11-08 21:11:01,929 INFO: [Class..][epoch:  6, iter:  46,900, lr:(5.486e-04,)] [eta: 3 days, 23:09:08, time (data): 0.585 (0.003)] l_pix: 9.9375e-03 
+2023-11-08 21:12:00,962 INFO: [Class..][epoch:  6, iter:  47,000, lr:(5.471e-04,)] [eta: 3 days, 22:57:27, time (data): 0.589 (0.003)] l_pix: 1.5624e-02 
+2023-11-08 21:13:00,143 INFO: [Class..][epoch:  6, iter:  47,100, lr:(5.455e-04,)] [eta: 3 days, 22:46:02, time (data): 0.605 (0.003)] l_pix: 5.6108e-03 
+2023-11-08 21:13:59,048 INFO: [Class..][epoch:  6, iter:  47,200, lr:(5.439e-04,)] [eta: 3 days, 22:34:38, time (data): 0.594 (0.003)] l_pix: 1.3413e-02 
+2023-11-08 21:14:59,736 INFO: [Class..][epoch:  6, iter:  47,300, lr:(5.424e-04,)] [eta: 3 days, 22:24:28, time (data): 0.592 (0.003)] l_pix: 1.4914e-02 
+2023-11-08 21:15:57,829 INFO: [Class..][epoch:  6, iter:  47,400, lr:(5.408e-04,)] [eta: 3 days, 22:12:54, time (data): 0.584 (0.003)] l_pix: 2.1109e-02 
+2023-11-08 21:16:56,021 INFO: [Class..][epoch:  6, iter:  47,500, lr:(5.392e-04,)] [eta: 3 days, 22:01:32, time (data): 0.588 (0.002)] l_pix: 1.9489e-02 
+2023-11-08 21:17:55,586 INFO: [Class..][epoch:  6, iter:  47,600, lr:(5.377e-04,)] [eta: 3 days, 21:51:10, time (data): 0.594 (0.003)] l_pix: 1.2761e-02 
+2023-11-08 21:18:54,793 INFO: [Class..][epoch:  6, iter:  47,700, lr:(5.361e-04,)] [eta: 3 days, 21:40:45, time (data): 0.604 (0.004)] l_pix: 2.2008e-02 
+2023-11-08 21:19:52,327 INFO: [Class..][epoch:  6, iter:  47,800, lr:(5.345e-04,)] [eta: 3 days, 21:29:29, time (data): 0.583 (0.003)] l_pix: 2.2867e-02 
+2023-11-08 21:20:50,450 INFO: [Class..][epoch:  6, iter:  47,900, lr:(5.330e-04,)] [eta: 3 days, 21:18:43, time (data): 0.586 (0.004)] l_pix: 1.1706e-02 
+2023-11-08 21:21:49,617 INFO: [Class..][epoch:  6, iter:  48,000, lr:(5.314e-04,)] [eta: 3 days, 21:08:42, time (data): 0.590 (0.004)] l_pix: 6.0625e-03 
+2023-11-08 21:22:48,355 INFO: [Class..][epoch:  6, iter:  48,100, lr:(5.298e-04,)] [eta: 3 days, 20:58:35, time (data): 0.598 (0.003)] l_pix: 1.2904e-02 
+2023-11-08 21:23:47,013 INFO: [Class..][epoch:  6, iter:  48,200, lr:(5.283e-04,)] [eta: 3 days, 20:48:34, time (data): 0.590 (0.003)] l_pix: 1.8661e-02 
+2023-11-08 21:24:42,587 INFO: [Class..][epoch:  6, iter:  48,300, lr:(5.267e-04,)] [eta: 3 days, 20:36:56, time (data): 0.532 (0.002)] l_pix: 2.0005e-02 

@@ -1,0 +1,193 @@
+2023-11-24 21:31:30,041 INFO: 
+     ______                   __   __                 __      __
+    / ____/____   ____   ____/ /  / /   __  __ _____ / /__   / /
+   / / __ / __ \ / __ \ / __  /  / /   / / / // ___// //_/  / /
+  / /_/ // /_/ // /_/ // /_/ /  / /___/ /_/ // /__ / /<    /_/
+  \____/ \____/ \____/ \____/  /_____/\____/ \___//_/|_|  (_)
+    
+Version Information: 
+	PyTorch: 2.0.1
+	TorchVision: 0.15.2
+2023-11-24 21:31:30,042 INFO: 
+  name: ClassicalX2_014_Pretrained_SwinIR_MS-FFN_DIV2K_P48W8_LR2e-4_B8G1_2080ti_cos
+  model_type: SwinIRModel
+  scale: 2
+  num_gpu: 1
+  manual_seed: 3407
+  datasets:[
+    train:[
+      name: DIV2K
+      type: PairedImageDataset
+      dataroot_gt: datasets/DIV2K/DIV2K_train_HR_sub
+      dataroot_lq: datasets/DIV2K/DIV2K_train_LR_bicubic/X2_sub
+      meta_info_file: data/meta_info/meta_info_DIV2K800sub_GT.txt
+      filename_tmpl: {}
+      io_backend:[
+        type: disk
+      ]
+      gt_size: 96
+      use_hflip: True
+      use_rot: True
+      num_worker_per_gpu: 8
+      batch_size_per_gpu: 6
+      dataset_enlarge_ratio: 1
+      prefetch_mode: None
+      phase: train
+      scale: 2
+    ]
+    val_1:[
+      name: Set5
+      type: PairedImageDataset
+      dataroot_gt: datasets/Test/HR/Set5/x2
+      dataroot_lq: datasets/Test/LR/Set5/x2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_2:[
+      name: Set14
+      type: PairedImageDataset
+      dataroot_gt: datasets/Test/HR/Set14/x2
+      dataroot_lq: datasets/Test/LR/Set14/x2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_3:[
+      name: BSD100
+      type: PairedImageDataset
+      dataroot_gt: datasets/Test/HR/BSD100/x2
+      dataroot_lq: datasets/Test/LR/BSD100/x2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_4:[
+      name: Urban100
+      type: PairedImageDataset
+      dataroot_gt: datasets/Test/HR/Urban100/x2
+      dataroot_lq: datasets/Test/LR/Urban100/x2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+    val_5:[
+      name: Manga109
+      type: PairedImageDataset
+      dataroot_gt: datasets/Test/HR/Manga109/x2
+      dataroot_lq: datasets/Test/LR/Manga109/x2
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 2
+    ]
+  ]
+  network_g:[
+    type: SwinIR
+    upscale: 2
+    in_chans: 3
+    img_size: 48
+    window_size: 8
+    img_range: 1.0
+    depths: [6, 6, 6, 6, 6, 6]
+    embed_dim: 180
+    num_heads: [6, 6, 6, 6, 6, 6]
+    mlp_ratio: 2
+    upsampler: pixelshuffle
+    resi_connection: 1conv
+  ]
+  path:[
+    pretrain_network_g: /share3/home/renzihao/Pipeline/experiments/Doing/014_Pretrained_SwinIR_MS-FFN_DIV2K_P48W8_LR2e-4_B8G1_2080ti_cos/weights/net_g_80000.pth
+    strict_load_g: False
+    resume_state: /share3/home/renzihao/Pipeline/experiments/Doing/014_Pretrained_SwinIR_MS-FFN_DIV2K_P48W8_LR2e-4_B8G1_2080ti_cos/training_states/80000.state
+    experiments_root: /share3/home/renzihao/Pipeline/experiments/Doing/014_Pretrained_SwinIR_MS-FFN_DIV2K_P48W8_LR2e-4_B8G1_2080ti_cos
+    models: /share3/home/renzihao/Pipeline/experiments/Doing/014_Pretrained_SwinIR_MS-FFN_DIV2K_P48W8_LR2e-4_B8G1_2080ti_cos/weights
+    training_states: /share3/home/renzihao/Pipeline/experiments/Doing/014_Pretrained_SwinIR_MS-FFN_DIV2K_P48W8_LR2e-4_B8G1_2080ti_cos/training_states
+    log: /share3/home/renzihao/Pipeline/experiments/Doing/014_Pretrained_SwinIR_MS-FFN_DIV2K_P48W8_LR2e-4_B8G1_2080ti_cos
+    visualization: /share3/home/renzihao/Pipeline/experiments/Doing/014_Pretrained_SwinIR_MS-FFN_DIV2K_P48W8_LR2e-4_B8G1_2080ti_cos/visualization
+    tb_logger: /share3/home/renzihao/Pipeline/experiments/Doing/014_Pretrained_SwinIR_MS-FFN_DIV2K_P48W8_LR2e-4_B8G1_2080ti_cos/tb_logger
+  ]
+  train:[
+    ema_decay: 0.999
+    optim_g:[
+      type: Adam
+      lr: 0.0002
+      weight_decay: 0
+      betas: [0.9, 0.99]
+    ]
+    scheduler:[
+      type: CosineAnnealingRestartLR
+      periods: [100000, 100000, 100000, 100000, 100000]
+      restart_weights: [1, 0.5, 0.5, 0.5, 0.5]
+    ]
+    total_iter: 500000
+    warmup_iter: -1
+    pixel_opt:[
+      type: L1Loss
+      loss_weight: 1.0
+      reduction: mean
+    ]
+  ]
+  val:[
+    val_freq: 10000.0
+    save_img: False
+    metrics:[
+      psnr:[
+        type: calculate_psnr
+        crop_border: 2
+        test_y_channel: True
+      ]
+      ssim:[
+        type: calculate_ssim
+        crop_border: 2
+        test_y_channel: True
+      ]
+    ]
+  ]
+  logger:[
+    print_freq: 100
+    save_checkpoint_freq: 10000.0
+    use_tb_logger: True
+    wandb:[
+      project: None
+      resume_id: None
+    ]
+  ]
+  dist_params:[
+    backend: nccl
+    port: 29500
+  ]
+  dist: False
+  rank: 0
+  world_size: 1
+  auto_resume: True
+  is_train: True
+  root_path: /share3/home/renzihao
+
+2023-11-24 21:32:09,540 INFO: Dataset [PairedImageDataset] - DIV2K is built.
+2023-11-24 21:32:09,541 INFO: Training statistics:
+	Number of train images: 32592
+	Dataset enlarge ratio: 1
+	Batch size per gpu: 6
+	World size (gpu number): 1
+	Require iter number per epoch: 5432
+	Total epochs: 93; iters: 500000.
+2023-11-24 21:32:09,542 INFO: Dataset [PairedImageDataset] - Set5 is built.
+2023-11-24 21:32:09,543 INFO: Number of val images/folders in Set5: 5
+2023-11-24 21:32:09,544 INFO: Dataset [PairedImageDataset] - Set14 is built.
+2023-11-24 21:32:09,544 INFO: Number of val images/folders in Set14: 14
+2023-11-24 21:32:09,549 INFO: Dataset [PairedImageDataset] - BSD100 is built.
+2023-11-24 21:32:09,550 INFO: Number of val images/folders in BSD100: 100
+2023-11-24 21:32:09,555 INFO: Dataset [PairedImageDataset] - Urban100 is built.
+2023-11-24 21:32:09,555 INFO: Number of val images/folders in Urban100: 100
+2023-11-24 21:32:09,561 INFO: Dataset [PairedImageDataset] - Manga109 is built.
+2023-11-24 21:32:09,561 INFO: Number of val images/folders in Manga109: 109

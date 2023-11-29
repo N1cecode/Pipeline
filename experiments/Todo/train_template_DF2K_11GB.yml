@@ -1,9 +1,6 @@
-# GENERATE TIME: Mon Oct 30 15:22:41 2023
-# CMD:
-# basicsr/train.py --launcher pytorch -opt options/train/SwinIR/train_SwinIR_SRx2_scratch.yml --auto_resume
-
-# general settings
-name: ClassicalX2_000_SwinIR_P48W8_DIV2K_1Miters_B8G2_2080ti
+# 11GB 
+# DF2K  img_size: 64  gt_size: 128
+name: ClassicalX2_0XX_
 model_type: SwinIRModel
 
 scale: 2
@@ -13,16 +10,16 @@ manual_seed: 3407
 # dataset and data loader settings
 datasets:
   train:
-    name: DIV2K
+    name: DF2K
     type: PairedImageDataset
-    dataroot_gt: datasets/DIV2K/DIV2K_train_HR_sub
-    dataroot_lq: datasets/DIV2K/DIV2K_train_LR_bicubic/X2_sub
+    dataroot_gt: datasets/DF2K/DF2K_train_HR_sub
+    dataroot_lq: datasets/DF2K/DF2K_train_LR_bicubic/X2_sub
     meta_info_file: data/meta_info/meta_info_DIV2K800sub_GT.txt
     filename_tmpl: '{}'
     io_backend:
       type: disk
 
-    gt_size: 96
+    gt_size: 128
     use_hflip: true
     use_rot: true
 
@@ -35,25 +32,50 @@ datasets:
   val_1:
     name: Set5
     type: PairedImageDataset
-    dataroot_gt: datasets/Set5/GTmod12
-    dataroot_lq: datasets/Set5/LRbicx2
+    dataroot_gt: datasets/Test/HR/Set5/x2
+    dataroot_lq: datasets/Test/LR/Set5/x2
     io_backend:
       type: disk
 
   val_2:
     name: Set14
     type: PairedImageDataset
-    dataroot_gt: datasets/Set14/GTmod12
-    dataroot_lq: datasets/Set14/LRbicx2
+    dataroot_gt: datasets/Test/HR/Set14/x2
+    dataroot_lq: datasets/Test/LR/Set14/x2
     io_backend:
       type: disk
+
+  val_3:
+    name: BSD100
+    type: PairedImageDataset
+    dataroot_gt: datasets/Test/HR/BSD100/x2
+    dataroot_lq: datasets/Test/LR/BSD100/x2
+    io_backend:
+      type: disk
+
+  val_4:
+    name: Urban100
+    type: PairedImageDataset
+    dataroot_gt: datasets/Test/HR/Urban100/x2
+    dataroot_lq: datasets/Test/LR/Urban100/x2
+    io_backend:
+      type: disk
+
+  val_5:
+    name: Manga109
+    type: PairedImageDataset
+    dataroot_gt: datasets/Test/HR/Manga109/x2
+    dataroot_lq: datasets/Test/LR/Manga109/x2
+    io_backend:
+      type: disk
+
 
 # network structures
 network_g:
   type: SwinIR
   upscale: 2
   in_chans: 3
-  img_size: 48
+  img_size: 64
   window_size: 8
   img_range: 1.
   depths: [6, 6, 6, 6, 6, 6]
@@ -65,8 +87,8 @@ network_g:
 
 # path
 path:
-  pretrain_network_g: ~
-  strict_load_g: true
+  pretrain_network_g: experiments/pretrained_models/SwinIR/X2/001_classicalSR_DIV2K_s48w8_SwinIR-M_x2.pth
+  strict_load_g: false
   resume_state: ~
 
 # training settings
@@ -79,11 +101,11 @@ train:
     betas: [0.9, 0.99]
 
   scheduler:
-    type: MultiStepLR
-    milestones: [500000, 800000, 900000, 950000]
-    gamma: 0.5
+    type: CosineAnnealingRestartLR
+    periods: [100000, 100000, 100000, 100000, 100000]
+    restart_weights: [1, 0.5, 0.5, 0.5, 0.5]
 
-  total_iter: 1000000
+  total_iter: 500000
   warmup_iter: -1  # no warm up
 
   # losses
@@ -94,7 +116,7 @@ train:
 
 # validation settings
 val:
-  val_freq: !!float 5e3
+  val_freq: !!float 1e4
   save_img: false
 
   metrics:
@@ -102,7 +124,7 @@ val:
       type: calculate_psnr
       crop_border: 2
       test_y_channel: true
-    
+
     ssim: # metric name, can be arbitrary
       type: calculate_ssim
       crop_border: 2
@@ -111,7 +133,7 @@ val:
 # logging settings
 logger:
   print_freq: 100
-  save_checkpoint_freq: !!float 5e3
+  save_checkpoint_freq: !!float 1e4
   use_tb_logger: true
   wandb:
     project: ~
