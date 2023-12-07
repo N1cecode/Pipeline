@@ -11,6 +11,7 @@ tb_logger/*
 wandb/*
 tmp/*
 .vscode
+test*/
 
 docs/api
 scripts/__init__.py
