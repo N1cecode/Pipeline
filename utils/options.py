@@ -104,6 +104,7 @@ def parse_options(root_path, is_train=True):
     parser.add_argument('--auto_resume', action='store_true')
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--local_rank', type=int, default=0)
+    parser.add_argument('--mix_precision', action='store_true')
     parser.add_argument(
         '--force_yml', nargs='+', default=None, help='Force to update yml files. Examples: train:ema_decay=0.999')
     args = parser.parse_args()
@@ -157,6 +158,7 @@ def parse_options(root_path, is_train=True):
             exec(eval_str)
 
     opt['auto_resume'] = args.auto_resume
+    opt['mix_precision'] = args.mix_precision
     opt['is_train'] = is_train
 
     # debug setting

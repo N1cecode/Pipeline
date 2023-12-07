@@ -21,6 +21,8 @@ class SRModel(BaseModel):
         self.net_g = arch
         self.net_g = self.model_to_device(self.net_g)
         self.print_network(self.net_g)
+        if self.opt['mix_precision']:
+            self.scaler = torch.cuda.amp.GradScaler()
 
         # load pretrained models
         load_path = self.opt['path'].get('pretrain_network_g', None)
@@ -109,8 +111,13 @@ class SRModel(BaseModel):
                 l_total += l_style
                 loss_dict['l_style'] = l_style
 
-        l_total.backward()
-        self.optimizer_g.step()
+        if self.opt['mix_precision']:
+            self.scaler.scale(l_total).backward()
+            self.scaler.step(self.optimizer_g)
+            self.scaler.update()
+        else:
+            l_total.backward()
+            self.optimizer_g.step()
 
         self.log_dict = self.reduce_loss_dict(loss_dict)
 

@@ -97,6 +97,13 @@ def train_pipeline(root_path):
 
     torch.backends.cudnn.benchmark = True
     # torch.backends.cudnn.deterministic = True
+    
+    # The flag below controls whether to allow TF32 on matmul. This flag defaults to False
+    # in PyTorch 1.12 and later.
+    torch.backends.cuda.matmul.allow_tf32 = True
+
+    # The flag below controls whether to allow TF32 on cuDNN. This flag defaults to True.
+    torch.backends.cudnn.allow_tf32 = True
 
     # load resume states if necessary
     resume_state = load_resume_state(opt)
@@ -186,9 +193,16 @@ def train_pipeline(root_path):
                 break
             # update learning rate
             model.update_learning_rate(current_iter, warmup_iter=opt['train'].get('warmup_iter', -1))
+            
             # training
-            model.feed_data(train_data)
-            model.optimize_parameters(current_iter)
+            if args.mix_precision:
+                with torch.cuda.amp.autocast():
+                    model.feed_data(train_data)
+                    model.optimize_parameters(current_iter)
+            else:
+                model.feed_data(train_data)
+                model.optimize_parameters(current_iter)
+
             iter_timer.record()
             if current_iter == 1:
                 # reset start time in msg_logger for more accurate eta_time
