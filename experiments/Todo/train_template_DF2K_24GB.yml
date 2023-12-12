@@ -12,9 +12,9 @@ datasets:
   train:
     name: DF2K
     type: PairedImageDataset
-    dataroot_gt: datasets/DF2K/DF2K_train_HR_sub
-    dataroot_lq: datasets/DF2K/DF2K_train_LR_bicubic/X2_sub
-    meta_info_file: data/meta_info/meta_info_DIV2K800sub_GT.txt
+    dataroot_gt: datasets/DF2K/DF2K_HR_sub
+    dataroot_lq: datasets/DF2K/DF2K_LR_bicubic/X2_sub
+    meta_info_file: data/meta_info/meta_info_DF2Ksub_GT.txt
     filename_tmpl: '{}'
     io_backend:
       type: disk

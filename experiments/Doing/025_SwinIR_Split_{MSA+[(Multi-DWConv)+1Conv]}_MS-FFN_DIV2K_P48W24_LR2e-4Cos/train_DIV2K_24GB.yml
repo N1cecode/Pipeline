@@ -1,6 +1,5 @@
-# 11GB 
-# DF2K  img_size: 64  gt_size: 128
-name: ClassicalX2_0XX_
+# 3090
+name: ClassicalX2_025_SwinIR_Split_{MSA+[(Multi-DWConv)+1Conv]}_MS-FFN_DIV2K_P48W24_LR2e-4Cos_B8G1_3090
 model_type: SwinIRModel
 
 scale: 2
@@ -10,16 +9,16 @@ manual_seed: 3407
 # dataset and data loader settings
 datasets:
   train:
-    name: DF2K
+    name: DIV2K
     type: PairedImageDataset
-    dataroot_gt: datasets/DF2K/DF2K_HR_sub
-    dataroot_lq: datasets/DF2K/DF2K_LR_bicubic/X2_sub
-    meta_info_file: data/meta_info/meta_info_DF2Ksub_GT.txt
+    dataroot_gt: datasets/DIV2K/DIV2K_train_HR_sub
+    dataroot_lq: datasets/DIV2K/DIV2K_train_LR_bicubic/X2_sub
+    meta_info_file: data/meta_info/meta_info_DIV2K800sub_GT.txt
     filename_tmpl: '{}'
     io_backend:
       type: disk
 
-    gt_size: 128
+    gt_size: 96
     use_hflip: true
     use_rot: true
 
@@ -75,8 +74,8 @@ network_g:
   type: SwinIR
   upscale: 2
   in_chans: 3
-  img_size: 64
-  window_size: 8
+  img_size: 48
+  window_size: 24
   img_range: 1.
   depths: [6, 6, 6, 6, 6, 6]
   embed_dim: 180
@@ -102,15 +101,15 @@ train:
 
   scheduler:
     type: CosineAnnealingRestartLR
-    periods: [100000, 100000, 100000, 100000, 100000]
-    restart_weights: [1, 0.5, 0.5, 0.5, 0.5]
+    periods: [200000, 200000, 200000, 200000, 200000]
+    restart_weights: [1, 1, 0.5, 0.5, 0.5]
 
-  total_iter: 500000
-  warmup_iter: -1  # no warm up
+  total_iter: 1000000
+  warmup_iter: 100000  # no warm up
 
   # losses
   pixel_opt:
-    type: L1Loss
+    type: CharbonnierLossColor
     loss_weight: 1.0
     reduction: mean
 
