@@ -1,5 +1,5 @@
 # 3090
-name: ClassicalX2_025_SwinIR_Split_{MSA+[(Multi-DWConv)+1Conv]}_MS-FFN_DIV2K_P48W24_LR2e-4Cos_B8G1_3090
+name: ClassicalX2_026_SwinIR_Split_{MSA+[(Multi-DWConv)+1Conv]}_MS-FFN_Dim240_DIV2K_P48W16_LR2e-4Cos_B12G1_3090
 model_type: SwinIRModel
 
 scale: 2
@@ -24,7 +24,7 @@ datasets:
 
     # data loader
     num_worker_per_gpu: 8
-    batch_size_per_gpu: 8
+    batch_size_per_gpu: 12
     dataset_enlarge_ratio: 1
     prefetch_mode: ~
 
@@ -75,10 +75,10 @@ network_g:
   upscale: 2
   in_chans: 3
   img_size: 48
-  window_size: 24
+  window_size: 16
   img_range: 1.
   depths: [6, 6, 6, 6, 6, 6]
-  embed_dim: 180
+  embed_dim: 240
   num_heads: [6, 6, 6, 6, 6, 6]
   mlp_ratio: 2
   upsampler: 'pixelshuffle'
