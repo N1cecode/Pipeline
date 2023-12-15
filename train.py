@@ -108,13 +108,16 @@ def train_pipeline(root_path):
     # load resume states if necessary
     resume_state = load_resume_state(opt)
     
-    # #! load schedulers from opt file rather than state file
-    # if opt['train']['scheduler']['type'] == 'CosineAnnealingRestartLR':
-    #     resume_state['schedulers'][0]['periods'] = opt['train']['scheduler']['periods']
-    #     resume_state['schedulers'][0]['restart_weights'] = opt['train']['scheduler']['restart_weights']
-    # elif opt['train']['scheduler']['type'] == 'MultiStepLR':
-    #     resume_state['schedulers'][0]['milestones'] = opt['train']['scheduler']['milestones']
-    #     resume_state['schedulers'][0]['gamma'] = opt['train']['scheduler']['gamma']
+    #! load schedulers from opt file rather than state file
+    if opt['auto_resume']:
+        state_path = osp.join(opt['path']['experiments_root'], 'training_states')
+        if osp.isdir(state_path):
+            if opt['train']['scheduler']['type'] == 'CosineAnnealingRestartLR':
+                resume_state['schedulers'][0]['periods'] = opt['train']['scheduler']['periods']
+                resume_state['schedulers'][0]['restart_weights'] = opt['train']['scheduler']['restart_weights']
+            elif opt['train']['scheduler']['type'] == 'MultiStepLR':
+                resume_state['schedulers'][0]['milestones'] = opt['train']['scheduler']['milestones']
+                resume_state['schedulers'][0]['gamma'] = opt['train']['scheduler']['gamma']
 
     if not osp.exists(opt['path']['log']):
         os.makedirs(opt['path']['log'], exist_ok=True)
