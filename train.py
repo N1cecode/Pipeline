@@ -115,6 +115,7 @@ def train_pipeline(root_path):
             if opt['train']['scheduler']['type'] == 'CosineAnnealingRestartLR':
                 resume_state['schedulers'][0]['periods'] = opt['train']['scheduler']['periods']
                 resume_state['schedulers'][0]['restart_weights'] = opt['train']['scheduler']['restart_weights']
+                resume_state['schedulers'][0]['cumulative_period'] = [sum(resume_state['schedulers'][0]['periods'][0:i + 1]) for i in range(0, len(resume_state['schedulers'][0]['periods']))]
             elif opt['train']['scheduler']['type'] == 'MultiStepLR':
                 resume_state['schedulers'][0]['milestones'] = opt['train']['scheduler']['milestones']
                 resume_state['schedulers'][0]['gamma'] = opt['train']['scheduler']['gamma']
