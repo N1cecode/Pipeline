@@ -7,12 +7,14 @@ DESTINATION_DIR="./tb_logger"
 
 mkdir -p "$DESTINATION_DIR"
 
-# 清除'Doing'分类下的旧符号链接
-if [ -d "$DESTINATION_DIR/Doing" ]; then
-    find "$DESTINATION_DIR/Doing" -type l -exec rm {} +
-    echo "Old symbolic links in $DESTINATION_DIR/Doing have been removed."
-    echo
-fi
+# 清除'Doing'和'Hold'分类下的旧符号链接
+for category in Doing Hold; do
+    if [ -d "$DESTINATION_DIR/$category" ]; then
+        find "$DESTINATION_DIR/$category" -type l -exec rm {} +
+        echo "Old symbolic links in $DESTINATION_DIR/$category have been removed."
+        echo
+    fi
+done
 
 # 在当前脚本目录下的experiments文件夹中查找所有名为tb_logger的文件夹
 find experiments -type d -name tb_logger | while read -r tb_logger_dir; do
@@ -21,15 +23,15 @@ find experiments -type d -name tb_logger | while read -r tb_logger_dir; do
   # 获取路径的部分
   IFS='/' read -ra ADDR <<< "$full_path"
   for i in "${!ADDR[@]}"; do
-    if [[ ${ADDR[i]} =~ ^(Done|Doing)$ ]]; then
-      status=${ADDR[i]} # Done 或 Doing
+    if [[ ${ADDR[i]} =~ ^(Done|Doing|Hold)$ ]]; then
+      status=${ADDR[i]} # Done 或 Doing 或 Hold
       if [[ ${ADDR[i]} == "Done" ]]; then
         category=${ADDR[i+1]} # Classical
         resolution=${ADDR[i+2]} # X2, X3, etc.
         exp_number=${ADDR[i+3]} # 001_SwinIR_..., 002_SwinIR_..., etc.
       else
-        category="Doing" # 没有额外分类的情况，直接使用Doing
-        resolution=""    # Doing下没有分类
+        category=${ADDR[i]} # Doing 或 Hold
+        resolution=""    # Doing或Hold下没有分类
         exp_number=${ADDR[i+1]} # 001_SwinIR_..., 002_SwinIR_..., etc.
       fi
 
