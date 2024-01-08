@@ -101,10 +101,10 @@ train:
 
   scheduler:
     type: CosineAnnealingRestartLR
-    periods: [200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000]
-    restart_weights: [1, 1, 1, 1, 1, 1, 1, 1, 1]
+    periods: [200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000]
+    restart_weights: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
-  total_iter: 1800000
+  total_iter: 2200000
   warmup_iter: 100000  # no warm up
 
   # losses
