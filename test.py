@@ -5,7 +5,7 @@ import torchvision
 
 from data import build_dataloader, build_dataset
 from models import build_model, build_arch
-from utils import get_env_info, get_root_logger, get_time_str
+from utils import get_env_info, get_root_logger, get_time_str, make_exp_dirs
 from utils.options import dict2str, parse_options
 
 def test_pipeline(root_path):
@@ -16,6 +16,7 @@ def test_pipeline(root_path):
     # torch.backends.cudnn.deterministic = True
 
     # mkdir and initialize loggers
+    make_exp_dirs(opt)
     log_file = osp.join(opt['path']['log'], f"test_{opt['name']}_{get_time_str()}.log")
     logger = get_root_logger(logger_name='basicsr', log_level=logging.INFO, log_file=log_file)
     logger.info(get_env_info())
