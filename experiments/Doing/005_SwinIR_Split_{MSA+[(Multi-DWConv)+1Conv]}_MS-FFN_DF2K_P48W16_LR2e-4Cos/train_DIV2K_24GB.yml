@@ -1,70 +1,70 @@
 # 3090
-name: ClassicalX2_024_SwinIR_Split_{MSA+[(Multi-DWConv)+1Conv]}_MS-FFN_DIV2K_P48W16_LR2e-4Cos_B12G1_3090
+name: X4_005_SwinIR_Split_{MSA+[(Multi-DWConv)+1Conv]}_MS-FFN_DF2K_P48W16_LR2e-4Cos_B8G1_3090
 model_type: SwinIRModel
 
-scale: 2
+scale: 4
 num_gpu: auto
 manual_seed: 3407
 
 # dataset and data loader settings
 datasets:
   train:
-    name: DIV2K
+    name: DF2K
     type: PairedImageDataset
-    dataroot_gt: datasets/DIV2K/DIV2K_train_HR_sub
-    dataroot_lq: datasets/DIV2K/DIV2K_train_LR_bicubic/X2_sub
-    meta_info_file: data/meta_info/meta_info_DIV2K800sub_GT.txt
+    dataroot_gt: datasets/DF2K/DF2K_HR_sub
+    dataroot_lq: datasets/DF2K/DF2K_LR_bicubic/X4_sub
+    meta_info_file: data/meta_info/meta_info_DF2Ksub_GT.txt
     filename_tmpl: '{}'
     io_backend:
       type: disk
 
-    gt_size: 96
+    gt_size: 256
     use_hflip: true
     use_rot: true
 
     # data loader
     num_worker_per_gpu: 8
-    batch_size_per_gpu: 12
+    batch_size_per_gpu: 6
     dataset_enlarge_ratio: 1
     prefetch_mode: ~
 
   val_1:
     name: Set5
     type: PairedImageDataset
-    dataroot_gt: datasets/Test/HR/Set5/x2
-    dataroot_lq: datasets/Test/LR/Set5/x2
+    dataroot_gt: datasets/Test/HR/Set5/x4
+    dataroot_lq: datasets/Test/LR/Set5/x4
     io_backend:
       type: disk
 
   val_2:
     name: Set14
     type: PairedImageDataset
-    dataroot_gt: datasets/Test/HR/Set14/x2
-    dataroot_lq: datasets/Test/LR/Set14/x2
+    dataroot_gt: datasets/Test/HR/Set14/x4
+    dataroot_lq: datasets/Test/LR/Set14/x4
     io_backend:
       type: disk
 
   val_3:
     name: BSD100
     type: PairedImageDataset
-    dataroot_gt: datasets/Test/HR/BSD100/x2
-    dataroot_lq: datasets/Test/LR/BSD100/x2
+    dataroot_gt: datasets/Test/HR/BSD100/x4
+    dataroot_lq: datasets/Test/LR/BSD100/x4
     io_backend:
       type: disk
 
   val_4:
     name: Urban100
     type: PairedImageDataset
-    dataroot_gt: datasets/Test/HR/Urban100/x2
-    dataroot_lq: datasets/Test/LR/Urban100/x2
+    dataroot_gt: datasets/Test/HR/Urban100/x4
+    dataroot_lq: datasets/Test/LR/Urban100/x4
     io_backend:
       type: disk
 
   val_5:
     name: Manga109
     type: PairedImageDataset
-    dataroot_gt: datasets/Test/HR/Manga109/x2
-    dataroot_lq: datasets/Test/LR/Manga109/x2
+    dataroot_gt: datasets/Test/HR/Manga109/x4
+    dataroot_lq: datasets/Test/LR/Manga109/x4
     io_backend:
       type: disk
 
@@ -72,9 +72,9 @@ datasets:
 # network structures
 network_g:
   type: SwinIR
-  upscale: 2
+  upscale: 4
   in_chans: 3
-  img_size: 48
+  img_size: 64
   window_size: 16
   img_range: 1.
   depths: [6, 6, 6, 6, 6, 6]
@@ -86,7 +86,7 @@ network_g:
 
 # path
 path:
-  pretrain_network_g: experiments/pretrained_models/SwinIR/X2/001_classicalSR_DIV2K_s48w8_SwinIR-M_x2.pth
+  pretrain_network_g: ~
   strict_load_g: false
   resume_state: ~
 
@@ -101,10 +101,10 @@ train:
 
   scheduler:
     type: CosineAnnealingRestartLR
-    periods: [200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000]
-    restart_weights: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    periods: [200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000]
+    restart_weights: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
-  total_iter: 3000000
+  total_iter: 2000000
   warmup_iter: 100000  # no warm up
 
   # losses
@@ -116,17 +116,17 @@ train:
 # validation settings
 val:
   val_freq: !!float 1e4
-  save_img: false
+  save_img: true
 
   metrics:
     psnr: # metric name, can be arbitrary
       type: calculate_psnr
-      crop_border: 2
+      crop_border: 4
       test_y_channel: true
 
     ssim: # metric name, can be arbitrary
       type: calculate_ssim
-      crop_border: 2
+      crop_border: 4
       test_y_channel: true
 
 # logging settings
